@@ -1,0 +1,108 @@
+﻿@model AplicacionExhortos.Models.Login.LoginModel
+
+@{
+    Layout = "~/Views/Shared/_LayoutLogin.cshtml";
+    ViewData["Title"] = "Acceso";
+}
+
+<div class="container-fluid">
+    <div class="row min-vh-100">
+
+        @* LADO IZQUIERDO (Imagen) *@
+        <div class="col-12 col-lg-6 p-0"
+             style="background: url('/Images/ImagenTSA.jpg') center center / cover no-repeat;
+                    min-height: 280px;">
+        </div>
+
+        @* LADO DERECHO (Formulario) *@
+        <div class="col-12 col-lg-6 d-flex flex-column p-4">
+
+            <div class="text-center pt-3">
+                <h4 class="fw-bold">
+                    TRIBUNAL SUPERIOR AGRARIO <br />
+                    UNIDAD GENERAL ADMINISTRATIVA <br />
+                    UNIDAD DE TECNOLOGÍAS <br />
+                    DE LA INFORMACIÓN Y COMUNICACIONES
+                </h4>
+            </div>
+
+            <div class="d-flex justify-content-center align-items-center flex-grow-1">
+                <div class="w-100" style="max-width:420px;">
+
+                    @* Mensaje general (ModelState) *@
+                    @if (!ViewData.ModelState.IsValid)
+                    {
+                        <div class="alert alert-danger">
+                            @Html.ValidationSummary(false)
+                        </div>
+                    }
+
+                    <form id="formLogin"
+                          class="needs-validation"
+                          novalidate
+                          asp-controller="Login"
+                          asp-action="Login"
+                          method="post">
+
+                        <h5 class="mb-4 text-center">
+                            SISTEMA DE CAPTURA DE EXHORTOS <br />
+                            TRIBUNALES UNITARIOS AGRARIOS
+                        </h5>
+
+                        @* Usuario *@ <div class="mb-3"> <label class="form-label" for="usuario">Usuario</label> 
+                            <input type="email" id="usuario" 
+                                name="usuario" class="form-control"
+                                required pattern="^[^@@\s]+@@[^@@\s]+\.(gob|mx|gob\.mx)$"
+
+                                title="Debe ser un Correo válido"> <div
+                                    class="valid-feedback">Correcto.</div> <div class="invalid-feedback">Ingrese Correo.</div> 
+                                </div>
+
+                        @* Contraseña *@
+                        <div class="mb-3">
+                            <label class="form-label" asp-for="Password"></label>
+
+                            <input asp-for="Password"
+                                   type="password"
+                                   class="form-control"
+                                   required
+                                   title="La contraseña es obligatoria" />
+
+                            <div class="invalid-feedback">Ingrese contraseña.</div>
+
+                            <span class="text-danger">
+                                @Html.ValidationMessageFor(m => m.Password)
+                            </span>
+                        </div>
+
+                        @* Botón *@
+                        <div class="text-center mt-4">
+                            <button type="submit" class="btn btn-tua w-50">
+                                Aceptar
+                            </button>
+                        </div>
+
+                    </form>
+
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+<script>
+    (() => {
+        'use strict';
+        const form = document.getElementById('formLogin');
+
+        form.addEventListener('submit', event => {
+            if (!form.checkValidity()) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+            form.classList.add('was-validated');
+        }, false);
+    })();
+</script>

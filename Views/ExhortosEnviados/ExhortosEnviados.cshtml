@@ -1,0 +1,109 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid fondo-exhortos min-vh-100 pb-5" style="padding-top:40px;">
+    <div class="row justify-content-center">
+        <div class="col-12 col-lg-10">
+
+            <div class="text-center mt-4 mb-4">
+                <h2>CONSULTA DE EXHORTOS</h2>
+            </div>
+
+            <form id="formConsultaExhortos" class="needs-validation" novalidate>
+
+                @* FILTROS SUPERIORES *@
+                <div class="row g-3">
+
+                    @* Distrito *@
+                    <div class="col-12 col-md-3">
+                        <label class="form-label" for="distrito">Distrito</label>
+
+                        <input type="text"
+                               class="form-control"
+                               id="distrito"
+                               name="Distrito"
+                               required>
+
+                        <div class="valid-feedback">Correcto.</div>
+                        <div class="invalid-feedback">El distrito es obligatorio.</div>
+                    </div>
+
+                    @* No. de expediente *@
+                    <div class="col-12 col-md-6">
+                        <label class="form-label" for="noExpediente">No. Expediente</label>
+                        <input type="text" class="form-control" id="noExpediente" name="NoExpediente" required>
+                        <div class="valid-feedback">Correcto.</div>
+                        <div class="invalid-feedback">El No. Expediente es obligatorio.</div>
+                    </div>
+
+                </div>
+
+                @* BOTON *@
+                <div class="row mt-3">
+                    <div class="col-12 col-md-3 mx-md-auto">
+                        <button type="submit" class="btn btn-tua w-100">CONSULTAR</button>
+                    </div>
+                </div>
+
+                @* FILTROS  *@
+                <div class="row g-3 mt-4 mb-4">
+
+                    <div class="col-12 col-md-4">
+                        <label class="form-label" for="estado">Estado</label>
+                        <input type="text" class="form-control" id="estado" name="Estado">
+                    </div>
+
+                    <div class="col-12 col-md-4">
+                        <label class="form-label" for="municipio">Municipio</label>
+                        <input type="text" class="form-control" id="municipio" name="Municipio">
+                    </div>
+
+                    <div class="col-12 col-md-4">
+                        <label class="form-label" for="poblado">Poblado</label>
+                        <input type="text" class="form-control" id="poblado" name="Poblado">
+                    </div>
+
+                </div>
+
+                @* TABLA *@
+                <div class="table-responsive">
+                    <table class="table table-bordered text-center">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Exhortos</th>
+                                <th>Fecha</th>
+                                <th>Nota de Exhorto</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @* Aquí se cargarán los datos dinámicamente *@
+                        </tbody>
+                    </table>
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+</div>
+
+<script>
+    // Bootstrap validation (oficial)
+    (() => {
+        'use strict';
+        const form = document.getElementById('formConsultaExhortos');
+
+        form.addEventListener('submit', event => {
+            if (!form.checkValidity()) {
+                event.preventDefault();
+                event.stopPropagation();
+            } else {
+                // Aún sin función real:
+                event.preventDefault();
+            }
+
+            form.classList.add('was-validated');
+        }, false);
+    })();
+</script>

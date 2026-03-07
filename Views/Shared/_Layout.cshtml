@@ -1,0 +1,128 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Sistema de Exhortos</title>
+
+    <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="/css/site.css" />
+</head>
+
+<body>
+
+    @* NAVBAR SUPERIOR *@
+    <nav class="navbar navbar-dark bg-dark fixed-top">
+        <div class="container-fluid">
+
+            <div class="d-flex align-items-center">
+                @* BOTON MENU *@
+                <button class="navbar-toggler"
+                        type="button"
+                        data-bs-toggle="offcanvas"
+                        data-bs-target="#offcanvasNavbar">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                @* NOMBRE USUARIO *@
+                <span class="navbar-brand ms-3 mb-0">
+                    @Context.Session.GetString("UsuarioNombre")
+                </span>
+            </div>
+
+            @* BOTON SALIR *@
+            <a href="/Login/Logout"
+               class="btn btn-outline-light d-flex align-items-center">
+
+                <img src="/Images/Icons/person-walking.svg"
+                     alt="Salir"
+                     width="20"
+                     height="20"
+                     class="me-2 icon-white" />
+
+                <span>Salir</span>
+            </a>
+
+        </div>
+    </nav>
+
+    @* MENU LATERAL *@
+    <div class="offcanvas offcanvas-start bg-dark text-white"
+         tabindex="-1"
+         id="offcanvasNavbar">
+
+        <div class="offcanvas-header">
+            <h5 class="offcanvas-title">
+                Menú
+            </h5>
+
+            <button type="button"
+                    class="btn-close btn-close-white"
+                    data-bs-dismiss="offcanvas">
+            </button>
+        </div>
+
+        <div class="offcanvas-body">
+
+            <div class="d-flex align-items-center mb-3">
+
+                @* LOGO *@
+                <img src="/Images/LogoTUA.png"
+                     alt="Logo"
+                     style="width:80px; height:auto;"
+                     class="me-3">
+
+                <div>
+
+                    <h6 class="text-white mb-1">
+                        SISTEMA DE CAPTURA DE EXHORTOS
+                    </h6>
+
+                    <small class="text-secondary">
+                        Tribunales Unitarios Agrarios
+                    </small>
+
+                </div>
+
+            </div>
+
+            <hr class="text-secondary" />
+
+            <ul class="navbar-nav flex-column">
+
+                <li class="nav-item">
+                    <a class="nav-link text-white"
+                       href="/AltaDeExhortos/AltaDeExhortos">
+                        ALTA DE EXHORTOS
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link text-white"
+                       href="/Diligencias/Diligencias">
+                        DILIGENCIA
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link text-white"
+                       href="/ExhortosEnviados/ExhortosEnviados">
+                        CONSULTA DE EXHORTOS
+                    </a>
+                </li>
+
+            </ul>
+
+        </div>
+    </div>
+
+    @* CONTENIDO *@
+    <main style="margin-top:30px;">
+        @RenderBody()
+    </main>
+
+    <script src="/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>

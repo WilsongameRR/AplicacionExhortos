@@ -1,0 +1,287 @@
+﻿@model AplicacionExhortos.Models.Exhortos.AltaExhortoModel
+
+@{
+    ViewData["Title"] = "Alta de Exhortos";
+}
+
+<div class="container-fluid fondo-exhortos min-vh-100 pb-5" style="padding-top:40px;">
+    <div class="row justify-content-center">
+        <div class="col-12 col-lg-10">
+
+            <div class="text-center mt-4 mb-4">
+                <h2>ALTA DE EXHORTOS</h2>
+            </div>
+
+            @if (TempData["Error"] != null)
+            {
+                <div class="alert alert-danger text-center">
+                    @TempData["Error"]
+                </div>
+            }
+
+            @if (TempData["NumeroExhorto"] != null)
+            {
+                <div class="alert alert-success text-center">
+                    Exhorto guardado correctamente. Número de exhorto:
+                    <strong>@TempData["NumeroExhorto"]</strong>
+                </div>
+
+                <div class="text-center mt-3 mb-4">
+                    <h5>DILIGENCIAS</h5>
+                    <p>Después de guardar el exhorto puede agregar una o más diligencias.</p>
+
+                    <a asp-controller="Diligencias"
+                       asp-action="AltaDiligencia"
+                       class="btn btn-tua me-2">
+                        Agregar diligencia
+                    </a>
+
+                    <a asp-controller="ExhortosEnviados"
+                       asp-action="ExhortosEnviados"
+                       class="btn btn-secondary">
+                        Finalizar
+                    </a>
+                </div>
+            }
+
+            <form id="formAltaExhortos"
+                  asp-controller="Exhortos"
+                  asp-action="Guardar"
+                  method="post"
+                  class="row g-3 needs-validation"
+                  novalidate>
+
+                <div class="col-md-4">
+                    <label class="form-label" for="Expediente">Expediente</label>
+                    <input type="text"
+                           class="form-control"
+                           id="Expediente"
+                           name="Expediente"
+                           value="@Model?.Expediente">
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label" for="NoOficio">No. Oficio</label>
+                    <input type="text"
+                           class="form-control"
+                           id="NoOficio"
+                           name="NoOficio"
+                           value="@Model?.NoOficio">
+                </div>
+
+                <div class="col-md-4"></div>
+
+                <div class="col-md-4">
+                    <label class="form-label" for="Estado">Estado</label>
+                    <input type="text"
+                           class="form-control"
+                           id="Estado"
+                           name="Estado"
+                           value="@Model?.Estado">
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label" for="Municipio">Municipio</label>
+                    <input type="text"
+                           class="form-control"
+                           id="Municipio"
+                           name="Municipio"
+                           value="@Model?.Municipio">
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label" for="Poblado">Poblado</label>
+                    <input type="text"
+                           class="form-control"
+                           id="Poblado"
+                           name="Poblado"
+                           value="@Model?.Poblado">
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label" for="TuaExhortado">TUA Exhortado</label>
+                    <select class="form-select"
+                            id="TuaExhortado"
+                            name="TuaExhortado"
+                            required>
+                        <option value="">Seleccione...</option>
+
+                        @if (ViewBag.TUAs != null)
+                        {
+                            @foreach (var tua in ViewBag.TUAs)
+                            {
+                                if (Model?.TuaExhortado == tua.TUAId)
+                                {
+                                    <option value="@tua.TUAId" selected>@tua.NumTUA</option>
+                                }
+                                else
+                                {
+                                    <option value="@tua.TUAId">@tua.NumTUA</option>
+                                }
+                            }
+                        }
+                    </select>
+
+                    <div class="invalid-feedback">
+                        Seleccione un TUA Exhortado.
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label" for="fechaGeneral">Fecha</label>
+                    <div class="input-group">
+                        <span class="input-group-text" id="iconoCalendario" style="cursor:pointer;">
+                            <i class="bi bi-calendar-event"></i>
+                        </span>
+
+                        <input type="date"
+                               class="form-control sin-icono"
+                               id="fechaGeneral"
+                               name="FechaGeneral"
+                               value="@(Model?.FechaGeneral?.ToString("yyyy-MM-dd"))">
+                    </div>
+                </div>
+
+                <div class="col-md-4"></div>
+
+                <div class="col-12 mt-4">
+                    <h5 class="text-center">DILIGENCIAS</h5>
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label" for="TipoDiligenciaId">Tipo diligencia</label>
+                    <select class="form-select"
+                            id="TipoDiligenciaId"
+                            name="TipoDiligenciaId">
+                        <option value="">Seleccione...</option>
+
+                        @foreach (var tipo in ViewBag.TiposDiligencia)
+                        {
+                            <option value="@tipo.TipoDiligenciaId">
+                                @tipo.TipoDiligenciaDesc
+                            </option>
+                        }
+                    </select>
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label" for="Destinatario">Destinatario</label>
+                    <input type="text"
+                           class="form-control"
+                           id="Destinatario"
+                           name="Destinatario"
+                           maxlength="200">
+                </div>
+
+                <div class="col-md-4" id="bloqueFechaAudiencia" style="display:none;">
+                    <label class="form-label" for="FechaAudiencia">Fecha de Audiencia</label>
+                    <div class="input-group">
+                        <span class="input-group-text" id="iconoCalendarioAudiencia" style="cursor:pointer;">
+                            <i class="bi bi-calendar-event"></i>
+                        </span>
+
+                        <input type="date"
+                               class="form-control sin-icono"
+                               id="FechaAudiencia"
+                               name="FechaAudiencia">
+                    </div>
+                </div>
+
+                <div class="col-md-4" id="bloqueOtro" style="display:none;">
+                    <label class="form-label" for="Otro">Otro</label>
+                    <input type="text"
+                           class="form-control"
+                           id="Otro"
+                           name="Otro"
+                           maxlength="80">
+                </div>
+
+                <div class="col-12 text-center mt-4">
+                    <button type="submit" class="btn btn-tua me-2">
+                        Guardar
+                    </button>
+
+                    <a asp-controller="ExhortosEnviados"
+                       asp-action="ExhortosEnviados"
+                       class="btn btn-secondary">
+                        Cancelar
+                    </a>
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+</div>
+
+<script>
+    (() => {
+        'use strict';
+        const form = document.getElementById('formAltaExhortos');
+
+        form.addEventListener('submit', function (event) {
+            if (!form.checkValidity()) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+
+            form.classList.add('was-validated');
+        });
+    })();
+</script>
+
+<script>
+    const iconoCalendario = document.getElementById("iconoCalendario");
+    const fechaGeneral = document.getElementById("fechaGeneral");
+
+    if (iconoCalendario && fechaGeneral) {
+        iconoCalendario.addEventListener("click", function () {
+            if (fechaGeneral.showPicker) {
+                fechaGeneral.showPicker();
+            } else {
+                fechaGeneral.focus();
+                fechaGeneral.click();
+            }
+        });
+    }
+
+    const iconoCalendarioAudiencia = document.getElementById("iconoCalendarioAudiencia");
+    const fechaAudiencia = document.getElementById("FechaAudiencia");
+
+    if (iconoCalendarioAudiencia && fechaAudiencia) {
+        iconoCalendarioAudiencia.addEventListener("click", function () {
+            if (fechaAudiencia.showPicker) {
+                fechaAudiencia.showPicker();
+            } else {
+                fechaAudiencia.focus();
+                fechaAudiencia.click();
+            }
+        });
+    }
+</script>
+
+<script>
+    const tipoDiligencia = document.getElementById("TipoDiligenciaId");
+    const bloqueFechaAudiencia = document.getElementById("bloqueFechaAudiencia");
+    const bloqueOtro = document.getElementById("bloqueOtro");
+    const campoFechaAudiencia = document.getElementById("FechaAudiencia");
+    const campoOtro = document.getElementById("Otro");
+
+    tipoDiligencia.addEventListener("change", function () {
+        const textoSeleccionado = this.options[this.selectedIndex].text.trim().toUpperCase();
+
+        if (textoSeleccionado === "CITAR" || textoSeleccionado === "EMPLAZAR") {
+            bloqueFechaAudiencia.style.display = "block";
+        } else {
+            bloqueFechaAudiencia.style.display = "none";
+            campoFechaAudiencia.value = "";
+        }
+
+        if (textoSeleccionado === "OTRA") {
+            bloqueOtro.style.display = "block";
+        } else {
+            bloqueOtro.style.display = "none";
+            campoOtro.value = "";
+        }
+    });
+</script>

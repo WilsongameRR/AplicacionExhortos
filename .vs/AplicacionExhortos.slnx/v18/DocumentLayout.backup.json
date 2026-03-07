@@ -1,0 +1,105 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\rperezr_ss\\Documents\\AplicacionExhortos\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{85E9F94C-4964-E996-11FB-48C8FD46D603}|AplicacionExhortos.csproj|c:\\users\\rperezr_ss\\documents\\aplicacionexhortos\\controllers\\exhortoscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{85E9F94C-4964-E996-11FB-48C8FD46D603}|AplicacionExhortos.csproj|solutionrelative:controllers\\exhortoscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{85E9F94C-4964-E996-11FB-48C8FD46D603}|AplicacionExhortos.csproj|c:\\users\\rperezr_ss\\documents\\aplicacionexhortos\\views\\altadeexhortos\\altadeexhortos.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{85E9F94C-4964-E996-11FB-48C8FD46D603}|AplicacionExhortos.csproj|solutionrelative:views\\altadeexhortos\\altadeexhortos.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{85E9F94C-4964-E996-11FB-48C8FD46D603}|AplicacionExhortos.csproj|c:\\users\\rperezr_ss\\documents\\aplicacionexhortos\\data\\repositories\\tuarepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{85E9F94C-4964-E996-11FB-48C8FD46D603}|AplicacionExhortos.csproj|solutionrelative:data\\repositories\\tuarepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{85E9F94C-4964-E996-11FB-48C8FD46D603}|AplicacionExhortos.csproj|c:\\users\\rperezr_ss\\documents\\aplicacionexhortos\\models\\exhortos\\altaexhortomodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{85E9F94C-4964-E996-11FB-48C8FD46D603}|AplicacionExhortos.csproj|solutionrelative:models\\exhortos\\altaexhortomodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{85E9F94C-4964-E996-11FB-48C8FD46D603}|AplicacionExhortos.csproj|c:\\users\\rperezr_ss\\documents\\aplicacionexhortos\\models\\tipodiligenciamodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{85E9F94C-4964-E996-11FB-48C8FD46D603}|AplicacionExhortos.csproj|solutionrelative:models\\tipodiligenciamodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "ExhortosController.cs",
+              "DocumentMoniker": "C:\\Users\\rperezr_ss\\Documents\\AplicacionExhortos\\Controllers\\ExhortosController.cs",
+              "RelativeDocumentMoniker": "Controllers\\ExhortosController.cs",
+              "ToolTip": "C:\\Users\\rperezr_ss\\Documents\\AplicacionExhortos\\Controllers\\ExhortosController.cs",
+              "RelativeToolTip": "Controllers\\ExhortosController.cs",
+              "ViewState": "AgIAABgAAAAAAAAAAAAowCkAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-07T00:12:30.077Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "AltaExhortoModel.cs",
+              "DocumentMoniker": "C:\\Users\\rperezr_ss\\Documents\\AplicacionExhortos\\Models\\Exhortos\\AltaExhortoModel.cs",
+              "RelativeDocumentMoniker": "Models\\Exhortos\\AltaExhortoModel.cs",
+              "ToolTip": "C:\\Users\\rperezr_ss\\Documents\\AplicacionExhortos\\Models\\Exhortos\\AltaExhortoModel.cs",
+              "RelativeToolTip": "Models\\Exhortos\\AltaExhortoModel.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAAxAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-07T00:08:33.367Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "AltaDeExhortos.cshtml",
+              "DocumentMoniker": "C:\\Users\\rperezr_ss\\Documents\\AplicacionExhortos\\Views\\AltaDeExhortos\\AltaDeExhortos.cshtml",
+              "RelativeDocumentMoniker": "Views\\AltaDeExhortos\\AltaDeExhortos.cshtml",
+              "ToolTip": "C:\\Users\\rperezr_ss\\Documents\\AplicacionExhortos\\Views\\AltaDeExhortos\\AltaDeExhortos.cshtml",
+              "RelativeToolTip": "Views\\AltaDeExhortos\\AltaDeExhortos.cshtml",
+              "ViewState": "AgIAAI4AAAAAAAAAAAAowKAAAAA4AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-03-07T00:03:59.877Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "TuaRepository.cs",
+              "DocumentMoniker": "C:\\Users\\rperezr_ss\\Documents\\AplicacionExhortos\\Data\\Repositories\\TuaRepository.cs",
+              "RelativeDocumentMoniker": "Data\\Repositories\\TuaRepository.cs",
+              "ToolTip": "C:\\Users\\rperezr_ss\\Documents\\AplicacionExhortos\\Data\\Repositories\\TuaRepository.cs",
+              "RelativeToolTip": "Data\\Repositories\\TuaRepository.cs",
+              "ViewState": "AgIAAA8AAAAAAAAAAAA5wBYAAAA6AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-06T22:00:53.432Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "TipoDiligenciaModel.cs",
+              "DocumentMoniker": "C:\\Users\\rperezr_ss\\Documents\\AplicacionExhortos\\Models\\TipoDiligenciaModel.cs",
+              "RelativeDocumentMoniker": "Models\\TipoDiligenciaModel.cs",
+              "ToolTip": "C:\\Users\\rperezr_ss\\Documents\\AplicacionExhortos\\Models\\TipoDiligenciaModel.cs",
+              "RelativeToolTip": "Models\\TipoDiligenciaModel.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-06T18:04:12.516Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
