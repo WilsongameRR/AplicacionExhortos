@@ -55,45 +55,46 @@
 
                     @Html.AntiForgeryToken()
 
+                    @* Numero de Expediente *@
                     <div class="col-md-4">
-                        <label asp-for="Expediente" class="form-label"></label>
+                        <label class="form-label">* Expediente</label>
                         <input asp-for="Expediente" class="form-control" required />
                         <div class="invalid-feedback">Ingrese el expediente.</div>
-                        <span asp-validation-for="Expediente" class="text-danger"></span>
                     </div>
 
+                    @* No de Oficio *@
                     <div class="col-md-4">
-                        <label asp-for="NoOficio" class="form-label"></label>
+                        <label class="form-label">* No. Oficio</label>
                         <input asp-for="NoOficio" class="form-control" required />
                         <div class="invalid-feedback">Ingrese el número de oficio.</div>
-                        <span asp-validation-for="NoOficio" class="text-danger"></span>
                     </div>
 
                     <div class="col-md-4"></div>
 
+                    @* Estado *@
                     <div class="col-md-4">
-                        <label asp-for="Estado" class="form-label"></label>
+                        <label class="form-label">* Estado</label>
                         <input asp-for="Estado" class="form-control" required />
                         <div class="invalid-feedback">Ingrese el estado.</div>
-                        <span asp-validation-for="Estado" class="text-danger"></span>
                     </div>
 
+                    @* Municipio *@
                     <div class="col-md-4">
-                        <label asp-for="Municipio" class="form-label"></label>
+                        <label class="form-label">* Municipio</label>
                         <input asp-for="Municipio" class="form-control" required />
                         <div class="invalid-feedback">Ingrese el municipio.</div>
-                        <span asp-validation-for="Municipio" class="text-danger"></span>
                     </div>
 
+                    @* Poblado *@
                     <div class="col-md-4">
-                        <label asp-for="Poblado" class="form-label"></label>
+                        <label class="form-label">* Poblado</label>
                         <input asp-for="Poblado" class="form-control" required />
                         <div class="invalid-feedback">Ingrese el poblado.</div>
-                        <span asp-validation-for="Poblado" class="text-danger"></span>
                     </div>
 
+                    @* TUA Exhortado *@
                     <div class="col-md-4">
-                        <label asp-for="TuaExhortado" class="form-label"></label>
+                        <label class="form-label">* TUA Exhortado</label>
                         <select asp-for="TuaExhortado" class="form-select" required>
                             <option value="">Seleccione...</option>
 
@@ -106,25 +107,33 @@
                             }
                         </select>
                         <div class="invalid-feedback">Seleccione un TUA Exhortado.</div>
-                        <span asp-validation-for="TuaExhortado" class="text-danger"></span>
                     </div>
 
+                    @* Fecha de Acuerdo *@
                     <div class="col-md-4">
-                        <label asp-for="FechaGeneral" class="form-label"></label>
-                        <div class="input-group">
+                        <label class="form-label">* Fecha de Acuerdo</label>
+                        <div class="input-group has-validation">
                             <span class="input-group-text" id="iconoCalendario" style="cursor:pointer;">
                                 <i class="bi bi-calendar-event"></i>
                             </span>
 
                             <input asp-for="FechaGeneral"
                                    type="date"
-                                   class="form-control sin-icono" />
+                                   class="form-control sin-icono"
+                                   min="@DateTime.Today.AddYears(-1).ToString("yyyy-MM-dd")"
+                                   max="@DateTime.Today.ToString("yyyy-MM-dd")"
+                                   required />
+
+                            <div class="invalid-feedback">
+                                Ingrese una fecha de acuerdo.
+                            </div>
                         </div>
-                        <span asp-validation-for="FechaGeneral" class="text-danger"></span>
                     </div>
 
+                    @* Espacio para acomodo *@
                     <div class="col-md-4"></div>
 
+                    @* Botones *@
                     <div class="col-12 text-center mt-4">
                         <button type="submit" class="btn btn-tua me-2">
                             Guardar
@@ -151,18 +160,18 @@
         (() => {
             'use strict';
 
-            const form = document.getElementById('formAltaExhortos');
+            const forms = document.querySelectorAll('.needs-validation');
 
-            if (form) {
-                form.addEventListener('submit', function (event) {
+            Array.from(forms).forEach(form => {
+                form.addEventListener('submit', event => {
                     if (!form.checkValidity()) {
                         event.preventDefault();
                         event.stopPropagation();
                     }
 
                     form.classList.add('was-validated');
-                });
-            }
+                }, false);
+            });
         })();
     </script>
 

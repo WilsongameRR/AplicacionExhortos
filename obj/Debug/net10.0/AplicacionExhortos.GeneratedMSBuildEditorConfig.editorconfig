@@ -26,12 +26,16 @@ build_property.EnableCodeStyleSeverity =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWx0YURlRXhob3J0b3NcQWx0YURlRXhob3J0b3MuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/rperezr_ss/Documents/AplicacionExhortos/Views/ExhortosEnviados/ExhortosEnviados.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRXhob3J0b3NFbnZpYWRvc1xFeGhvcnRvc0VudmlhZG9zLmNzaHRtbA==
+[C:/Users/rperezr_ss/Documents/AplicacionExhortos/Views/Diligencias/AltaDiligencia.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRGlsaWdlbmNpYXNcQWx0YURpbGlnZW5jaWEuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/rperezr_ss/Documents/AplicacionExhortos/Views/ExhortosEnviados/Privacy.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRXhob3J0b3NFbnZpYWRvc1xQcml2YWN5LmNzaHRtbA==
+[C:/Users/rperezr_ss/Documents/AplicacionExhortos/Views/ExhortosConsulta/ExhortosConsulta.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRXhob3J0b3NDb25zdWx0YVxFeGhvcnRvc0NvbnN1bHRhLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/rperezr_ss/Documents/AplicacionExhortos/Views/ExhortosConsulta/Privacy.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRXhob3J0b3NDb25zdWx0YVxQcml2YWN5LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/rperezr_ss/Documents/AplicacionExhortos/Views/Login/Login.cshtml]

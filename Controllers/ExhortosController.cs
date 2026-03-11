@@ -64,6 +64,8 @@ namespace AplicacionExhortos.Controllers
                     return RedirectToAction("Login", "Login");
                 }
 
+                ValidarFechaAcuerdo(model.FechaGeneral);
+
                 if (!ModelState.IsValid)
                 {
                     CargarCatalogos();
@@ -77,39 +79,47 @@ namespace AplicacionExhortos.Controllers
                     conn.Open();
 
                     int exhortoIdGenerado = 0;
-                    string numeroExhortoGenerado = "";
+                    string numeroExhortoGenerado = string.Empty;
 
                     using (MySqlCommand cmd = new MySqlCommand("sp_inserta_exhorto", conn))
                     {
                         cmd.CommandType = CommandType.StoredProcedure;
 
                         cmd.Parameters.AddWithValue("pTUAIdOrigen", tuaOrigen);
-                        cmd.Parameters.AddWithValue("pNoExpediente", model.Expediente ?? "");
-                        cmd.Parameters.AddWithValue("pNoOficio", model.NoOficio ?? "");
-                        cmd.Parameters.AddWithValue("pEstado", model.Estado ?? "");
-                        cmd.Parameters.AddWithValue("pMunicipio", model.Municipio ?? "");
-                        cmd.Parameters.AddWithValue("pPoblado", model.Poblado ?? "");
+                        cmd.Parameters.AddWithValue("pNoExpediente", model.Expediente ?? string.Empty);
+                        cmd.Parameters.AddWithValue("pNoOficio", model.NoOficio ?? string.Empty);
+                        cmd.Parameters.AddWithValue("pEstado", model.Estado ?? string.Empty);
+                        cmd.Parameters.AddWithValue("pMunicipio", model.Municipio ?? string.Empty);
+                        cmd.Parameters.AddWithValue("pPoblado", model.Poblado ?? string.Empty);
                         cmd.Parameters.AddWithValue("pTUAIdDestino", model.TuaExhortado);
 
                         if (model.FechaGeneral.HasValue)
-                            cmd.Parameters.AddWithValue("pFechaAcuerdo", model.FechaGeneral.Value);
+                        {
+                            cmd.Parameters.AddWithValue("pFechaAcuerdo", model.FechaGeneral.Value.Date);
+                        }
                         else
+                        {
                             cmd.Parameters.AddWithValue("pFechaAcuerdo", DBNull.Value);
+                        }
 
                         cmd.Parameters.AddWithValue("pUsuarioIdOrigen", usuarioOrigen);
 
-                        MySqlParameter pExhortoId = new MySqlParameter("pExhortoId", MySqlDbType.Int32);
-                        pExhortoId.Direction = ParameterDirection.Output;
+                        MySqlParameter pExhortoId = new MySqlParameter("pExhortoId", MySqlDbType.Int32)
+                        {
+                            Direction = ParameterDirection.Output
+                        };
                         cmd.Parameters.Add(pExhortoId);
 
-                        MySqlParameter pExhortoEnviado = new MySqlParameter("pExhortoEnviado", MySqlDbType.VarChar, 40);
-                        pExhortoEnviado.Direction = ParameterDirection.Output;
+                        MySqlParameter pExhortoEnviado = new MySqlParameter("pExhortoEnviado", MySqlDbType.VarChar, 40)
+                        {
+                            Direction = ParameterDirection.Output
+                        };
                         cmd.Parameters.Add(pExhortoEnviado);
 
                         cmd.ExecuteNonQuery();
 
                         exhortoIdGenerado = Convert.ToInt32(cmd.Parameters["pExhortoId"].Value);
-                        numeroExhortoGenerado = cmd.Parameters["pExhortoEnviado"].Value?.ToString() ?? "";
+                        numeroExhortoGenerado = cmd.Parameters["pExhortoEnviado"].Value?.ToString() ?? string.Empty;
 
                         TempData["NumeroExhorto"] = numeroExhortoGenerado;
                         TempData["IdExhorto"] = exhortoIdGenerado;
@@ -122,6 +132,28 @@ namespace AplicacionExhortos.Controllers
             {
                 TempData["Error"] = "Error al guardar: " + ex.Message;
                 return RedirectToAction("AltaDeExhortos", "Exhortos");
+            }
+        }
+
+        private void ValidarFechaAcuerdo(DateTime? fechaAcuerdo)
+        {
+            DateTime fechaActual = DateTime.Today;
+            DateTime fechaMinima = fechaActual.AddYears(-1);
+
+            if (!fechaAcuerdo.HasValue)
+            {
+                ModelState.AddModelError("FechaGeneral", "La Fecha de Acuerdo es obligatoria.");
+                return;
+            }
+
+            DateTime fechaCapturada = fechaAcuerdo.Value.Date;
+
+            if (fechaCapturada < fechaMinima || fechaCapturada > fechaActual)
+            {
+                ModelState.AddModelError(
+                    "FechaGeneral",
+                    $"La Fecha de Acuerdo debe estar entre {fechaMinima:dd/MM/yyyy} y {fechaActual:dd/MM/yyyy}."
+                );
             }
         }
 
