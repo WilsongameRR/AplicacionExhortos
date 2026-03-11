@@ -55,44 +55,38 @@
 
                     @Html.AntiForgeryToken()
 
-                    @* Numero de Expediente *@
                     <div class="col-md-4">
                         <label class="form-label">* Expediente</label>
-                        <input asp-for="Expediente" class="form-control" required />
+                        <input asp-for="Expediente" class="form-control text-uppercase" required />
                         <div class="invalid-feedback">Ingrese el expediente.</div>
                     </div>
 
-                    @* No de Oficio *@
                     <div class="col-md-4">
                         <label class="form-label">* No. Oficio</label>
-                        <input asp-for="NoOficio" class="form-control" required />
+                        <input asp-for="NoOficio" class="form-control text-uppercase" required />
                         <div class="invalid-feedback">Ingrese el número de oficio.</div>
                     </div>
 
                     <div class="col-md-4"></div>
 
-                    @* Estado *@
                     <div class="col-md-4">
                         <label class="form-label">* Estado</label>
-                        <input asp-for="Estado" class="form-control" required />
+                        <input asp-for="Estado" class="form-control text-uppercase" required />
                         <div class="invalid-feedback">Ingrese el estado.</div>
                     </div>
 
-                    @* Municipio *@
                     <div class="col-md-4">
                         <label class="form-label">* Municipio</label>
-                        <input asp-for="Municipio" class="form-control" required />
+                        <input asp-for="Municipio" class="form-control text-uppercase" required />
                         <div class="invalid-feedback">Ingrese el municipio.</div>
                     </div>
 
-                    @* Poblado *@
                     <div class="col-md-4">
                         <label class="form-label">* Poblado</label>
-                        <input asp-for="Poblado" class="form-control" required />
+                        <input asp-for="Poblado" class="form-control text-uppercase" required />
                         <div class="invalid-feedback">Ingrese el poblado.</div>
                     </div>
 
-                    @* TUA Exhortado *@
                     <div class="col-md-4">
                         <label class="form-label">* TUA Exhortado</label>
                         <select asp-for="TuaExhortado" class="form-select" required>
@@ -109,7 +103,6 @@
                         <div class="invalid-feedback">Seleccione un TUA Exhortado.</div>
                     </div>
 
-                    @* Fecha de Acuerdo *@
                     <div class="col-md-4">
                         <label class="form-label">* Fecha de Acuerdo</label>
                         <div class="input-group has-validation">
@@ -130,10 +123,8 @@
                         </div>
                     </div>
 
-                    @* Espacio para acomodo *@
                     <div class="col-md-4"></div>
 
-                    @* Botones *@
                     <div class="col-12 text-center mt-4">
                         <button type="submit" class="btn btn-tua me-2">
                             Guardar
@@ -164,12 +155,20 @@
 
             Array.from(forms).forEach(form => {
                 form.addEventListener('submit', event => {
+
+                    // Convertir a MAYÚSCULAS antes de enviar
+                    const inputs = form.querySelectorAll("input[type='text']");
+                    inputs.forEach(input => {
+                        input.value = input.value.toUpperCase();
+                    });
+
                     if (!form.checkValidity()) {
                         event.preventDefault();
                         event.stopPropagation();
                     }
 
                     form.classList.add('was-validated');
+
                 }, false);
             });
         })();

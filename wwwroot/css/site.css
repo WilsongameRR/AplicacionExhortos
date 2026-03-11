@@ -78,3 +78,45 @@ input[type="date"].sin-icono {
     input[type="date"].sin-icono::-webkit-clear-button {
         display: none;
     }
+
+/* PAGINACIÓN DATATABLES */
+
+.dataTables_wrapper .dataTables_paginate {
+    margin-top: 15px;
+    text-align: center;
+}
+
+    .dataTables_wrapper .dataTables_paginate .paginate_button {
+        font-weight: bold;
+        font-size: 16px;
+        padding: 6px 12px;
+        margin: 2px;
+        border-radius: 6px;
+    }
+
+        /* Página actual */
+        .dataTables_wrapper .dataTables_paginate .paginate_button.current {
+            background-color: #198754 !important;
+            color: white !important;
+            font-weight: bold;
+            border: none;
+        }
+
+        /* Hover */
+        .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+            background-color: #0d6efd !important;
+            color: white !important;
+        }
+
+        /* Botones anterior / siguiente */
+        .dataTables_wrapper .dataTables_paginate .paginate_button.previous,
+        .dataTables_wrapper .dataTables_paginate .paginate_button.next {
+            font-weight: bold;
+        }
+
+/* TEXTO DE INFORMACIÓN DE REGISTROS */
+.dataTables_info {
+    font-weight: bold;
+    font-size: 15px;
+    margin-top: 10px;
+}
