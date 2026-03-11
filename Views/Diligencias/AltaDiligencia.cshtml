@@ -1,0 +1,350 @@
+﻿@model AplicacionExhortos.Models.AltaDiligenciasModel
+@using AplicacionExhortos.Models
+
+@{
+    ViewData["Title"] = "Alta de Diligencia";
+    // @Model.Diligencias
+
+}
+
+<div class="container-fluid fondo-exhortos min-vh-100 pb-5" style="padding-top:40px;">
+    <div class="row justify-content-center">
+        <div class="col-12 col-lg-10">
+
+            <!-- TÍTULO DE LA PANTALLA -->
+            <div class="text-center mt-4 mb-4">
+                <h2>ALTA DE DILIGENCIAS</h2>
+            </div>
+
+            <!-- FORMULARIO PRINCIPAL QUE ENVÍA LOS DATOS AL CONTROLLER -->
+            <form id="formDiligencias"
+                  method="post"
+                  asp-controller="Diligencias"
+                  asp-action="GuardarDiligencias">
+
+                <div class="row g-3">
+
+
+                    <div class="col-md-4">
+                        <label class="form-label">No. De Exhorto</label>
+                        <input type="text" asp-for="NoExhorto"
+                               class="form-control"
+                               id="NoExhorto"
+                               maxlength="200" />
+                    </div>
+
+                    <!-- SELECT PARA ELEGIR EL TIPO DE DILIGENCIA -->
+                    <div class="col-md-4">
+                        <label class="form-label">Tipo diligencia</label>
+                        <select class="form-select" id="TipoDiligenciaId">
+                            <option value="">Seleccione...</option>
+                            
+                            <option value="1">CITAR</option>
+                            <option value="2">EMPLAZAR</option>
+                            <option value="3">NOTIFICAR</option>
+                            <option value="4">OTRA</option>
+
+                                }
+                            }
+                        </select>
+                    </div>
+
+
+                  
+
+                    <!-- CAMPO PARA CAPTURAR EL DESTINATARIO DE LA DILIGENCIA -->
+                    <div class="col-md-4">
+                        <label class="form-label">Destinatario</label>
+                        <input type="text" asp-for="Destinatario"
+                               class="form-control"
+                               id="Destinatario"
+                               maxlength="200" />
+                    </div>
+
+                    <!-- BLOQUE QUE SE MUESTRA SOLO CUANDO LA DILIGENCIA ES CITAR O EMPLAZAR -->
+                    <div class="col-md-4" id="bloqueFechaAudiencia" style="display:none;">
+                        <label class="form-label">Fecha de audiencia</label>
+
+                        <!-- INPUT CON ICONO PARA ABRIR EL CALENDARIO -->
+                        <div class="input-group">
+                            <span class="input-group-text"
+                                  id="iconoCalendarioAudiencia"
+                                  style="cursor:pointer;">
+                                <i class="bi bi-calendar-event"></i>
+                            </span>
+
+                            <input type="date"  asp-for="Otro"
+                                   class="form-control sin-icono"
+                                   id="FechaAudiencia" />
+                        </div>
+                    </div>
+
+                    <!-- BLOQUE QUE SE MUESTRA CUANDO EL TIPO DE DILIGENCIA ES "OTRA" -->
+                    <div class="col-md-4" id="bloqueOtro" style="display:none;">
+                        <label class="form-label">Especifique diligencia</label>
+                        <input type="text"
+                               class="form-control"
+                               id="Otro"
+                               maxlength="80" />
+                    </div>
+
+                    <!-- BOTÓN QUE AGREGA LA DILIGENCIA A LA TABLA -->
+                    <div class="col-12 text-center mt-3">
+                        <button type="button"
+                                id="btnAgregarDiligencia"
+                                class="btn btn-tua">
+                            Agregar
+                        </button>
+                    </div>
+
+                </div>
+
+                <hr class="my-4" />
+
+                <!-- TABLA DONDE SE MUESTRAN LAS DILIGENCIAS AGREGADAS -->
+                <div class="mt-3">
+                    <h4 class="text-center mb-3">DILIGENCIAS AGREGADAS</h4>
+
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-striped" id="tablaDiligencias">
+                            <thead>
+                                <tr>
+                                    <th>Tipo diligencia</th>
+                                    <th>Destinatario</th>
+                                    <th>Fecha audiencia</th>
+                                    <th>Otro</th>
+                                    <th>Acción</th>
+                                </tr>
+                            </thead>
+
+                            <!-- AQUÍ SE INSERTAN LAS FILAS DINÁMICAMENTE CON JAVASCRIPT -->
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!--  GENERA INPUTS HIDDE SE ENVÍAN AL CONTROLLER -->
+                <div id="contenedorHiddenDiligencias"></div>
+
+                <!-- BOTONES FINALES -->
+                <div class="col-12 text-center mt-4">
+
+                    <!-- ENVÍA TODAS LAS DILIGENCIAS AL CONTROLLER PARA GUARDARLAS -->
+                    <button type="submit" id="btnGuardarDili" class="btn btn-success me-2">
+                        Guardar diligencias
+
+                    </button>
+
+                    <!-- REGRESA A LA PANTALLA DE EXHORTOS -->
+                    <a asp-controller="ExhortosEnviados"
+                       asp-action="ExhortosEnviados"
+                       class="btn btn-secondary">
+                        Cancelar
+                    </a>
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+</div>
+
+<script>
+
+    /* VARIABLES QUE REFERENCIAN LOS ELEMENTOS DEL FORMULARIO */
+    const tipoDiligencia = document.getElementById("TipoDiligenciaId");
+    const destinatario = document.getElementById("Destinatario");
+    const bloqueFecha = document.getElementById("bloqueFechaAudiencia");
+    const bloqueOtro = document.getElementById("bloqueOtro");
+    const fecha = document.getElementById("FechaAudiencia");
+    const otro = document.getElementById("Otro");
+    const btnAgregar = document.getElementById("btnAgregarDiligencia");
+    const tbody = document.querySelector("#tablaDiligencias tbody");
+    const contenedorHidden = document.getElementById("contenedorHiddenDiligencias");
+
+    /* ARREGLO DONDE SE GUARDAN LAS DILIGENCIAS TEMPORALMENTE */
+    let diligencias = [];
+
+    /*
+       EVENTO  CUANDO CAMBIA EL TIPO DE DILIGENCIA
+    */
+    tipoDiligencia.addEventListener("change", function () {
+
+        const texto = this.options[this.selectedIndex].text.trim().toUpperCase();
+
+        if (texto === "CITAR" || texto === "EMPLAZAR") {
+
+            /* MUESTRA EL CALENDARIO */
+            bloqueFecha.style.display = "block";
+            fecha.required = true;
+
+            bloqueOtro.style.display = "none";
+            otro.value = "";
+            otro.required = false;
+        }
+
+        else if (texto === "OTRA") {
+
+            /* MUESTRA CAMPO PARA ESPECIFICAR */
+            bloqueOtro.style.display = "block";
+            otro.required = true;
+
+            bloqueFecha.style.display = "none";
+            fecha.value = "";
+            fecha.required = false;
+        }
+
+        else {
+
+            /* OCULTA TODOS LOS CAMPOS OPCIONALES */
+            bloqueFecha.style.display = "none";
+            bloqueOtro.style.display = "none";
+
+            fecha.value = "";
+            otro.value = "";
+
+            fecha.required = false;
+            otro.required = false;
+        }
+    });
+
+
+    /*
+       BOTÓN AGREGAR
+       AGREGA LA DILIGENCIA AL ARREGLO Y LA MUESTRA EN LA TABLA
+    */
+    btnAgregar.addEventListener("click", function () {
+
+        const noexhorto = NoExhorto.value;
+        const tipoId = tipoDiligencia.value;
+        const tipoTexto = tipoDiligencia.options[tipoDiligencia.selectedIndex].text.trim();
+        const destinatarioValor = destinatario.value.trim();
+        const fechaValor = fecha.value;
+        const otroValor = otro.value.trim();
+
+        /* VALIDACIONES  */
+        if (tipoId === "") {    
+            alert("Seleccione un tipo de diligencia.");
+            return;
+        }
+
+        if (destinatarioValor === "") {
+            alert("Capture el destinatario.");
+            return;
+        }
+
+        const tipoMayus = tipoTexto.toUpperCase();
+
+        if ((tipoMayus === "CITAR" || tipoMayus === "EMPLAZAR") && fechaValor === "") {
+            alert("Capture la fecha de audiencia.");
+            return;
+        }
+
+        if (tipoMayus === "OTRA" && otroValor === "") {
+            alert("Especifique la diligencia.");
+            return;
+        }
+
+        /* OBJETO DILIGENCIA */
+        const item = {
+            NoExhorto: noexhorto, 
+            TipoDiligenciaId: tipoId,
+            TipoDiligenciaDesc: tipoTexto,
+            Destinatario: destinatarioValor,
+            FechaAudiencia: fechaValor,
+            Otro: otroValor
+        };
+
+        /* SE AGREGA AL ARREGLO */
+        diligencias.push(item);
+
+        /* SE ACTUALIZA LA TABLA */
+        renderTabla();
+
+        /* SE LIMPIAN LOS CAMPOS */
+        limpiarCampos();
+    });
+
+
+       // MUESTRA TODAS LAS DILIGENCIAS AGREGADAS
+    function renderTabla() {
+
+        tbody.innerHTML = "";
+        contenedorHidden.innerHTML = "";
+
+        diligencias.forEach((d, index) => {
+
+            const fila = document.createElement("tr");
+
+            fila.innerHTML = `
+                <td>${d.NoExhorto}</td>
+                <td>${d.TipoDiligenciaDesc}</td>
+                <td>${d.Destinatario}</td>
+                <td>${d.FechaAudiencia ?? ""}</td>
+                <td>${d.Otro ?? ""}</td>
+                <td>
+                    <button type="button" class="btn btn-danger btn-sm" onclick="eliminarDiligencia(${index})">
+                        Eliminar
+                    </button>
+                </td>
+            `;
+
+            tbody.appendChild(fila);
+
+            /* INPUTS HIDDEN QUE SE ENVÍAN AL CONTROLLER */
+            contenedorHidden.innerHTML += `
+                <input type="hidden" name="Diligencias[${index}].NoExhorto" value="${d.NoExhorto}" />
+                <input type="hidden" name="Diligencias[${index}].TipoDiligenciaId" value="${d.TipoDiligenciaId}" />
+                <input type="hidden" name="Diligencias[${index}].Destinatario" value="${d.Destinatario}" />
+                <input type="hidden" name="Diligencias[${index}].FechaAudiencia" value="${d.FechaAudiencia}" />
+                <input type="hidden" name="Diligencias[${index}].Otro" value="${d.Otro}" />
+            `;
+        });
+    }
+
+
+    /* LIMPIA LOS CAMPOS DESPUÉS DE AGREGAR UNA DILIGENCIA */
+    function limpiarCampos() {
+
+        tipoDiligencia.value = "";
+        destinatario.value = "";
+        fecha.value = "";
+        otro.value = "";
+
+        bloqueFecha.style.display = "none";
+        bloqueOtro.style.display = "none";
+
+        fecha.required = false;
+        otro.required = false;
+    }
+
+
+    /* ELIMINA UNA DILIGENCIA DE LA TABLA */
+    function eliminarDiligencia(index) {
+
+        diligencias.splice(index, 1);
+
+        renderTabla();
+    }
+
+
+    /* PERMITE ABRIR EL CALENDARIO AL DAR CLICK EN EL ICONO */
+    const iconoCalendarioAudiencia = document.getElementById("iconoCalendarioAudiencia");
+
+    if (iconoCalendarioAudiencia && fecha) {
+
+        iconoCalendarioAudiencia.addEventListener("click", function () {
+
+            if (fecha.showPicker) {
+                fecha.showPicker();
+            } else {
+                fecha.focus();
+                fecha.click();
+            }
+
+        });
+
+    }
+
+</script>

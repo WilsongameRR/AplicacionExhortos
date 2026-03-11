@@ -1,4 +1,5 @@
-﻿using AplicacionExhortos.Models.Exhortos;
+﻿using AplicacionExhortos.Data.Repositories;
+using AplicacionExhortos.Models.Exhortos;
 using Microsoft.AspNetCore.Mvc;
 using MySql.Data.MySqlClient;
 using System.Data;
@@ -8,24 +9,65 @@ namespace AplicacionExhortos.Controllers
     public class ExhortosController : Controller
     {
         private readonly IConfiguration _configuration;
+        private readonly TuaRepository _tuaRepo;
+        private readonly TipoDiligenciaRepository _tipoRepo;
 
-        public ExhortosController(IConfiguration configuration)
+        public ExhortosController(
+            IConfiguration configuration,
+            TuaRepository tuaRepo,
+            TipoDiligenciaRepository tipoRepo)
         {
             _configuration = configuration;
+            _tuaRepo = tuaRepo;
+            _tipoRepo = tipoRepo;
+        }
+
+        [HttpGet]
+        public IActionResult AltaDeExhortos()
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(HttpContext.Session.GetString("UsuarioId")))
+                {
+                    TempData["Error"] = "La sesión expiró. Inicie sesión nuevamente.";
+                    return RedirectToAction("Login", "Login");
+                }
+
+                TempData.Remove("Error");
+
+                CargarCatalogos();
+
+                return View("~/Views/AltaDeExhortos/AltaDeExhortos.cshtml");
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = "Error al cargar los catálogos: " + ex.Message;
+
+                CargarCatalogos();
+
+                return View("~/Views/AltaDeExhortos/AltaDeExhortos.cshtml");
+            }
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult Guardar(AltaExhortoModel model)
         {
             try
             {
-                var tuaOrigen = HttpContext.Session.GetInt32("TUAId");
+                var tuaOrigen = HttpContext.Session.GetInt32("TuaId");
                 var usuarioOrigen = HttpContext.Session.GetString("UsuarioId");
 
                 if (tuaOrigen == null || string.IsNullOrEmpty(usuarioOrigen))
                 {
                     TempData["Error"] = "La sesión expiró. Inicie sesión nuevamente.";
                     return RedirectToAction("Login", "Login");
+                }
+
+                if (!ModelState.IsValid)
+                {
+                    CargarCatalogos();
+                    return View("~/Views/AltaDeExhortos/AltaDeExhortos.cshtml", model);
                 }
 
                 string conexion = _configuration.GetConnectionString("MySqlConnection");
@@ -37,8 +79,6 @@ namespace AplicacionExhortos.Controllers
                     int exhortoIdGenerado = 0;
                     string numeroExhortoGenerado = "";
 
-                    
-                    // GUARDAR EXHORTO
                     using (MySqlCommand cmd = new MySqlCommand("sp_inserta_exhorto", conn))
                     {
                         cmd.CommandType = CommandType.StoredProcedure;
@@ -70,47 +110,25 @@ namespace AplicacionExhortos.Controllers
 
                         exhortoIdGenerado = Convert.ToInt32(cmd.Parameters["pExhortoId"].Value);
                         numeroExhortoGenerado = cmd.Parameters["pExhortoEnviado"].Value?.ToString() ?? "";
+
+                        TempData["NumeroExhorto"] = numeroExhortoGenerado;
+                        TempData["IdExhorto"] = exhortoIdGenerado;
                     }
-
-                    // GUARDAR DILIGENCIA
-                    if (model.TipoDiligenciaId.HasValue)
-                    {
-                        using (MySqlCommand cmdDiligencia = new MySqlCommand("sp_inserta_diligencia", conn))
-                        {
-                            cmdDiligencia.CommandType = CommandType.StoredProcedure;
-
-                            cmdDiligencia.Parameters.AddWithValue("pExhortoId", exhortoIdGenerado);
-                            cmdDiligencia.Parameters.AddWithValue("pTipoDiligenciaId", model.TipoDiligenciaId.Value);
-
-                            if (string.IsNullOrWhiteSpace(model.Otro))
-                                cmdDiligencia.Parameters.AddWithValue("pOtro", DBNull.Value);
-                            else
-                                cmdDiligencia.Parameters.AddWithValue("pOtro", model.Otro);
-
-                            if (string.IsNullOrWhiteSpace(model.Destinatario))
-                                cmdDiligencia.Parameters.AddWithValue("pDestinatario", DBNull.Value);
-                            else
-                                cmdDiligencia.Parameters.AddWithValue("pDestinatario", model.Destinatario);
-
-                            if (model.FechaAudiencia.HasValue)
-                                cmdDiligencia.Parameters.AddWithValue("pFechaAudiencia", model.FechaAudiencia.Value);
-                            else
-                                cmdDiligencia.Parameters.AddWithValue("pFechaAudiencia", DBNull.Value);
-
-                            cmdDiligencia.ExecuteNonQuery();
-                        }
-                    }
-
-                    TempData["NumeroExhorto"] = numeroExhortoGenerado;
                 }
 
-                return RedirectToAction("AltaExhortos");
+                return RedirectToAction("AltaDeExhortos", "Exhortos");
             }
             catch (Exception ex)
             {
                 TempData["Error"] = "Error al guardar: " + ex.Message;
-                return RedirectToAction("AltaExhortos");
+                return RedirectToAction("AltaDeExhortos", "Exhortos");
             }
+        }
+
+        private void CargarCatalogos()
+        {
+            ViewBag.TUAs = _tuaRepo.ObtenerTUAs();
+            ViewBag.TiposDiligencia = _tipoRepo.ObtenerTiposDiligencia();
         }
     }
 }

@@ -21,10 +21,10 @@ namespace AplicacionExhortos.Data.Repositories
             using var cmd = new MySqlCommand("sp_valida_usuario", conn);
             cmd.CommandType = CommandType.StoredProcedure;
 
-            // Entrada
+            // Parámetro de entrada
             cmd.Parameters.AddWithValue("p_usuarioid", usuario);
 
-            // Salidas
+            // Parámetros de salida
             cmd.Parameters.Add("p_password", MySqlDbType.VarChar, 100).Direction = ParameterDirection.Output;
             cmd.Parameters.Add("p_nombre", MySqlDbType.VarChar, 100).Direction = ParameterDirection.Output;
             cmd.Parameters.Add("p_tuaid", MySqlDbType.Int32).Direction = ParameterDirection.Output;
@@ -33,25 +33,17 @@ namespace AplicacionExhortos.Data.Repositories
 
             cmd.ExecuteNonQuery();
 
-            string? passwordHash = cmd.Parameters["p_password"].Value?.ToString();
-            string? nombre = cmd.Parameters["p_nombre"].Value?.ToString();
-            string? mensaje = cmd.Parameters["p_mensaje"].Value?.ToString();
-
-            int tuaId = 0;
-            if (cmd.Parameters["p_tuaid"].Value != DBNull.Value)
-                tuaId = Convert.ToInt32(cmd.Parameters["p_tuaid"].Value);
-
-            int errorNum = 0;
-            if (cmd.Parameters["p_error_num"].Value != DBNull.Value)
-                errorNum = Convert.ToInt32(cmd.Parameters["p_error_num"].Value);
-
             return new ValidaUsuarioResult
             {
-                PasswordHash = passwordHash,
-                Nombre = nombre,
-                TuaId = tuaId,
-                ErrorNum = errorNum,
-                Mensaje = mensaje
+                Password = cmd.Parameters["p_password"].Value?.ToString(),
+                Nombre = cmd.Parameters["p_nombre"].Value?.ToString(),
+                TuaId = cmd.Parameters["p_tuaid"].Value != DBNull.Value
+                    ? Convert.ToInt32(cmd.Parameters["p_tuaid"].Value)
+                    : 0,
+                ErrorNum = cmd.Parameters["p_error_num"].Value != DBNull.Value
+                    ? Convert.ToInt32(cmd.Parameters["p_error_num"].Value)
+                    : 99,
+                Mensaje = cmd.Parameters["p_mensaje"].Value?.ToString()
             };
         }
     }

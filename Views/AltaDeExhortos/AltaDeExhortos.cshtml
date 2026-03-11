@@ -32,256 +32,153 @@
 
                     <a asp-controller="Diligencias"
                        asp-action="AltaDiligencia"
+                       asp-route-idExhorto="@TempData["IdExhorto"]"
                        class="btn btn-tua me-2">
                         Agregar diligencia
                     </a>
 
-                    <a asp-controller="ExhortosEnviados"
-                       asp-action="ExhortosEnviados"
+                    <a asp-controller="ExhortosConsulta"
+                       asp-action="ExhortosConsulta"
                        class="btn btn-secondary">
                         Finalizar
                     </a>
                 </div>
             }
+            else
+            {
+                <form id="formAltaExhortos"
+                      asp-controller="Exhortos"
+                      asp-action="Guardar"
+                      method="post"
+                      class="row g-3 needs-validation"
+                      novalidate>
 
-            <form id="formAltaExhortos"
-                  asp-controller="Exhortos"
-                  asp-action="Guardar"
-                  method="post"
-                  class="row g-3 needs-validation"
-                  novalidate>
+                    @Html.AntiForgeryToken()
 
-                <div class="col-md-4">
-                    <label class="form-label" for="Expediente">Expediente</label>
-                    <input type="text"
-                           class="form-control"
-                           id="Expediente"
-                           name="Expediente"
-                           value="@Model?.Expediente">
-                </div>
+                    <div class="col-md-4">
+                        <label asp-for="Expediente" class="form-label"></label>
+                        <input asp-for="Expediente" class="form-control" required />
+                        <div class="invalid-feedback">Ingrese el expediente.</div>
+                        <span asp-validation-for="Expediente" class="text-danger"></span>
+                    </div>
 
-                <div class="col-md-4">
-                    <label class="form-label" for="NoOficio">No. Oficio</label>
-                    <input type="text"
-                           class="form-control"
-                           id="NoOficio"
-                           name="NoOficio"
-                           value="@Model?.NoOficio">
-                </div>
+                    <div class="col-md-4">
+                        <label asp-for="NoOficio" class="form-label"></label>
+                        <input asp-for="NoOficio" class="form-control" required />
+                        <div class="invalid-feedback">Ingrese el número de oficio.</div>
+                        <span asp-validation-for="NoOficio" class="text-danger"></span>
+                    </div>
 
-                <div class="col-md-4"></div>
+                    <div class="col-md-4"></div>
 
-                <div class="col-md-4">
-                    <label class="form-label" for="Estado">Estado</label>
-                    <input type="text"
-                           class="form-control"
-                           id="Estado"
-                           name="Estado"
-                           value="@Model?.Estado">
-                </div>
+                    <div class="col-md-4">
+                        <label asp-for="Estado" class="form-label"></label>
+                        <input asp-for="Estado" class="form-control" required />
+                        <div class="invalid-feedback">Ingrese el estado.</div>
+                        <span asp-validation-for="Estado" class="text-danger"></span>
+                    </div>
 
-                <div class="col-md-4">
-                    <label class="form-label" for="Municipio">Municipio</label>
-                    <input type="text"
-                           class="form-control"
-                           id="Municipio"
-                           name="Municipio"
-                           value="@Model?.Municipio">
-                </div>
+                    <div class="col-md-4">
+                        <label asp-for="Municipio" class="form-label"></label>
+                        <input asp-for="Municipio" class="form-control" required />
+                        <div class="invalid-feedback">Ingrese el municipio.</div>
+                        <span asp-validation-for="Municipio" class="text-danger"></span>
+                    </div>
 
-                <div class="col-md-4">
-                    <label class="form-label" for="Poblado">Poblado</label>
-                    <input type="text"
-                           class="form-control"
-                           id="Poblado"
-                           name="Poblado"
-                           value="@Model?.Poblado">
-                </div>
+                    <div class="col-md-4">
+                        <label asp-for="Poblado" class="form-label"></label>
+                        <input asp-for="Poblado" class="form-control" required />
+                        <div class="invalid-feedback">Ingrese el poblado.</div>
+                        <span asp-validation-for="Poblado" class="text-danger"></span>
+                    </div>
 
-                <div class="col-md-4">
-                    <label class="form-label" for="TuaExhortado">TUA Exhortado</label>
-                    <select class="form-select"
-                            id="TuaExhortado"
-                            name="TuaExhortado"
-                            required>
-                        <option value="">Seleccione...</option>
+                    <div class="col-md-4">
+                        <label asp-for="TuaExhortado" class="form-label"></label>
+                        <select asp-for="TuaExhortado" class="form-select" required>
+                            <option value="">Seleccione...</option>
 
-                        @if (ViewBag.TUAs != null)
-                        {
-                            @foreach (var tua in ViewBag.TUAs)
+                            @if (ViewBag.TUAs != null)
                             {
-                                if (Model?.TuaExhortado == tua.TUAId)
-                                {
-                                    <option value="@tua.TUAId" selected>@tua.NumTUA</option>
-                                }
-                                else
+                                @foreach (var tua in ViewBag.TUAs)
                                 {
                                     <option value="@tua.TUAId">@tua.NumTUA</option>
                                 }
                             }
-                        }
-                    </select>
-
-                    <div class="invalid-feedback">
-                        Seleccione un TUA Exhortado.
+                        </select>
+                        <div class="invalid-feedback">Seleccione un TUA Exhortado.</div>
+                        <span asp-validation-for="TuaExhortado" class="text-danger"></span>
                     </div>
-                </div>
 
-                <div class="col-md-4">
-                    <label class="form-label" for="fechaGeneral">Fecha</label>
-                    <div class="input-group">
-                        <span class="input-group-text" id="iconoCalendario" style="cursor:pointer;">
-                            <i class="bi bi-calendar-event"></i>
-                        </span>
+                    <div class="col-md-4">
+                        <label asp-for="FechaGeneral" class="form-label"></label>
+                        <div class="input-group">
+                            <span class="input-group-text" id="iconoCalendario" style="cursor:pointer;">
+                                <i class="bi bi-calendar-event"></i>
+                            </span>
 
-                        <input type="date"
-                               class="form-control sin-icono"
-                               id="fechaGeneral"
-                               name="FechaGeneral"
-                               value="@(Model?.FechaGeneral?.ToString("yyyy-MM-dd"))">
+                            <input asp-for="FechaGeneral"
+                                   type="date"
+                                   class="form-control sin-icono" />
+                        </div>
+                        <span asp-validation-for="FechaGeneral" class="text-danger"></span>
                     </div>
-                </div>
 
-                <div class="col-md-4"></div>
+                    <div class="col-md-4"></div>
 
-                <div class="col-12 mt-4">
-                    <h5 class="text-center">DILIGENCIAS</h5>
-                </div>
+                    <div class="col-12 text-center mt-4">
+                        <button type="submit" class="btn btn-tua me-2">
+                            Guardar
+                        </button>
 
-                <div class="col-md-4">
-                    <label class="form-label" for="TipoDiligenciaId">Tipo diligencia</label>
-                    <select class="form-select"
-                            id="TipoDiligenciaId"
-                            name="TipoDiligenciaId">
-                        <option value="">Seleccione...</option>
-
-                        @foreach (var tipo in ViewBag.TiposDiligencia)
-                        {
-                            <option value="@tipo.TipoDiligenciaId">
-                                @tipo.TipoDiligenciaDesc
-                            </option>
-                        }
-                    </select>
-                </div>
-
-                <div class="col-md-4">
-                    <label class="form-label" for="Destinatario">Destinatario</label>
-                    <input type="text"
-                           class="form-control"
-                           id="Destinatario"
-                           name="Destinatario"
-                           maxlength="200">
-                </div>
-
-                <div class="col-md-4" id="bloqueFechaAudiencia" style="display:none;">
-                    <label class="form-label" for="FechaAudiencia">Fecha de Audiencia</label>
-                    <div class="input-group">
-                        <span class="input-group-text" id="iconoCalendarioAudiencia" style="cursor:pointer;">
-                            <i class="bi bi-calendar-event"></i>
-                        </span>
-
-                        <input type="date"
-                               class="form-control sin-icono"
-                               id="FechaAudiencia"
-                               name="FechaAudiencia">
+                        <a asp-controller="ExhortosEnviados"
+                           asp-action="ExhortosEnviados"
+                           class="btn btn-secondary">
+                            Cancelar
+                        </a>
                     </div>
-                </div>
 
-                <div class="col-md-4" id="bloqueOtro" style="display:none;">
-                    <label class="form-label" for="Otro">Otro</label>
-                    <input type="text"
-                           class="form-control"
-                           id="Otro"
-                           name="Otro"
-                           maxlength="80">
-                </div>
-
-                <div class="col-12 text-center mt-4">
-                    <button type="submit" class="btn btn-tua me-2">
-                        Guardar
-                    </button>
-
-                    <a asp-controller="ExhortosEnviados"
-                       asp-action="ExhortosEnviados"
-                       class="btn btn-secondary">
-                        Cancelar
-                    </a>
-                </div>
-
-            </form>
+                </form>
+            }
 
         </div>
     </div>
 </div>
 
-<script>
-    (() => {
-        'use strict';
-        const form = document.getElementById('formAltaExhortos');
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
 
-        form.addEventListener('submit', function (event) {
-            if (!form.checkValidity()) {
-                event.preventDefault();
-                event.stopPropagation();
+    <script>
+        (() => {
+            'use strict';
+
+            const form = document.getElementById('formAltaExhortos');
+
+            if (form) {
+                form.addEventListener('submit', function (event) {
+                    if (!form.checkValidity()) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+
+                    form.classList.add('was-validated');
+                });
             }
+        })();
+    </script>
 
-            form.classList.add('was-validated');
-        });
-    })();
-</script>
+    <script>
+        const iconoCalendario = document.getElementById("iconoCalendario");
+        const fechaGeneral = document.getElementById("FechaGeneral");
 
-<script>
-    const iconoCalendario = document.getElementById("iconoCalendario");
-    const fechaGeneral = document.getElementById("fechaGeneral");
-
-    if (iconoCalendario && fechaGeneral) {
-        iconoCalendario.addEventListener("click", function () {
-            if (fechaGeneral.showPicker) {
-                fechaGeneral.showPicker();
-            } else {
-                fechaGeneral.focus();
-                fechaGeneral.click();
-            }
-        });
-    }
-
-    const iconoCalendarioAudiencia = document.getElementById("iconoCalendarioAudiencia");
-    const fechaAudiencia = document.getElementById("FechaAudiencia");
-
-    if (iconoCalendarioAudiencia && fechaAudiencia) {
-        iconoCalendarioAudiencia.addEventListener("click", function () {
-            if (fechaAudiencia.showPicker) {
-                fechaAudiencia.showPicker();
-            } else {
-                fechaAudiencia.focus();
-                fechaAudiencia.click();
-            }
-        });
-    }
-</script>
-
-<script>
-    const tipoDiligencia = document.getElementById("TipoDiligenciaId");
-    const bloqueFechaAudiencia = document.getElementById("bloqueFechaAudiencia");
-    const bloqueOtro = document.getElementById("bloqueOtro");
-    const campoFechaAudiencia = document.getElementById("FechaAudiencia");
-    const campoOtro = document.getElementById("Otro");
-
-    tipoDiligencia.addEventListener("change", function () {
-        const textoSeleccionado = this.options[this.selectedIndex].text.trim().toUpperCase();
-
-        if (textoSeleccionado === "CITAR" || textoSeleccionado === "EMPLAZAR") {
-            bloqueFechaAudiencia.style.display = "block";
-        } else {
-            bloqueFechaAudiencia.style.display = "none";
-            campoFechaAudiencia.value = "";
+        if (iconoCalendario && fechaGeneral) {
+            iconoCalendario.addEventListener("click", function () {
+                if (fechaGeneral.showPicker) {
+                    fechaGeneral.showPicker();
+                } else {
+                    fechaGeneral.focus();
+                    fechaGeneral.click();
+                }
+            });
         }
-
-        if (textoSeleccionado === "OTRA") {
-            bloqueOtro.style.display = "block";
-        } else {
-            bloqueOtro.style.display = "none";
-            campoOtro.value = "";
-        }
-    });
-</script>
+    </script>
+}

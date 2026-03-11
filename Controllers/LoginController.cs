@@ -1,91 +1,72 @@
 ﻿using AplicacionExhortos.Data.Repositories;
 using AplicacionExhortos.Models.Login;
-using AplicacionExhortos.Utilities;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AplicacionExhortos.Controllers
 {
     public class LoginController : Controller
     {
-        private readonly LoginRepository _repo;
+        private readonly LoginRepository _loginRepository;
 
-        public LoginController(LoginRepository repo)
+        public LoginController(LoginRepository loginRepository)
         {
-            _repo = repo;
+            _loginRepository = loginRepository;
         }
 
         [HttpGet]
         public IActionResult Login()
         {
-            return View();
+            return View("~/Views/Login/Login.cshtml");
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult Login(LoginModel model)
         {
+            const string mensajeError = "Usuario o contraseña incorrectos.";
+
+            if (!ModelState.IsValid)
+                return View("~/Views/Login/Login.cshtml", model);
+
             try
             {
-                if (!ModelState.IsValid)
-                    return View(model);
-
-                // Quitar dominio si el usuario escribe correo
-                if (!string.IsNullOrEmpty(model.Usuario) && model.Usuario.Contains("@"))
+                if (string.IsNullOrWhiteSpace(model.Usuario) ||
+                    !model.Usuario.EndsWith("@tribunalesagrarios.gob.mx", StringComparison.OrdinalIgnoreCase))
                 {
-                    string[] aux = model.Usuario.Split('@');
-                    model.Usuario = aux[0];
+                    ModelState.AddModelError("Usuario", "Debe ingresar su correo institucional.");
+                    return View("~/Views/Login/Login.cshtml", model);
                 }
 
-                // Validar usuario con stored procedure
-                var result = _repo.ValidaUsuario(model.Usuario);
+                string usuarioId = model.Usuario.Split('@')[0];
 
-                // Códigos de resultado del SP
-                if (result.ErrorNum == 1)
+                var resultado = _loginRepository.ValidaUsuario(usuarioId);
+
+                if (resultado == null || resultado.ErrorNum != 0)
                 {
-                    ModelState.AddModelError("", "El usuario ingresado no existe.");
-                    return View(model);
+                    ModelState.AddModelError("", mensajeError);
+                    return View("~/Views/Login/Login.cshtml", model);
                 }
 
-                if (result.ErrorNum == 2)
+                if (string.IsNullOrEmpty(resultado.Password) ||
+                    !BCrypt.Net.BCrypt.Verify(model.Password, resultado.Password))
                 {
-                    ModelState.AddModelError("", "El usuario ingresado está inactivo.");
-                    return View(model);
+                    ModelState.AddModelError("", mensajeError);
+                    return View("~/Views/Login/Login.cshtml", model);
                 }
 
-                if (result.ErrorNum == 99)
-                {
-                    ModelState.AddModelError("", "Error inesperado en la base de datos.");
-                    return View(model);
-                }
+                HttpContext.Session.SetString("Usuario", resultado.Nombre ?? usuarioId);
+                HttpContext.Session.SetString("UsuarioId", usuarioId);
+                HttpContext.Session.SetString("Correo", model.Usuario);
+                HttpContext.Session.SetInt32("TuaId", resultado.TuaId);
 
-                // Si no regresó password hash
-                if (string.IsNullOrEmpty(result.PasswordHash))
-                {
-                    ModelState.AddModelError("", "No se pudo validar el usuario.");
-                    return View(model);
-                }
+                TempData.Remove("Error");
 
-                // Validar contraseña con BCrypt
-                var encripta = new Encripta();
-                bool ok = encripta.VerificarPassword(model.Password, result.PasswordHash);
-
-                if (!ok)
-                {
-                    ModelState.AddModelError("", "Usuario o contraseña incorrectos.");
-                    return View(model);
-                }
-
-                // Guardar datos en sesión
-                HttpContext.Session.SetString("UsuarioId", model.Usuario);
-                HttpContext.Session.SetString("UsuarioNombre", result.Nombre ?? "");
-                HttpContext.Session.SetInt32("TUAId", result.TuaId);
-
-                // Login correcto
-                return RedirectToAction("ExhortosEnviados", "ExhortosEnviados");
+                return RedirectToAction("AltaDeExhortos", "Exhortos");
             }
-            catch (Exception)
+            catch
             {
-                ModelState.AddModelError("", "Ocurrió un error inesperado al iniciar sesión.");
-                return View(model);
+                ModelState.AddModelError("", mensajeError);
+                return View("~/Views/Login/Login.cshtml", model);
             }
         }
 

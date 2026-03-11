@@ -11,6 +11,9 @@ builder.Services.AddSingleton<BDConnection>();
 builder.Services.AddScoped<LoginRepository>();
 builder.Services.AddScoped<TuaRepository>();
 builder.Services.AddScoped<TipoDiligenciaRepository>();
+builder.Services.AddScoped<DiligenciasRepository>();
+builder.Services.AddScoped<ConsultaExhortoRepository>();
+
 
 // SESSION
 builder.Services.AddDistributedMemoryCache();
