@@ -13,6 +13,20 @@
                 <h2>ALTA DE DILIGENCIAS</h2>
             </div>
 
+            @if (TempData["MensajeDiligencias"] != null)
+            {
+                <div class="alert alert-success text-center">
+                    @TempData["MensajeDiligencias"]
+                </div>
+            }
+
+            @if (TempData["ErrorDiligencias"] != null)
+            {
+                <div class="alert alert-danger text-center">
+                    @TempData["ErrorDiligencias"]
+                </div>
+            }
+
             <form id="formDiligencias"
                   method="post"
                   asp-controller="Diligencias"
@@ -145,11 +159,15 @@
                         Guardar diligencias
                     </button>
 
-                    <a asp-controller="ExhortosEnviados"
-                       asp-action="ExhortosEnviados"
-                       class="btn btn-secondary">
+                    <button type="reset" class="btn btn-secondary">
                         Cancelar
-                    </a>
+                    </button>
+                </div>
+
+                <div class="col-12 text-center mt-2">
+                    <small class="text-muted">
+                        Los campos marcados con <span class="text-danger">*</span> son obligatorios.
+                    </small>
                 </div>
 
             </form>
@@ -218,6 +236,7 @@
         }
 
         function limpiarCampos() {
+            noExhorto.value = "";
             tipoDiligencia.value = "";
             destinatario.value = "";
             fecha.value = "";
@@ -230,6 +249,14 @@
             otro.required = false;
 
             limpiarValidacionesCaptura();
+        }
+
+        function limpiarTodoFormulario() {
+            diligencias = [];
+            tbody.innerHTML = "";
+            contenedorHidden.innerHTML = "";
+            mensajeDiligencias.classList.add("d-none");
+            limpiarCampos();
         }
 
         tipoDiligencia.addEventListener("change", function () {
@@ -286,7 +313,7 @@
                 formularioValido = false;
             }
 
-            if ((tipoTexto === "CITAR" || tipoTexto === "EMPLAZAR")) {
+            if (tipoTexto === "CITAR" || tipoTexto === "EMPLAZAR") {
                 if (fechaValor === "") {
                     fecha.classList.add("is-invalid");
                     formularioValido = false;
@@ -375,6 +402,12 @@
             }
 
             mensajeDiligencias.classList.add("d-none");
+        });
+
+        formDiligencias.addEventListener("reset", function () {
+            setTimeout(() => {
+                limpiarTodoFormulario();
+            }, 0);
         });
 
         window.eliminarDiligencia = eliminarDiligencia;

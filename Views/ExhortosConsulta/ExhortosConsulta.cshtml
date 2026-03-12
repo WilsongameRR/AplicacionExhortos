@@ -12,7 +12,28 @@
                 <h2>SEGUIMIENTO</h2>
             </div>
 
-            <!-- BUSCADOR -->
+           @* FILTROS No Exhorto *@
+            @* <div class="row mb-3 align-items-end">
+                <div class="col-md-4">
+                    <label class="form-label">No. Exhorto:</label>
+                    <input type="text" id="txtNoExhorto" class="form-control">
+                </div> *@
+
+               @*  Filtro Expediente *@
+                @* <div class="col-md-4">
+                    <label class="form-label">Expediente:</label>
+                    <input type="text" id="txtExpediente" class="form-control">
+                </div> *@
+
+              @*   Boton Buscar *@
+               @*  <div class="col-md-2">
+                    <button type="button" id="btnFiltro" class="btn btn-primary w-100">
+                        Buscar
+                    </button>
+                </div>
+            </div *@>
+
+            <!-- BUSCADOR GENERAL  -->
             <div class="row mb-3">
                 <div class="col-md-4">
                     <input class="form-control" id="btnBuscar" type="text" placeholder="Buscar...">
@@ -45,8 +66,8 @@
                             <td>@item.Estado</td>
                             <td>@item.Municipio</td>
                             <td>@item.tuaDestino</td>
-                            <td>@item.FechaAcuerdo</td>
-                            <td>@item.FechaEnvio</td>
+                            <td>@item.FechaAcuerdo?.Split(' ')[0]</td>
+                            <td>@item.FechaEnvio?.Split(' ')[0]</td>
                             <td>@item.Estatus</td>
                         </tr>
                     }
@@ -72,6 +93,7 @@
                 }
             });
 
+            // BUSCADOR GENERAL
             $('#btnBuscar').on('keyup', function () {
                 tabla.search(this.value).draw();
             });

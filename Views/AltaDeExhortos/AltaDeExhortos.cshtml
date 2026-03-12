@@ -71,20 +71,32 @@
 
                     <div class="col-md-4">
                         <label class="form-label">* Estado</label>
-                        <input asp-for="Estado" class="form-control text-uppercase" required />
-                        <div class="invalid-feedback">Ingrese el estado.</div>
+                        <input asp-for="Estado"
+                               class="form-control text-uppercase"
+                               required
+                               pattern="^[A-Za-zÁÉÍÓÚÜÑáéíóúüñ\s]+$"
+                               title="Solo se permiten letras" />
+                        <div class="invalid-feedback">Ingrese solo letras.</div>
                     </div>
 
                     <div class="col-md-4">
                         <label class="form-label">* Municipio</label>
-                        <input asp-for="Municipio" class="form-control text-uppercase" required />
-                        <div class="invalid-feedback">Ingrese el municipio.</div>
+                        <input asp-for="Municipio"
+                               class="form-control text-uppercase"
+                               required
+                               pattern="^[A-Za-zÁÉÍÓÚÜÑáéíóúüñ\s]+$"
+                               title="Solo se permiten letras" />
+                        <div class="invalid-feedback">Ingrese solo letras.</div>
                     </div>
 
                     <div class="col-md-4">
                         <label class="form-label">* Poblado</label>
-                        <input asp-for="Poblado" class="form-control text-uppercase" required />
-                        <div class="invalid-feedback">Ingrese el poblado.</div>
+                        <input asp-for="Poblado"
+                               class="form-control text-uppercase"
+                               required
+                               pattern="^[A-Za-zÁÉÍÓÚÜÑáéíóúüñ\s]+$"
+                               title="Solo se permiten letras" />
+                        <div class="invalid-feedback">Ingrese solo letras.</div>
                     </div>
 
                     <div class="col-md-4">
@@ -130,11 +142,15 @@
                             Guardar
                         </button>
 
-                        <a asp-controller="ExhortosEnviados"
-                           asp-action="ExhortosEnviados"
-                           class="btn btn-secondary">
+                        <button type="reset" class="btn btn-secondary">
                             Cancelar
-                        </a>
+                        </button>
+                    </div>
+
+                    <div class="col-12 text-center mt-2">
+                        <small class="text-muted">
+                            Los campos marcados con <span class="text-danger">*</span> son obligatorios.
+                        </small>
                     </div>
 
                 </form>
@@ -145,6 +161,7 @@
 </div>
 
 @section Scripts {
+
     <partial name="_ValidationScriptsPartial" />
 
     <script>
@@ -156,7 +173,6 @@
             Array.from(forms).forEach(form => {
                 form.addEventListener('submit', event => {
 
-                    // Convertir a MAYÚSCULAS antes de enviar
                     const inputs = form.querySelectorAll("input[type='text']");
                     inputs.forEach(input => {
                         input.value = input.value.toUpperCase();
@@ -189,4 +205,27 @@
             });
         }
     </script>
+
+    <script>
+        const formAltaExhortos = document.getElementById("formAltaExhortos");
+
+        if (formAltaExhortos) {
+            formAltaExhortos.addEventListener("reset", function () {
+
+                setTimeout(() => {
+
+                    formAltaExhortos.classList.remove("was-validated");
+
+                    const camposInvalidos = formAltaExhortos.querySelectorAll(".is-invalid");
+
+                    camposInvalidos.forEach(campo => {
+                        campo.classList.remove("is-invalid");
+                    });
+
+                }, 0);
+
+            });
+        }
+    </script>
+
 }

@@ -36,6 +36,7 @@ namespace AplicacionExhortos.Data.Repositories
                         NoExpediente = reader["NoExpediente"].ToString(),
                         NoOficio = reader["NoOficio"].ToString(),
                         Estado = reader["Estado"].ToString(),
+                        Municipio = reader["Municipio"].ToString(),
                         Poblado = reader["Poblado"].ToString(),
                         idDestino =reader["idDestino"].ToString(),
                         tuaDestino = reader["tuaDestino"].ToString(),
