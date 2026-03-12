@@ -19,14 +19,16 @@ namespace AplicacionExhortos.Controllers
 
         public IActionResult ExhortosConsulta()
         {
-            string? usuarioId=null;
+            string? usuarioId = HttpContext.Session.GetString("UsuarioId");
 
-            List<consultaExhortos> consultaExhortos=null;
-            usuarioId = HttpContext.Session.GetString("UsuarioId");
-            consultaExhortos= _consultaExhortoRepository.ConsultaExhorto(usuarioId);
-            return View(consultaExhortos);
+            List<consultaExhortos> listaExhortos = _consultaExhortoRepository.ConsultaExhorto(usuarioId);
 
+            return View(listaExhortos);
+        }
 
+        public IActionResult DetalleExhorto(int id)
+        {
+            return View();
         }
     }
 }

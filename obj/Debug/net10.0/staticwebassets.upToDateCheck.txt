@@ -2,6 +2,7 @@ wwwroot\css\site.css
 wwwroot\favicon.ico
 wwwroot\Images\FondoTSA.png
 wwwroot\Images\Icons\calendar-event.svg
+wwwroot\Images\Icons\eye-fill.svg
 wwwroot\Images\Icons\person-walking.svg
 wwwroot\Images\ImagenTSA.jpg
 wwwroot\Images\LogoTUA.png
@@ -130,3 +131,4 @@ C:\Users\rperezr_ss\Documents\AplicacionExhortos\wwwroot\lib\jquery\dist\jquery.
 C:\Users\rperezr_ss\Documents\AplicacionExhortos\wwwroot\lib\jquery\dist\jquery.slim.min.js
 C:\Users\rperezr_ss\Documents\AplicacionExhortos\wwwroot\lib\jquery\dist\jquery.slim.min.map
 C:\Users\rperezr_ss\Documents\AplicacionExhortos\wwwroot\favicon.ico
+C:\Users\rperezr_ss\Documents\AplicacionExhortos\wwwroot\Images\Icons\eye-fill.svg
