@@ -8,13 +8,16 @@ namespace AplicacionExhortos.Controllers
     {
         private readonly IConfiguration _configuration;
         private readonly ConsultaExhortoRepository _consultaExhortoRepository;
+        private readonly DiligenciasRepository _diligenciasRepository;
 
         public ExhortosConsultaController(
             IConfiguration configuration,
-            ConsultaExhortoRepository consultaExhortoRepository)
+            ConsultaExhortoRepository consultaExhortoRepository,
+            DiligenciasRepository diligenciasRepository)
         {
             _configuration = configuration;
             _consultaExhortoRepository = consultaExhortoRepository;
+            _diligenciasRepository = diligenciasRepository;
         }
 
         public IActionResult ExhortosConsulta()
@@ -52,10 +55,12 @@ namespace AplicacionExhortos.Controllers
                 return RedirectToAction("ExhortosConsulta");
             }
 
+            var diligencias = _diligenciasRepository.ObtenerDiligencias(id);
+
             var model = new DetalleExhortoModel
             {
                 Exhorto = exhorto,
-                Diligencias = new List<DiligenciaModel>()
+                Diligencias = diligencias
             };
 
             return View(model);
