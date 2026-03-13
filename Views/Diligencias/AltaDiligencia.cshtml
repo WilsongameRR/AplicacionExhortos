@@ -18,7 +18,6 @@
                 </small>
             </div>
 
-
             @if (TempData["MensajeDiligencias"] != null)
             {
                 <div class="alert alert-success text-center">
@@ -38,6 +37,9 @@
                   asp-controller="Diligencias"
                   asp-action="GuardarDiligencias"
                   novalidate>
+
+                <!-- Hidden principal para asegurar que NoExhorto viaje en el POST -->
+                <input type="hidden" asp-for="NoExhorto" id="NoExhortoHidden" />
 
                 <div class="row g-3">
 
@@ -76,7 +78,7 @@
                             <span class="required">*</span> Destinatario
                         </label>
                         <input type="text"
-                               asp-for="Destinatario"
+                               name="Destinatario"
                                class="form-control text-uppercase"
                                id="Destinatario"
                                maxlength="200" />
@@ -154,6 +156,7 @@
                     </div>
                 </div>
 
+                <!-- Aquí se generan los hidden inputs de la tabla -->
                 <div id="contenedorHiddenDiligencias"></div>
 
                 <div id="mensajeDiligencias" class="text-danger text-center mt-2 d-none">
@@ -170,8 +173,6 @@
                     </button>
                 </div>
 
-               
-
             </form>
 
         </div>
@@ -183,6 +184,7 @@
         const formDiligencias = document.getElementById("formDiligencias");
         const tipoDiligencia = document.getElementById("TipoDiligenciaId");
         const noExhorto = document.getElementById("NoExhorto");
+        const noExhortoHidden = document.getElementById("NoExhortoHidden");
         const destinatario = document.getElementById("Destinatario");
         const bloqueFecha = document.getElementById("bloqueFechaAudiencia");
         const bloqueOtro = document.getElementById("bloqueOtro");
@@ -196,7 +198,16 @@
         let diligencias = [];
 
         function convertirMayusculas(texto) {
-            return texto.trim().toUpperCase();
+            return (texto || "").trim().toUpperCase();
+        }
+
+        function escaparHtml(texto) {
+            return (texto || "")
+                .replaceAll("&", "&amp;")
+                .replaceAll("<", "&lt;")
+                .replaceAll(">", "&gt;")
+                .replaceAll('"', "&quot;")
+                .replaceAll("'", "&#39;");
         }
 
         function obtenerFechaHoy() {
@@ -238,7 +249,7 @@
         }
 
         function limpiarCampos() {
-            noExhorto.value = "";
+            // IMPORTANTE: no borrar NoExhorto
             tipoDiligencia.value = "";
             destinatario.value = "";
             fecha.value = "";
@@ -258,7 +269,22 @@
             tbody.innerHTML = "";
             contenedorHidden.innerHTML = "";
             mensajeDiligencias.classList.add("d-none");
-            limpiarCampos();
+
+            noExhorto.value = "";
+            noExhortoHidden.value = "";
+
+            tipoDiligencia.value = "";
+            destinatario.value = "";
+            fecha.value = "";
+            otro.value = "";
+
+            bloqueFecha.classList.add("d-none");
+            bloqueOtro.classList.add("d-none");
+
+            fecha.required = false;
+            otro.required = false;
+
+            limpiarValidacionesCaptura();
         }
 
         tipoDiligencia.addEventListener("change", function () {
@@ -295,6 +321,7 @@
             const otroValor = convertirMayusculas(otro.value);
 
             noExhorto.value = noExhortoValor;
+            noExhortoHidden.value = noExhortoValor;
             destinatario.value = destinatarioValor;
             otro.value = otroValor;
 
@@ -354,15 +381,20 @@
             tbody.innerHTML = "";
             contenedorHidden.innerHTML = "";
 
+            // Mantener sincronizado el exhorto principal
+            if (diligencias.length > 0) {
+                noExhortoHidden.value = diligencias[0].NoExhorto;
+            }
+
             diligencias.forEach((d, index) => {
                 const fila = document.createElement("tr");
 
                 fila.innerHTML = `
-                    <td>${d.NoExhorto}</td>
-                    <td>${d.TipoDiligenciaDesc}</td>
-                    <td>${d.Destinatario}</td>
-                    <td>${d.FechaAudiencia ?? ""}</td>
-                    <td>${d.Otro ?? ""}</td>
+                    <td>${escaparHtml(d.NoExhorto)}</td>
+                    <td>${escaparHtml(d.TipoDiligenciaDesc)}</td>
+                    <td>${escaparHtml(d.Destinatario)}</td>
+                    <td>${escaparHtml(d.FechaAudiencia || "")}</td>
+                    <td>${escaparHtml(d.Otro || "")}</td>
                     <td>
                         <button type="button" class="btn btn-danger btn-sm" onclick="eliminarDiligencia(${index})">
                             Eliminar
@@ -373,11 +405,12 @@
                 tbody.appendChild(fila);
 
                 contenedorHidden.innerHTML += `
-                    <input type="hidden" name="Diligencias[${index}].NoExhorto" value="${d.NoExhorto}" />
-                    <input type="hidden" name="Diligencias[${index}].TipoDiligenciaId" value="${d.TipoDiligenciaId}" />
-                    <input type="hidden" name="Diligencias[${index}].Destinatario" value="${d.Destinatario}" />
-                    <input type="hidden" name="Diligencias[${index}].FechaAudiencia" value="${d.FechaAudiencia}" />
-                    <input type="hidden" name="Diligencias[${index}].Otro" value="${d.Otro}" />
+                    <input type="hidden" name="Diligencias[${index}].NoExhorto" value="${escaparHtml(d.NoExhorto)}" />
+                    <input type="hidden" name="Diligencias[${index}].TipoDiligenciaId" value="${escaparHtml(d.TipoDiligenciaId)}" />
+                    <input type="hidden" name="Diligencias[${index}].TipoDiligenciaDesc" value="${escaparHtml(d.TipoDiligenciaDesc)}" />
+                    <input type="hidden" name="Diligencias[${index}].Destinatario" value="${escaparHtml(d.Destinatario)}" />
+                    <input type="hidden" name="Diligencias[${index}].FechaAudiencia" value="${escaparHtml(d.FechaAudiencia || "")}" />
+                    <input type="hidden" name="Diligencias[${index}].Otro" value="${escaparHtml(d.Otro || "")}" />
                 `;
             });
         }
@@ -388,6 +421,7 @@
 
             if (diligencias.length === 0) {
                 mensajeDiligencias.classList.remove("d-none");
+                noExhortoHidden.value = "";
             }
         }
 
@@ -402,6 +436,13 @@
                 mensajeDiligencias.classList.remove("d-none");
                 return;
             }
+
+            const noExhortoValor = diligencias.length > 0
+                ? diligencias[0].NoExhorto
+                : convertirMayusculas(noExhorto.value);
+
+            noExhorto.value = noExhortoValor;
+            noExhortoHidden.value = noExhortoValor;
 
             mensajeDiligencias.classList.add("d-none");
         });

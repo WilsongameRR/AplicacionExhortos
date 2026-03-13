@@ -6,53 +6,51 @@ namespace AplicacionExhortos.Controllers
 {
     public class DiligenciasController : Controller
     {
-        private readonly TipoDiligenciaRepository _tipoDiligenciaRepository;
         private readonly DiligenciasRepository _diligenciasRepository;
 
-        public DiligenciasController(
-            TipoDiligenciaRepository tipoDiligenciaRepository,
-            DiligenciasRepository diligenciasRepository)
+        public DiligenciasController(DiligenciasRepository diligenciasRepository)
         {
-            _tipoDiligenciaRepository = tipoDiligenciaRepository;
             _diligenciasRepository = diligenciasRepository;
         }
 
         [HttpGet]
-        public IActionResult AltaDiligencia(int idExhorto)
+        public IActionResult AltaDiligencia()
         {
-            ViewBag.TiposDiligencia = _tipoDiligenciaRepository.ObtenerTiposDiligencia();
-            ViewBag.IdExhorto = idExhorto;
-            return View();
+            return View(new AltaDiligenciasModel());
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult GuardarDiligencias(AltaDiligenciasModel model)
         {
-            try
+            if (string.IsNullOrEmpty(model.NoExhorto))
             {
-                if (model.Diligencias == null || !model.Diligencias.Any())
-                {
-                    TempData["ErrorDiligencias"] = "Debe agregar al menos una diligencia.";
-                    ViewBag.TiposDiligencia = _tipoDiligenciaRepository.ObtenerTiposDiligencia();
-                    ViewBag.IdExhorto = model.NoExhorto;
-                    return View("AltaDiligencia", model);
-                }
-
-                ReponseBd reponseBd = _diligenciasRepository.GuardarDiligencias(model);
-
-                TempData["MensajeDiligencias"] = "Diligencias guardadas correctamente.";
-                ViewBag.TiposDiligencia = _tipoDiligenciaRepository.ObtenerTiposDiligencia();
-                ViewBag.IdExhorto = model.NoExhorto;
-
+                TempData["ErrorDiligencias"] = "Debe capturar el número de exhorto.";
                 return View("AltaDiligencia", model);
             }
-            catch (Exception ex)
+
+            if (model.Diligencias == null || !model.Diligencias.Any())
             {
-                TempData["ErrorDiligencias"] = "Error al guardar las diligencias: " + ex.Message;
-                ViewBag.TiposDiligencia = _tipoDiligenciaRepository.ObtenerTiposDiligencia();
-                ViewBag.IdExhorto = model.NoExhorto;
+                TempData["ErrorDiligencias"] = "Debe agregar al menos una diligencia.";
                 return View("AltaDiligencia", model);
             }
+
+            ResponseBd respuesta = _diligenciasRepository.GuardarDiligencias(model);
+
+            if (respuesta.NoError == 1)
+            {
+                TempData["ErrorDiligencias"] = "El número de exhorto no existe.";
+                return View("AltaDiligencia", model);
+            }
+
+            if (respuesta.NoError == 99)
+            {
+                TempData["ErrorDiligencias"] = "Error inesperado en la base de datos.";
+                return View("AltaDiligencia", model);
+            }
+
+            TempData["ExitoDiligencias"] = "Diligencias guardadas correctamente.";
+            return RedirectToAction("AltaDiligencia");
         }
     }
 }

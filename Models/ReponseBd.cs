@@ -1,6 +1,6 @@
 ﻿namespace AplicacionExhortos.Models
 {
-    public class ReponseBd
+    public class ResponseBd
     {
         public int NoError { get; set; }
 

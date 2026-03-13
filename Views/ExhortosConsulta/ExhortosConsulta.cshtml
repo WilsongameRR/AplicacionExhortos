@@ -12,35 +12,12 @@
                 <h2>CONSULTA DE EXHORTOS</h2>
             </div>
 
-           @* FILTROS No Exhorto *@
-            @* <div class="row mb-3 align-items-end">
-                <div class="col-md-4">
-                    <label class="form-label">No. Exhorto:</label>
-                    <input type="text" id="txtNoExhorto" class="form-control">
-                </div> *@
-
-               @*  Filtro Expediente *@
-                @* <div class="col-md-4">
-                    <label class="form-label">Expediente:</label>
-                    <input type="text" id="txtExpediente" class="form-control">
-                </div> *@
-
-              @*   Boton Buscar *@
-               @*  <div class="col-md-2">
-                    <button type="button" id="btnFiltro" class="btn btn-primary w-100">
-                        Buscar
-                    </button>
-                </div>
-            </div *@>
-
-            <!-- BUSCADOR GENERAL  -->
             <div class="row mb-3">
                 <div class="col-md-4">
                     <input class="form-control" id="btnBuscar" type="text" placeholder="Buscar...">
                 </div>
             </div>
 
-            <!-- TABLA -->
             <table id="tablaSeguimiento" class="table table-striped table-hover">
                 <thead>
                     <tr>
@@ -61,51 +38,47 @@
                     {
                         <tr>
                             <td class="text-center">
-                                <a href="/Exhortos/Detalle/@item.ExhortoId">
+                                <a asp-controller="ExhortosConsulta"
+                                       asp-action="DetalleExhorto"
+                                       asp-route-id="@item.ExhortoId"
+                                       title="Ver detalle">
                                     <img src="~/images/Icons/eye-fill.svg" width="20" alt="Ver">
                                     </a>
                                 </td>
 
-                            <td style="display:none;">@item.ExhortoId</td>
-                            <td>@item.NoExhortoEnviado</td>
-                            <td>@item.NoExpediente</td>
-                            <td>@item.Estado</td>
-                            <td>@item.Municipio</td>
-                            <td>@item.tuaDestino</td>
-                            <td>@item.FechaAcuerdo?.Split(' ')[0]</td>
-                            <td>@item.FechaEnvio?.Split(' ')[0]</td>
-                            <td>@item.Estatus</td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
+                                <td style="display:none;">@item.ExhortoId</td>
+                                <td>@item.NoExhortoEnviado</td>
+                                <td>@item.NoExpediente</td>
+                                <td>@item.Estado</td>
+                                <td>@item.Municipio</td>
+                                <td>@item.tuaDestino</td>
+                                <td>@item.FechaAcuerdo?.Split(' ')[0]</td>
+                                <td>@item.FechaEnvio?.Split(' ')[0]</td>
+                                <td>@item.Estatus</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
 
+            </div>
         </div>
     </div>
-</div>
 
-@section Scripts {
+    @section Scripts {
+        <script>
+            $(document).ready(function () {
+                var tabla = $('#tablaSeguimiento').DataTable({
+                    pageLength: 10,
+                    lengthChange: false,
+                    dom: 'rtip',
+                    language: {
+                        url: '//cdn.datatables.net/plug-ins/1.13.8/i18n/es-ES.json'
+                    }
+                });
 
-    <script>
-
-        $(document).ready(function () {
-
-            var tabla = $('#tablaSeguimiento').DataTable({
-                pageLength: 10,
-                lengthChange: false,
-                dom: 'rtip',
-                language: {
-                    url: '//cdn.datatables.net/plug-ins/1.13.8/i18n/es-ES.json'
-                }
+                $('#btnBuscar').on('keyup', function () {
+                    tabla.search(this.value).draw();
+                });
             });
-
-            // BUSCADOR GENERAL
-            $('#btnBuscar').on('keyup', function () {
-                tabla.search(this.value).draw();
-            });
-
-        });
-
-    </script>
-
-}
+        </script>
+    }

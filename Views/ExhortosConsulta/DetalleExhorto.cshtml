@@ -1,4 +1,6 @@
-﻿@{
+﻿@model AplicacionExhortos.Models.DetalleExhortoModel
+
+@{
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -10,74 +12,116 @@
                 <h2>DETALLE DEL EXHORTO</h2>
             </div>
 
-            <div class="card">
+            <div class="card shadow-sm">
                 <div class="card-body">
 
                     <h5 class="mb-4">
                         No. Exhorto Enviado:
+                        <span class="fw-bold">@Model.Exhorto.NoExhortoEnviado</span>
                     </h5>
 
                     <div class="row mb-3">
                         <div class="col-md-4">
-                            <label class="form-label">Expediente</label>
+                            <label class="form-label fw-bold">Expediente</label>
+                            <div class="form-control bg-light">
+                                @Model.Exhorto.NoExpediente
+                            </div>
                         </div>
 
                         <div class="col-md-4">
-                            <label class="form-label">Oficio</label>
+                            <label class="form-label fw-bold">Oficio</label>
+                            <div class="form-control bg-light">
+                                @Model.Exhorto.NoOficio
+                            </div>
                         </div>
 
                         <div class="col-md-4">
-                            <label class="form-label">Estatus</label>
+                            <label class="form-label fw-bold">Estatus</label>
+                            <div class="form-control bg-light">
+                                @Model.Exhorto.Estatus
+                            </div>
                         </div>
                     </div>
 
                     <div class="row mb-3">
                         <div class="col-md-4">
-                            <label class="form-label">Estado</label>
+                            <label class="form-label fw-bold">Estado</label>
+                            <div class="form-control bg-light">
+                                @Model.Exhorto.Estado
+                            </div>
                         </div>
 
                         <div class="col-md-4">
-                            <label class="form-label">Municipio</label>
+                            <label class="form-label fw-bold">Municipio</label>
+                            <div class="form-control bg-light">
+                                @Model.Exhorto.Municipio
+                            </div>
                         </div>
 
                         <div class="col-md-4">
-                            <label class="form-label">Poblado</label>
+                            <label class="form-label fw-bold">Poblado</label>
+                            <div class="form-control bg-light">
+                                @Model.Exhorto.Poblado
+                            </div>
                         </div>
                     </div>
 
                     <div class="row mb-4">
                         <div class="col-md-4">
-                            <label class="form-label">TUA Exhortado</label>
+                            <label class="form-label fw-bold">TUA Exhortado</label>
+                            <div class="form-control bg-light">
+                                @Model.Exhorto.tuaDestino
+                            </div>
                         </div>
 
                         <div class="col-md-4">
-                            <label class="form-label">Fecha de Acuerdo</label>
+                            <label class="form-label fw-bold">Fecha de Acuerdo</label>
+                            <div class="form-control bg-light">
+                                @Model.Exhorto.FechaAcuerdo
+                            </div>
                         </div>
 
                         <div class="col-md-4">
-                            <label class="form-label">Fecha de Envío</label>
+                            <label class="form-label fw-bold">Fecha de Envío</label>
+                            <div class="form-control bg-light">
+                                @Model.Exhorto.FechaEnvio
+                            </div>
                         </div>
                     </div>
 
-                    <table class="table table-bordered table-striped">
-                        <thead class="table-success">
-                            <tr>
-                                <th>Diligencia</th>
-                                <th>Destinatario</th>
-                                <th>Fecha Diligencia</th>
-                                <th>Estatus</th>
-                            </tr>
-                        </thead>
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-striped">
+                            <thead class="table-success">
+                                <tr>
+                                    <th>Diligencia</th>
+                                    <th>Destinatario</th>
+                                    <th>Fecha Diligencia</th>
+                                    <th>Estatus</th>
+                                </tr>
+                            </thead>
 
-                        <tbody>
-                            <tr>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                            </tr>
-                        </tbody>
-                    </table>
+                            <tbody>
+                                @if (Model.Diligencias != null && Model.Diligencias.Any())
+                                {
+                                    @foreach (var item in Model.Diligencias)
+                                    {
+                                        <tr>
+                                            <td>@item.TipoDiligenciaDesc</td>
+                                            <td>@item.Destinatario</td>
+                                            <td>@item.FechaDiligencia</td>
+                                            <td>@item.EstatusDiligencia</td>
+                                        </tr>
+                                    }
+                                }
+                                else
+                                {
+                                    <tr>
+                                        <td colspan="4" class="text-center">Sin diligencias registradas</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
 
                     <div class="text-center mt-4">
                         <a asp-controller="ExhortosConsulta"

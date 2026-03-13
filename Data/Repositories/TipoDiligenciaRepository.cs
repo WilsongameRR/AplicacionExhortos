@@ -13,9 +13,9 @@ namespace AplicacionExhortos.Data.Repositories
             _db = db;
         }
 
-        public List<Diligencias> ObtenerTiposDiligencia()
+        public List<DiligenciaModel> ObtenerTiposDiligencia()
         {
-            var lista = new List<Diligencias>();
+            var lista = new List<DiligenciaModel>();
 
             using var conn = _db.GetConnection();
             conn.Open();
@@ -27,7 +27,7 @@ namespace AplicacionExhortos.Data.Repositories
 
             while (reader.Read())
             {
-                lista.Add(new Diligencias
+                lista.Add(new DiligenciaModel
                 {
                     TipoDiligenciaId = Convert.ToInt32(reader["TipoDiligenciaId"]),
                     TipoDiligenciaDesc = reader["TipoDiligenciaDesc"].ToString() ?? ""
