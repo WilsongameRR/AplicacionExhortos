@@ -60,5 +60,18 @@ namespace AplicacionExhortos.Controllers
 
             return View(model);
         }
+
+        public IActionResult ExhortoSeguimiento()
+        {
+            string? usuarioId = HttpContext.Session.GetString("UsuarioId");
+
+            if (string.IsNullOrEmpty(usuarioId))
+            {
+                TempData["Error"] = "La sesión expiró. Inicie sesión nuevamente.";
+                return RedirectToAction("Login", "Login");
+            }
+
+            return View();
+        }
     }
 }

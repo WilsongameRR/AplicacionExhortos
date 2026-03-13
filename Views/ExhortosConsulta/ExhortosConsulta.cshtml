@@ -42,43 +42,43 @@
                                        asp-action="DetalleExhorto"
                                        asp-route-id="@item.ExhortoId"
                                        title="Ver detalle">
-                                    <img src="~/images/Icons/eye-fill.svg" width="20" alt="Ver">
-                                    </a>
-                                </td>
+                                    <img src="~/Images/Icons/eye-fill.svg" width="20" alt="Ver" />
+                                </a>
+                            </td>
 
-                                <td style="display:none;">@item.ExhortoId</td>
-                                <td>@item.NoExhortoEnviado</td>
-                                <td>@item.NoExpediente</td>
-                                <td>@item.Estado</td>
-                                <td>@item.Municipio</td>
-                                <td>@item.tuaDestino</td>
-                                <td>@item.FechaAcuerdo?.Split(' ')[0]</td>
-                                <td>@item.FechaEnvio?.Split(' ')[0]</td>
-                                <td>@item.Estatus</td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
+                            <td style="display:none;">@item.ExhortoId</td>
+                            <td>@item.NoExhortoEnviado</td>
+                            <td>@item.NoExpediente</td>
+                            <td>@item.Estado</td>
+                            <td>@item.Municipio</td>
+                            <td>@item.tuaDestino</td>
+                            <td>@item.FechaAcuerdo?.Split(' ')[0]</td>
+                            <td>@item.FechaEnvio?.Split(' ')[0]</td>
+                            <td>@item.Estatus</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
 
-            </div>
         </div>
     </div>
+</div>
 
-    @section Scripts {
-        <script>
-            $(document).ready(function () {
-                var tabla = $('#tablaSeguimiento').DataTable({
-                    pageLength: 10,
-                    lengthChange: false,
-                    dom: 'rtip',
-                    language: {
-                        url: '//cdn.datatables.net/plug-ins/1.13.8/i18n/es-ES.json'
-                    }
-                });
-
-                $('#btnBuscar').on('keyup', function () {
-                    tabla.search(this.value).draw();
-                });
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            var tabla = $('#tablaSeguimiento').DataTable({
+                pageLength: 10,
+                lengthChange: false,
+                dom: 'rtip',
+                language: {
+                    url: '//cdn.datatables.net/plug-ins/1.13.8/i18n/es-ES.json'
+                }
             });
-        </script>
-    }
+
+            $('#btnBuscar').on('keyup', function () {
+                tabla.search(this.value).draw();
+            });
+        });
+    </script>
+}
