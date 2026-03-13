@@ -29,16 +29,17 @@
                     <span class="navbar-toggler-icon"></span>
                 </button>
 
-                @* NOMBRE USUARIO *@
+                @* NOMBRE USUARIO + TUA *@
                 <span class="navbar-brand ms-3 mb-0">
                     @(Context.Session.GetString("Usuario") ?? "Usuario")
+                    / TUA @(Context.Session.GetString("NumTua") ?? "--")
                 </span>
             </div>
 
-            @* BOTÓN SALIR *@
+            @* BOTÓN SALIR  *@
             <a asp-controller="Login"
-               asp-action="Logout"
-               class="btn btn-outline-light d-flex align-items-center">
+                   asp-action="Logout"
+                   class="btn btn-outline-light d-flex align-items-center">
 
                 <img src="/Images/Icons/person-walking.svg"
                      alt="Salir"
@@ -51,6 +52,7 @@
 
         </div>
     </nav>
+
 
     @* MENÚ LATERAL *@
     <div class="offcanvas offcanvas-start bg-dark text-white"

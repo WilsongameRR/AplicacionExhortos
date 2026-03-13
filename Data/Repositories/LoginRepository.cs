@@ -21,10 +21,8 @@ namespace AplicacionExhortos.Data.Repositories
             using var cmd = new MySqlCommand("sp_valida_usuario_tua", conn);
             cmd.CommandType = CommandType.StoredProcedure;
 
-            // Parámetro de entrada
             cmd.Parameters.AddWithValue("p_usuarioid", usuario);
 
-            // Parámetros de salida
             cmd.Parameters.Add("p_password", MySqlDbType.VarChar, 100).Direction = ParameterDirection.Output;
             cmd.Parameters.Add("p_nombre", MySqlDbType.VarChar, 100).Direction = ParameterDirection.Output;
             cmd.Parameters.Add("p_tuaid", MySqlDbType.Int32).Direction = ParameterDirection.Output;
@@ -41,6 +39,7 @@ namespace AplicacionExhortos.Data.Repositories
                 TuaId = cmd.Parameters["p_tuaid"].Value != DBNull.Value
                     ? Convert.ToInt32(cmd.Parameters["p_tuaid"].Value)
                     : 0,
+                NumTua = cmd.Parameters["p_numtua"].Value?.ToString(),
                 ErrorNum = cmd.Parameters["p_error_num"].Value != DBNull.Value
                     ? Convert.ToInt32(cmd.Parameters["p_error_num"].Value)
                     : 99,

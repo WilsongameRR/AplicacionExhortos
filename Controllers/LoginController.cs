@@ -60,6 +60,8 @@ namespace AplicacionExhortos.Controllers
                 HttpContext.Session.SetString("UsuarioId", usuarioId);
                 HttpContext.Session.SetString("Correo", model.Usuario);
                 HttpContext.Session.SetInt32("TuaId", resultado.TuaId);
+                HttpContext.Session.SetString("NumTua", resultado.NumTua ?? "");
+
 
                 TempData.Remove("Error");
 
