@@ -1,6 +1,5 @@
 ﻿@model AplicacionExhortos.Models.AltaDiligenciasModel
 @using AplicacionExhortos.Models
-
 @{
     ViewData["Title"] = "Alta de Diligencia";
 }
@@ -12,6 +11,13 @@
             <div class="text-center mt-4 mb-4">
                 <h2>ALTA DE DILIGENCIAS</h2>
             </div>
+
+            <div class="col-12 text-start mt-2">
+                <small class="text-muted">
+                    Los campos marcados con <span class="text-danger">*</span> son obligatorios.
+                </small>
+            </div>
+
 
             @if (TempData["MensajeDiligencias"] != null)
             {
@@ -164,11 +170,7 @@
                     </button>
                 </div>
 
-                <div class="col-12 text-center mt-2">
-                    <small class="text-muted">
-                        Los campos marcados con <span class="text-danger">*</span> son obligatorios.
-                    </small>
-                </div>
+               
 
             </form>
 

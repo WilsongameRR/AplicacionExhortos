@@ -26,7 +26,9 @@ namespace AplicacionExhortos.Controllers
             const string mensajeError = "Usuario o contraseña incorrectos.";
 
             if (!ModelState.IsValid)
+            {
                 return View("~/Views/Login/Login.cshtml", model);
+            }
 
             try
             {
@@ -43,14 +45,14 @@ namespace AplicacionExhortos.Controllers
 
                 if (resultado == null || resultado.ErrorNum != 0)
                 {
-                    ModelState.AddModelError("", mensajeError);
+                    ModelState.AddModelError(string.Empty, mensajeError);
                     return View("~/Views/Login/Login.cshtml", model);
                 }
 
                 if (string.IsNullOrEmpty(resultado.Password) ||
                     !BCrypt.Net.BCrypt.Verify(model.Password, resultado.Password))
                 {
-                    ModelState.AddModelError("", mensajeError);
+                    ModelState.AddModelError(string.Empty, mensajeError);
                     return View("~/Views/Login/Login.cshtml", model);
                 }
 
@@ -65,7 +67,7 @@ namespace AplicacionExhortos.Controllers
             }
             catch
             {
-                ModelState.AddModelError("", mensajeError);
+                ModelState.AddModelError(string.Empty, mensajeError);
                 return View("~/Views/Login/Login.cshtml", model);
             }
         }
