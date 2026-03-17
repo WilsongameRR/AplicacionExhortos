@@ -33,6 +33,7 @@
                   novalidate>
 
                 @Html.AntiForgeryToken()
+
                 <div class="col-md-4">
                     <label class="form-label">* Expediente</label>
                     <input asp-for="Expediente"
@@ -40,7 +41,6 @@
                            required
                            pattern="^E\.\d{1,4}/\d{4}-\d{2}$"
                            title="Formato requerido: E.##/AAAA-##" />
-
                     <div class="invalid-feedback">
                         Formato inválido. Ejemplo: E.39/2026-09
                     </div>
@@ -91,7 +91,7 @@
 
                         @if (ViewBag.TUAs != null)
                         {
-                            @foreach (var tua in ViewBag.TUAs)
+                            foreach (var tua in ViewBag.TUAs)
                             {
                                 <option value="@tua.TUAId">@tua.NumTUA</option>
                             }
@@ -103,7 +103,7 @@
                 <div class="col-md-4">
                     <label class="form-label">* Fecha de Acuerdo</label>
                     <div class="input-group has-validation">
-                        <span class="input-group-text" id="iconoCalendario" style="cursor:pointer;">
+                        <span class="input-group-text" id="iconoCalendarioAcuerdo" style="cursor:pointer;">
                             <i class="bi bi-calendar-event"></i>
                         </span>
 
@@ -120,7 +120,25 @@
                     </div>
                 </div>
 
-                <div class="col-md-4"></div>
+                <div class="col-md-4">
+                    <label class="form-label">* Fecha de Audiencia</label>
+                    <div class="input-group has-validation">
+                        <span class="input-group-text" id="iconoCalendarioAudiencia" style="cursor:pointer;">
+                            <i class="bi bi-calendar-event"></i>
+                        </span>
+
+                        <input asp-for="FechaAudiencia"
+                               type="date"
+                               class="form-control sin-icono"
+                               min="@DateTime.Today.AddYears(-1).ToString("yyyy-MM-dd")"
+                               max="@DateTime.Today.AddYears(5).ToString("yyyy-MM-dd")"
+                               required />
+
+                        <div class="invalid-feedback">
+                            Ingrese una fecha de audiencia.
+                        </div>
+                    </div>
+                </div>
 
                 <div class="col-12 text-center mt-4">
                     <button type="submit" class="btn btn-tua me-2">
@@ -143,7 +161,7 @@
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content shadow-lg border-0">
                 <div class="modal-header bg-success text-white">
-                    <h5 class="modal-title" id="modalDiligenciaLabel">Exhorto guardado</h5>
+                    <h5 class="modal-title" id="modalDiligenciaLabel">Exhorto creado exitosamente</h5>
                 </div>
                 <div class="modal-body">
                     <p class="mb-2">El exhorto se guardó correctamente.</p>
@@ -203,16 +221,30 @@
     </script>
 
     <script>
-        const iconoCalendario = document.getElementById("iconoCalendario");
+        const iconoCalendarioAcuerdo = document.getElementById("iconoCalendarioAcuerdo");
         const fechaGeneral = document.getElementById("FechaGeneral");
 
-        if (iconoCalendario && fechaGeneral) {
-            iconoCalendario.addEventListener("click", function () {
+        if (iconoCalendarioAcuerdo && fechaGeneral) {
+            iconoCalendarioAcuerdo.addEventListener("click", function () {
                 if (fechaGeneral.showPicker) {
                     fechaGeneral.showPicker();
                 } else {
                     fechaGeneral.focus();
                     fechaGeneral.click();
+                }
+            });
+        }
+
+        const iconoCalendarioAudiencia = document.getElementById("iconoCalendarioAudiencia");
+        const fechaAudiencia = document.getElementById("FechaAudiencia");
+
+        if (iconoCalendarioAudiencia && fechaAudiencia) {
+            iconoCalendarioAudiencia.addEventListener("click", function () {
+                if (fechaAudiencia.showPicker) {
+                    fechaAudiencia.showPicker();
+                } else {
+                    fechaAudiencia.focus();
+                    fechaAudiencia.click();
                 }
             });
         }

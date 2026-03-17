@@ -9,5 +9,6 @@
         public string Poblado { get; set; }
         public int? TuaExhortado { get; set; }
         public DateTime? FechaGeneral { get; set; }
+        public DateTime? FechaAudiencia { get; set; }
     }
 }

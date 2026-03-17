@@ -65,6 +65,7 @@ namespace AplicacionExhortos.Controllers
                 }
 
                 ValidarFechaAcuerdo(model.FechaGeneral);
+                ValidarFechaAudiencia(model.FechaAudiencia);
 
                 if (!ModelState.IsValid)
                 {
@@ -102,6 +103,15 @@ namespace AplicacionExhortos.Controllers
                             cmd.Parameters.AddWithValue("pFechaAcuerdo", DBNull.Value);
                         }
 
+                        if (model.FechaAudiencia.HasValue)
+                        {
+                            cmd.Parameters.AddWithValue("pFechaAudiencia", model.FechaAudiencia.Value.Date);
+                        }
+                        else
+                        {
+                            cmd.Parameters.AddWithValue("pFechaAudiencia", DBNull.Value);
+                        }
+
                         cmd.Parameters.AddWithValue("pUsuarioIdOrigen", usuarioOrigen);
 
                         MySqlParameter pExhortoId = new MySqlParameter("pExhortoId", MySqlDbType.Int32)
@@ -131,7 +141,8 @@ namespace AplicacionExhortos.Controllers
             catch (Exception ex)
             {
                 TempData["Error"] = "Error al guardar: " + ex.Message;
-                return RedirectToAction("AltaDeExhortos", "Exhortos");
+                CargarCatalogos();
+                return View("~/Views/AltaDeExhortos/AltaDeExhortos.cshtml", model);
             }
         }
 
@@ -153,6 +164,27 @@ namespace AplicacionExhortos.Controllers
                 ModelState.AddModelError(
                     "FechaGeneral",
                     $"La Fecha de Acuerdo debe estar entre {fechaMinima:dd/MM/yyyy} y {fechaActual:dd/MM/yyyy}."
+                );
+            }
+        }
+
+        private void ValidarFechaAudiencia(DateTime? fechaAudiencia)
+        {
+            if (!fechaAudiencia.HasValue)
+            {
+                ModelState.AddModelError("FechaAudiencia", "La Fecha de Audiencia es obligatoria.");
+                return;
+            }
+
+            DateTime fechaCapturada = fechaAudiencia.Value.Date;
+            DateTime fechaMinima = DateTime.Today.AddYears(-1);
+            DateTime fechaMaxima = DateTime.Today.AddYears(5);
+
+            if (fechaCapturada < fechaMinima || fechaCapturada > fechaMaxima)
+            {
+                ModelState.AddModelError(
+                    "FechaAudiencia",
+                    $"La Fecha de Audiencia debe estar entre {fechaMinima:dd/MM/yyyy} y {fechaMaxima:dd/MM/yyyy}."
                 );
             }
         }
