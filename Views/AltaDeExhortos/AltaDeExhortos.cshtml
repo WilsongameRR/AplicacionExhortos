@@ -18,7 +18,6 @@
                 </small>
             </div>
 
-
             @if (TempData["Error"] != null)
             {
                 <div class="alert alert-danger text-center">
@@ -26,142 +25,152 @@
                 </div>
             }
 
-            @if (TempData["NumeroExhorto"] != null)
-            {
-                <div class="alert alert-success text-center">
-                    Exhorto guardado correctamente. Número de exhorto:
-                    <strong>@TempData["NumeroExhorto"]</strong>
+            <form id="formAltaExhortos"
+                  asp-controller="Exhortos"
+                  asp-action="Guardar"
+                  method="post"
+                  class="row g-3 needs-validation"
+                  novalidate>
+
+                @Html.AntiForgeryToken()
+                <div class="col-md-4">
+                    <label class="form-label">* Expediente</label>
+                    <input asp-for="Expediente"
+                           class="form-control text-uppercase"
+                           required
+                           pattern="^E\.\d{1,4}/\d{4}-\d{2}$"
+                           title="Formato requerido: E.##/AAAA-##" />
+
+                    <div class="invalid-feedback">
+                        Formato inválido. Ejemplo: E.39/2026-09
+                    </div>
                 </div>
 
-                <div class="text-center mt-3 mb-4">
-                    <h5>DILIGENCIAS</h5>
-                    <p>Después de guardar el exhorto puede agregar una o más diligencias.</p>
-
-                    <a asp-controller="Diligencias"
-                       asp-action="AltaDiligencia"
-                       asp-route-idExhorto="@TempData["IdExhorto"]"
-                       class="btn btn-tua me-2">
-                        Agregar diligencia
-                    </a>
-
-                    <a asp-controller="ExhortosConsulta"
-                       asp-action="ExhortosConsulta"
-                       class="btn btn-secondary">
-                        Finalizar
-                    </a>
+                <div class="col-md-4">
+                    <label class="form-label">* No. Oficio</label>
+                    <input asp-for="NoOficio" class="form-control text-uppercase" required />
+                    <div class="invalid-feedback">Ingrese el número de oficio.</div>
                 </div>
-            }
-            else
-            {
-                <form id="formAltaExhortos"
-                      asp-controller="Exhortos"
-                      asp-action="Guardar"
-                      method="post"
-                      class="row g-3 needs-validation"
-                      novalidate>
 
-                    @Html.AntiForgeryToken()
+                <div class="col-md-4"></div>
 
-                    <div class="col-md-4">
-                        <label class="form-label">* Expediente</label>
-                        <input asp-for="Expediente" class="form-control text-uppercase" required />
-                        <div class="invalid-feedback">Ingrese el expediente.</div>
-                    </div>
+                <div class="col-md-4">
+                    <label class="form-label">* Estado del Expediente</label>
+                    <input asp-for="Estado"
+                           class="form-control text-uppercase"
+                           required
+                           pattern="^[A-Za-zÁÉÍÓÚÜÑáéíóúüñ\s]+$"
+                           title="Solo se permiten letras" />
+                    <div class="invalid-feedback">Ingrese solo letras.</div>
+                </div>
 
-                    <div class="col-md-4">
-                        <label class="form-label">* No. Oficio</label>
-                        <input asp-for="NoOficio" class="form-control text-uppercase" required />
-                        <div class="invalid-feedback">Ingrese el número de oficio.</div>
-                    </div>
+                <div class="col-md-4">
+                    <label class="form-label">* Municipio del Expediente</label>
+                    <input asp-for="Municipio"
+                           class="form-control text-uppercase"
+                           required
+                           pattern="^[A-Za-zÁÉÍÓÚÜÑáéíóúüñ\s]+$"
+                           title="Solo se permiten letras" />
+                    <div class="invalid-feedback">Ingrese solo letras.</div>
+                </div>
 
-                    <div class="col-md-4"></div>
+                <div class="col-md-4">
+                    <label class="form-label">* Poblado del Expediente</label>
+                    <input asp-for="Poblado"
+                           class="form-control text-uppercase"
+                           required
+                           pattern="^[A-Za-zÁÉÍÓÚÜÑáéíóúüñ\s]+$"
+                           title="Solo se permiten letras" />
+                    <div class="invalid-feedback">Ingrese solo letras.</div>
+                </div>
 
-                    <div class="col-md-4">
-                        <label class="form-label">* Estado del Expediente</label>
-                        <input asp-for="Estado"
-                               class="form-control text-uppercase"
-                               required
-                               pattern="^[A-Za-zÁÉÍÓÚÜÑáéíóúüñ\s]+$"
-                               title="Solo se permiten letras" />
-                        <div class="invalid-feedback">Ingrese solo letras.</div>
-                    </div>
+                <div class="col-md-4">
+                    <label class="form-label">* TUA Exhortado</label>
+                    <select asp-for="TuaExhortado" class="form-select" required>
+                        <option value="">Seleccione...</option>
 
-                    <div class="col-md-4">
-                        <label class="form-label">* Municipio del Expediente</label>
-                        <input asp-for="Municipio"
-                               class="form-control text-uppercase"
-                               required
-                               pattern="^[A-Za-zÁÉÍÓÚÜÑáéíóúüñ\s]+$"
-                               title="Solo se permiten letras" />
-                        <div class="invalid-feedback">Ingrese solo letras.</div>
-                    </div>
-
-                    <div class="col-md-4">
-                        <label class="form-label">* Poblado del Expediente</label>
-                        <input asp-for="Poblado"
-                               class="form-control text-uppercase"
-                               required
-                               pattern="^[A-Za-zÁÉÍÓÚÜÑáéíóúüñ\s]+$"
-                               title="Solo se permiten letras" />
-                        <div class="invalid-feedback">Ingrese solo letras.</div>
-                    </div>
-
-                    <div class="col-md-4">
-                        <label class="form-label">* TUA Exhortado</label>
-                        <select asp-for="TuaExhortado" class="form-select" required>
-                            <option value="">Seleccione...</option>
-
-                            @if (ViewBag.TUAs != null)
+                        @if (ViewBag.TUAs != null)
+                        {
+                            @foreach (var tua in ViewBag.TUAs)
                             {
-                                @foreach (var tua in ViewBag.TUAs)
-                                {
-                                    <option value="@tua.TUAId">@tua.NumTUA</option>
-                                }
+                                <option value="@tua.TUAId">@tua.NumTUA</option>
                             }
-                        </select>
-                        <div class="invalid-feedback">Seleccione un TUA Exhortado.</div>
-                    </div>
+                        }
+                    </select>
+                    <div class="invalid-feedback">Seleccione un TUA Exhortado.</div>
+                </div>
 
-                    <div class="col-md-4">
-                        <label class="form-label">* Fecha de Acuerdo</label>
-                        <div class="input-group has-validation">
-                            <span class="input-group-text" id="iconoCalendario" style="cursor:pointer;">
-                                <i class="bi bi-calendar-event"></i>
-                            </span>
+                <div class="col-md-4">
+                    <label class="form-label">* Fecha de Acuerdo</label>
+                    <div class="input-group has-validation">
+                        <span class="input-group-text" id="iconoCalendario" style="cursor:pointer;">
+                            <i class="bi bi-calendar-event"></i>
+                        </span>
 
-                            <input asp-for="FechaGeneral"
-                                   type="date"
-                                   class="form-control sin-icono"
-                                   min="@DateTime.Today.AddYears(-1).ToString("yyyy-MM-dd")"
-                                   max="@DateTime.Today.ToString("yyyy-MM-dd")"
-                                   required />
+                        <input asp-for="FechaGeneral"
+                               type="date"
+                               class="form-control sin-icono"
+                               min="@DateTime.Today.AddYears(-1).ToString("yyyy-MM-dd")"
+                               max="@DateTime.Today.ToString("yyyy-MM-dd")"
+                               required />
 
-                            <div class="invalid-feedback">
-                                Ingrese una fecha de acuerdo.
-                            </div>
+                        <div class="invalid-feedback">
+                            Ingrese una fecha de acuerdo.
                         </div>
                     </div>
+                </div>
 
-                    <div class="col-md-4"></div>
+                <div class="col-md-4"></div>
 
-                    <div class="col-12 text-center mt-4">
-                        <button type="submit" class="btn btn-tua me-2">
-                            Guardar
-                        </button>
+                <div class="col-12 text-center mt-4">
+                    <button type="submit" class="btn btn-tua me-2">
+                        Guardar
+                    </button>
 
-                        <button type="reset" class="btn btn-secondary">
-                            Cancelar
-                        </button>
-                    </div>
+                    <button type="reset" class="btn btn-secondary">
+                        Cancelar
+                    </button>
+                </div>
 
-                   
-
-                </form>
-            }
-
+            </form>
         </div>
     </div>
 </div>
+
+@if (TempData["NumeroExhorto"] != null)
+{
+    <div class="modal fade" id="modalDiligencia" tabindex="-1" aria-labelledby="modalDiligenciaLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content shadow-lg border-0">
+                <div class="modal-header bg-success text-white">
+                    <h5 class="modal-title" id="modalDiligenciaLabel">Exhorto guardado</h5>
+                </div>
+                <div class="modal-body">
+                    <p class="mb-2">El exhorto se guardó correctamente.</p>
+                    <p>
+                        Número de exhorto:
+                        <strong>@TempData["NumeroExhorto"]</strong>
+                    </p>
+                    <p class="mb-0">¿Desea agregar una diligencia?</p>
+                </div>
+                <div class="modal-footer">
+                    <a asp-controller="ExhortosConsulta"
+                           asp-action="ExhortosConsulta"
+                           class="btn btn-secondary">
+                        No, finalizar
+                    </a>
+
+                    <a asp-controller="Diligencias"
+                           asp-action="AltaDiligencia"
+                           asp-route-idExhorto="@TempData["IdExhorto"]"
+                           class="btn btn-tua">
+                        Sí, agregar diligencia
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+}
 
 @section Scripts {
 
@@ -231,4 +240,17 @@
         }
     </script>
 
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const modalDiligencia = document.getElementById("modalDiligencia");
+
+            if (modalDiligencia) {
+                const modal = new bootstrap.Modal(modalDiligencia, {
+                    backdrop: 'static',
+                    keyboard: false
+                });
+                modal.show();
+            }
+        });
+    </script>
 }

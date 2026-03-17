@@ -22,11 +22,17 @@ namespace AplicacionExhortos.Data.Repositories
 
             try
             {
-                int exhortoId = ObtenerExhortoIdPorNumero(conn, model.NoExhorto);
-
-                if (exhortoId == 0)
+                if (string.IsNullOrWhiteSpace(model.NoExhorto))
                 {
                     respuesta.NoError = 1;
+                    respuesta.Mensaje = "Debe capturar el número de exhorto.";
+                    return respuesta;
+                }
+
+                if (model.Diligencias == null || !model.Diligencias.Any())
+                {
+                    respuesta.NoError = 1;
+                    respuesta.Mensaje = "Debe agregar al menos una diligencia.";
                     return respuesta;
                 }
 
@@ -35,27 +41,65 @@ namespace AplicacionExhortos.Data.Repositories
                     using var cmd = new MySqlCommand("sp_inserta_diligencia", conn);
                     cmd.CommandType = CommandType.StoredProcedure;
 
-                    cmd.Parameters.AddWithValue("pExhortoId", exhortoId);
+                    cmd.Parameters.AddWithValue("pExhortoEnviado", model.NoExhorto);
                     cmd.Parameters.AddWithValue("pTipoDiligenciaId", diligencia.TipoDiligenciaId);
-                    cmd.Parameters.AddWithValue("pOtraEspecificar", diligencia.OtraEspecificar ?? string.Empty);
-                    cmd.Parameters.AddWithValue("pDestinatario", diligencia.Destinatario ?? string.Empty);
+
                     cmd.Parameters.AddWithValue(
-                        "pFechaDiligencia",
-                        string.IsNullOrEmpty(diligencia.FechaDiligencia) ? DBNull.Value : diligencia.FechaDiligencia
-                    );
-                    cmd.Parameters.AddWithValue(
-                        "pFechaAudiencia",
-                        string.IsNullOrEmpty(diligencia.FechaAudiencia) ? DBNull.Value : diligencia.FechaAudiencia
+                        "pOtro",
+                        string.IsNullOrWhiteSpace(diligencia.OtraEspecificar)
+                            ? DBNull.Value
+                            : diligencia.OtraEspecificar
                     );
 
+                    cmd.Parameters.AddWithValue(
+                        "pDestinatario",
+                        string.IsNullOrWhiteSpace(diligencia.Destinatario)
+                            ? DBNull.Value
+                            : diligencia.Destinatario
+                    );
+
+                    cmd.Parameters.AddWithValue(
+                        "pFechaAudiencia",
+                        string.IsNullOrWhiteSpace(diligencia.FechaAudiencia)
+                            ? DBNull.Value
+                            : Convert.ToDateTime(diligencia.FechaAudiencia)
+                    );
+
+                    var pErrorNum = new MySqlParameter("p_error_num", MySqlDbType.Int32)
+                    {
+                        Direction = ParameterDirection.Output
+                    };
+                    cmd.Parameters.Add(pErrorNum);
+
+                    var pMensaje = new MySqlParameter("p_mensaje", MySqlDbType.VarChar, 100)
+                    {
+                        Direction = ParameterDirection.Output
+                    };
+                    cmd.Parameters.Add(pMensaje);
+
                     cmd.ExecuteNonQuery();
+
+                    int noError = cmd.Parameters["p_error_num"].Value != DBNull.Value
+                        ? Convert.ToInt32(cmd.Parameters["p_error_num"].Value)
+                        : 99;
+
+                    string mensaje = cmd.Parameters["p_mensaje"].Value?.ToString() ?? "Error no identificado.";
+
+                    if (noError != 0)
+                    {
+                        respuesta.NoError = noError;
+                        respuesta.Mensaje = mensaje;
+                        return respuesta;
+                    }
                 }
 
                 respuesta.NoError = 0;
+                respuesta.Mensaje = "Diligencias guardadas correctamente.";
             }
-            catch
+            catch (Exception ex)
             {
                 respuesta.NoError = 99;
+                respuesta.Mensaje = ex.Message;
             }
 
             return respuesta;

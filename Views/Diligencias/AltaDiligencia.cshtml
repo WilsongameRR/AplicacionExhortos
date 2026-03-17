@@ -18,27 +18,12 @@
                 </small>
             </div>
 
-            @if (TempData["MensajeDiligencias"] != null)
-            {
-                <div class="alert alert-success text-center">
-                    @TempData["MensajeDiligencias"]
-                </div>
-            }
-
-            @if (TempData["ErrorDiligencias"] != null)
-            {
-                <div class="alert alert-danger text-center">
-                    @TempData["ErrorDiligencias"]
-                </div>
-            }
-
             <form id="formDiligencias"
                   method="post"
                   asp-controller="Diligencias"
                   asp-action="GuardarDiligencias"
                   novalidate>
 
-                <!-- Hidden principal para asegurar que NoExhorto viaje en el POST -->
                 <input type="hidden" asp-for="NoExhorto" id="NoExhortoHidden" />
 
                 <div class="row g-3">
@@ -87,30 +72,6 @@
                         </div>
                     </div>
 
-                    <div class="col-md-4 d-none" id="bloqueFechaAudiencia">
-                        <label class="form-label">
-                            <span class="required">*</span> Fecha de audiencia
-                        </label>
-
-                        <div class="input-group has-validation">
-                            <span class="input-group-text"
-                                  id="iconoCalendarioAudiencia"
-                                  style="cursor:pointer;">
-                                <i class="bi bi-calendar-event"></i>
-                            </span>
-
-                            <input type="date"
-                                   class="form-control sin-icono"
-                                   id="FechaAudiencia"
-                                   min="@DateTime.Today.ToString("yyyy-MM-dd")"
-                                   max="@DateTime.Today.AddYears(1).ToString("yyyy-MM-dd")" />
-
-                            <div class="invalid-feedback">
-                                La fecha de audiencia debe estar entre hoy y un año a partir de hoy.
-                            </div>
-                        </div>
-                    </div>
-
                     <div class="col-md-4 d-none" id="bloqueOtro">
                         <label class="form-label">
                             <span class="required">*</span> Especifique diligencia
@@ -146,7 +107,6 @@
                                     <th>No. Exhorto</th>
                                     <th>Tipo diligencia</th>
                                     <th>Destinatario</th>
-                                    <th>Fecha audiencia</th>
                                     <th>Otro</th>
                                     <th>Acción</th>
                                 </tr>
@@ -156,7 +116,6 @@
                     </div>
                 </div>
 
-                <!-- Aquí se generan los hidden inputs de la tabla -->
                 <div id="contenedorHiddenDiligencias"></div>
 
                 <div id="mensajeDiligencias" class="text-danger text-center mt-2 d-none">
@@ -179,6 +138,25 @@
     </div>
 </div>
 
+<div class="position-fixed bottom-0 end-0 p-3" style="z-index: 9999;">
+    <div id="toastDiligenciaGuardada"
+         class="toast align-items-center text-bg-success border-0"
+         role="alert"
+         aria-live="assertive"
+         aria-atomic="true"
+         data-bs-delay="1200">
+        <div class="d-flex">
+            <div class="toast-body">
+                Diligencias guardadas correctamente.
+            </div>
+            <button type="button"
+                    class="btn-close btn-close-white me-2 m-auto"
+                    data-bs-dismiss="toast"
+                    aria-label="Cerrar"></button>
+        </div>
+    </div>
+</div>
+
 @section Scripts {
     <script>
         const formDiligencias = document.getElementById("formDiligencias");
@@ -186,9 +164,7 @@
         const noExhorto = document.getElementById("NoExhorto");
         const noExhortoHidden = document.getElementById("NoExhortoHidden");
         const destinatario = document.getElementById("Destinatario");
-        const bloqueFecha = document.getElementById("bloqueFechaAudiencia");
         const bloqueOtro = document.getElementById("bloqueOtro");
-        const fecha = document.getElementById("FechaAudiencia");
         const otro = document.getElementById("Otro");
         const btnAgregar = document.getElementById("btnAgregarDiligencia");
         const tbody = document.querySelector("#tablaDiligencias tbody");
@@ -196,6 +172,7 @@
         const mensajeDiligencias = document.getElementById("mensajeDiligencias");
 
         let diligencias = [];
+        let enviandoFormulario = false;
 
         function convertirMayusculas(texto) {
             return (texto || "").trim().toUpperCase();
@@ -210,55 +187,19 @@
                 .replaceAll("'", "&#39;");
         }
 
-        function obtenerFechaHoy() {
-            const hoy = new Date();
-            hoy.setHours(0, 0, 0, 0);
-            return hoy;
-        }
-
-        function obtenerFechaMaxima() {
-            const fechaMaxima = new Date();
-            fechaMaxima.setHours(0, 0, 0, 0);
-            fechaMaxima.setFullYear(fechaMaxima.getFullYear() + 1);
-            return fechaMaxima;
-        }
-
-        function convertirTextoAFecha(valor) {
-            const partes = valor.split("-");
-            return new Date(partes[0], partes[1] - 1, partes[2]);
-        }
-
-        function fechaAudienciaValida(valorFecha) {
-            if (!valorFecha) {
-                return false;
-            }
-
-            const fechaCapturada = convertirTextoAFecha(valorFecha);
-            const fechaInicio = obtenerFechaHoy();
-            const fechaFin = obtenerFechaMaxima();
-
-            return fechaCapturada >= fechaInicio && fechaCapturada <= fechaFin;
-        }
-
         function limpiarValidacionesCaptura() {
             noExhorto.classList.remove("is-invalid");
             tipoDiligencia.classList.remove("is-invalid");
             destinatario.classList.remove("is-invalid");
-            fecha.classList.remove("is-invalid");
             otro.classList.remove("is-invalid");
         }
 
         function limpiarCampos() {
-            // IMPORTANTE: no borrar NoExhorto
             tipoDiligencia.value = "";
             destinatario.value = "";
-            fecha.value = "";
             otro.value = "";
 
-            bloqueFecha.classList.add("d-none");
             bloqueOtro.classList.add("d-none");
-
-            fecha.required = false;
             otro.required = false;
 
             limpiarValidacionesCaptura();
@@ -275,13 +216,9 @@
 
             tipoDiligencia.value = "";
             destinatario.value = "";
-            fecha.value = "";
             otro.value = "";
 
-            bloqueFecha.classList.add("d-none");
             bloqueOtro.classList.add("d-none");
-
-            fecha.required = false;
             otro.required = false;
 
             limpiarValidacionesCaptura();
@@ -290,21 +227,12 @@
         tipoDiligencia.addEventListener("change", function () {
             const texto = this.options[this.selectedIndex].text.trim().toUpperCase();
 
-            bloqueFecha.classList.add("d-none");
             bloqueOtro.classList.add("d-none");
-
-            fecha.value = "";
             otro.value = "";
-
-            fecha.required = false;
             otro.required = false;
-            fecha.classList.remove("is-invalid");
             otro.classList.remove("is-invalid");
 
-            if (texto === "CITAR" || texto === "EMPLAZAR") {
-                bloqueFecha.classList.remove("d-none");
-                fecha.required = true;
-            } else if (texto === "OTRA") {
+            if (texto === "OTRA") {
                 bloqueOtro.classList.remove("d-none");
                 otro.required = true;
             }
@@ -317,7 +245,6 @@
             const tipoId = tipoDiligencia.value;
             const tipoTexto = tipoDiligencia.options[tipoDiligencia.selectedIndex].text.trim().toUpperCase();
             const destinatarioValor = convertirMayusculas(destinatario.value);
-            const fechaValor = fecha.value;
             const otroValor = convertirMayusculas(otro.value);
 
             noExhorto.value = noExhortoValor;
@@ -342,16 +269,6 @@
                 formularioValido = false;
             }
 
-            if (tipoTexto === "CITAR" || tipoTexto === "EMPLAZAR") {
-                if (fechaValor === "") {
-                    fecha.classList.add("is-invalid");
-                    formularioValido = false;
-                } else if (!fechaAudienciaValida(fechaValor)) {
-                    fecha.classList.add("is-invalid");
-                    formularioValido = false;
-                }
-            }
-
             if (tipoTexto === "OTRA" && otroValor === "") {
                 otro.classList.add("is-invalid");
                 formularioValido = false;
@@ -366,7 +283,6 @@
                 TipoDiligenciaId: tipoId,
                 TipoDiligenciaDesc: tipoTexto,
                 Destinatario: destinatarioValor,
-                FechaAudiencia: fechaValor,
                 Otro: otroValor
             };
 
@@ -381,7 +297,6 @@
             tbody.innerHTML = "";
             contenedorHidden.innerHTML = "";
 
-            // Mantener sincronizado el exhorto principal
             if (diligencias.length > 0) {
                 noExhortoHidden.value = diligencias[0].NoExhorto;
             }
@@ -393,7 +308,6 @@
                     <td>${escaparHtml(d.NoExhorto)}</td>
                     <td>${escaparHtml(d.TipoDiligenciaDesc)}</td>
                     <td>${escaparHtml(d.Destinatario)}</td>
-                    <td>${escaparHtml(d.FechaAudiencia || "")}</td>
                     <td>${escaparHtml(d.Otro || "")}</td>
                     <td>
                         <button type="button" class="btn btn-danger btn-sm" onclick="eliminarDiligencia(${index})">
@@ -409,7 +323,6 @@
                     <input type="hidden" name="Diligencias[${index}].TipoDiligenciaId" value="${escaparHtml(d.TipoDiligenciaId)}" />
                     <input type="hidden" name="Diligencias[${index}].TipoDiligenciaDesc" value="${escaparHtml(d.TipoDiligenciaDesc)}" />
                     <input type="hidden" name="Diligencias[${index}].Destinatario" value="${escaparHtml(d.Destinatario)}" />
-                    <input type="hidden" name="Diligencias[${index}].FechaAudiencia" value="${escaparHtml(d.FechaAudiencia || "")}" />
                     <input type="hidden" name="Diligencias[${index}].Otro" value="${escaparHtml(d.Otro || "")}" />
                 `;
             });
@@ -426,6 +339,10 @@
         }
 
         formDiligencias.addEventListener("submit", function (event) {
+            if (enviandoFormulario) {
+                return;
+            }
+
             const inputsTexto = formDiligencias.querySelectorAll("input[type='text']");
             inputsTexto.forEach(input => {
                 input.value = input.value.toUpperCase();
@@ -443,8 +360,19 @@
 
             noExhorto.value = noExhortoValor;
             noExhortoHidden.value = noExhortoValor;
-
             mensajeDiligencias.classList.add("d-none");
+
+            event.preventDefault();
+
+            const toastElement = document.getElementById("toastDiligenciaGuardada");
+            const toast = new bootstrap.Toast(toastElement);
+            toast.show();
+
+            enviandoFormulario = true;
+
+            setTimeout(() => {
+                formDiligencias.submit();
+            }, 1200);
         });
 
         formDiligencias.addEventListener("reset", function () {
@@ -454,18 +382,5 @@
         });
 
         window.eliminarDiligencia = eliminarDiligencia;
-
-        const iconoCalendarioAudiencia = document.getElementById("iconoCalendarioAudiencia");
-
-        if (iconoCalendarioAudiencia && fecha) {
-            iconoCalendarioAudiencia.addEventListener("click", function () {
-                if (fecha.showPicker) {
-                    fecha.showPicker();
-                } else {
-                    fecha.focus();
-                    fecha.click();
-                }
-            });
-        }
     </script>
 }
