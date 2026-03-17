@@ -58,13 +58,6 @@ namespace AplicacionExhortos.Data.Repositories
                             : diligencia.Destinatario
                     );
 
-                    cmd.Parameters.AddWithValue(
-                        "pFechaAudiencia",
-                        string.IsNullOrWhiteSpace(diligencia.FechaAudiencia)
-                            ? DBNull.Value
-                            : Convert.ToDateTime(diligencia.FechaAudiencia)
-                    );
-
                     var pErrorNum = new MySqlParameter("p_error_num", MySqlDbType.Int32)
                     {
                         Direction = ParameterDirection.Output
@@ -148,10 +141,7 @@ namespace AplicacionExhortos.Data.Repositories
                     FechaDiligencia = reader["FechaDiligencia"] != DBNull.Value
                         ? Convert.ToDateTime(reader["FechaDiligencia"]).ToString("dd/MM/yyyy")
                         : "",
-                    EstatusDiligencia = reader["EstatusDiligencia"]?.ToString(),
-                    FechaAudiencia = reader["FechaAudiencia"] != DBNull.Value
-                        ? Convert.ToDateTime(reader["FechaAudiencia"]).ToString("dd/MM/yyyy")
-                        : ""
+                    EstatusDiligencia = reader["EstatusDiligencia"]?.ToString()
                 });
             }
 

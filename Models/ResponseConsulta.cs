@@ -31,6 +31,8 @@
 
         public string? FechaAcuerdo { get; set; }
 
+        public string? FechaAudiencia { get; set; }
+
         public string? FechaEnvio { get; set; }
 
         public string? Estatus { get; set; }
