@@ -58,7 +58,11 @@ body {
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center 30%;
+    margin-top: 0 !important;
 }
+
+body {
+    margin: 0;
 }
 
 /* Necesario para poder ocultar el icono del date */

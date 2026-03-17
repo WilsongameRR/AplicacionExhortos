@@ -6,9 +6,10 @@
     <title>@ViewData["Title"] - Sistema de Exhortos</title>
 
     <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" />
+    <!-- Ya no necesitas bootstrap-icons -->
     <link rel="stylesheet" href="/css/site.css" />
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.8/css/jquery.dataTables.min.css" />
+
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js"></script>
 </head>
@@ -24,25 +25,23 @@
                 <button class="navbar-toggler"
                         type="button"
                         data-bs-toggle="offcanvas"
-                        data-bs-target="#offcanvasNavbar"
-                        aria-controls="offcanvasNavbar">
+                        data-bs-target="#offcanvasNavbar">
                     <span class="navbar-toggler-icon"></span>
                 </button>
 
-                @* NOMBRE USUARIO + TUA *@
+                @* USUARIO *@
                 <span class="navbar-brand ms-3 mb-0">
                     @(Context.Session.GetString("Usuario") ?? "Usuario")
                     / TUA @(Context.Session.GetString("NumTua") ?? "--")
                 </span>
             </div>
 
-            @* BOTÓN SALIR  *@
+            @* BOTÓN SALIR *@
             <a asp-controller="Login"
                    asp-action="Logout"
                    class="btn btn-outline-light d-flex align-items-center">
 
                 <img src="/Images/Icons/person-walking.svg"
-                     alt="Salir"
                      width="20"
                      height="20"
                      class="me-2 icon-white" />
@@ -57,35 +56,27 @@
     @* MENÚ LATERAL *@
     <div class="offcanvas offcanvas-start bg-dark text-white"
          tabindex="-1"
-         id="offcanvasNavbar"
-         aria-labelledby="offcanvasNavbarLabel">
+         id="offcanvasNavbar">
 
         <div class="offcanvas-header">
-            <h5 class="offcanvas-title" id="offcanvasNavbarLabel">
-                Menú
-            </h5>
+            <h5 class="offcanvas-title">Menú</h5>
 
             <button type="button"
                     class="btn-close btn-close-white"
-                    data-bs-dismiss="offcanvas"
-                    aria-label="Cerrar">
+                    data-bs-dismiss="offcanvas">
             </button>
         </div>
 
         <div class="offcanvas-body">
 
+            @* LOGO *@
             <div class="d-flex align-items-center mb-3">
-                @* LOGO *@
                 <img src="/Images/LogoTUA.png"
-                     alt="Logo"
-                     style="width:80px; height:auto;"
+                     style="width:80px;"
                      class="me-3" />
 
                 <div>
-                    <h6 class="text-white mb-1">
-                        SISTEMA DE CAPTURA DE EXHORTOS
-                    </h6>
-
+                    <h6 class="mb-1">SISTEMA DE EXHORTOS</h6>
                     <small class="text-secondary">
                         Tribunales Unitarios Agrarios
                     </small>
@@ -96,45 +87,61 @@
 
             <ul class="navbar-nav flex-column">
 
+                @* ===== ENVÍA ===== *@
+                <li class="nav-item mt-2">
+                    <span class="text-secondary small ps-2">ENVÍA</span>
+                </li>
+
                 <li class="nav-item">
                     <a class="nav-link text-white"
-                       asp-controller="Exhortos"
-                       asp-action="AltaDeExhortos">
-                        ALTA DE EXHORTOS
+                           asp-controller="Exhortos"
+                           asp-action="AltaDeExhortos">
+                        Alta de Exhortos
                     </a>
                 </li>
 
                 <li class="nav-item">
                     <a class="nav-link text-white"
-                       asp-controller="Diligencias"
-                       asp-action="AltaDiligencia">
-                        ALTA DE DILIGENCIAS
-                    </a>
-                </li>
-
-                <li class="nav-item">
-                    <a class="nav-link text-white"
-                       asp-controller="ExhortosConsulta"
-                       asp-action="ExhortosConsulta">
-                        CONSULTA DE EXHORTOS ENVIADOS
+                           asp-controller="Diligencias"
+                           asp-action="AltaDiligencia">
+                        Alta de Diligencias
                     </a>
                 </li>
 
                 <li class="nav-item">
                     <a class="nav-link text-white"
                            asp-controller="ExhortosConsulta"
-                           asp-action="ExhortoSeguimiento">
-                        SEGUIMIENTO DE EXHORTOS
+                           asp-action="ExhortosConsulta">
+                        Consulta de Exhortos
                     </a>
                 </li>
 
+                @* ===== LÍNEA DIVISORA ===== *@
+                <li class="nav-item">
+                    <hr class="menu-divider" />
+                </li>
+
+                @* ===== RECIBE ===== *@
+                <li class="nav-item">
+                    <span class="text-secondary small ps-2">RECIBE</span>
+                </li>
+
+                @*
+    <li class="nav-item">
+        <a class="nav-link text-white"
+           asp-controller="ExhortosConsulta"
+           asp-action="ExhortoSeguimiento">
+            Seguimiento de Exhortos
+        </a>
+    </li>
+    *@
             </ul>
 
         </div>
     </div>
 
-    @* CONTENIDO *@
-    <main style="margin-top:30px;">
+    @* CONTENIDO (CORREGIDO) *@
+    <main>
         @RenderBody()
     </main>
 
