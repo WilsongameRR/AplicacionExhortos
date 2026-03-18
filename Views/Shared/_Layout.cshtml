@@ -126,21 +126,19 @@
                     <span class="text-secondary small ps-2">RECIBE</span>
                 </li>
 
-                @*
-    <li class="nav-item">
-        <a class="nav-link text-white"
-           asp-controller="ExhortosConsulta"
-           asp-action="ExhortoSeguimiento">
-            Seguimiento de Exhortos
-        </a>
-    </li>
-    *@
+                <li class="nav-item">
+                    <a class="nav-link text-white"
+                           asp-controller="ExhortosRecibidos"
+                           asp-action="ExhortosRecibidos">
+                        Consulta de Exhortos Recibidos
+                    </a>
+                </li>
             </ul>
 
         </div>
     </div>
 
-    @* CONTENIDO (CORREGIDO) *@
+    @* CONTENIDO  *@
     <main>
         @RenderBody()
     </main>

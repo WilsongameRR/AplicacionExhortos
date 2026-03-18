@@ -12,9 +12,11 @@
                 <h2>CONSULTA DE EXHORTOS</h2>
             </div>
 
+            @* Diagnóstico temporal *@
+            
             <div class="row mb-3">
                 <div class="col-md-4">
-                    <input class="form-control" id="btnBuscar" type="text" placeholder="Buscar...">
+                    <input class="form-control" id="txtBuscar" type="text" placeholder="Buscar..." />
                 </div>
             </div>
 
@@ -34,27 +36,38 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (var item in Model)
+                    @if (Model != null && Model.Any())
+                    {
+                        foreach (var item in Model)
+                        {
+                            <tr>
+                                <td class="text-center">
+                                    <a asp-controller="ExhortosConsulta"
+                                           asp-action="DetalleExhorto"
+                                           asp-route-id="@item.ExhortoId"
+                                           title="Ver detalle">
+                                        <img src="~/Images/Icons/eye-fill.svg" width="20" alt="Ver" />
+                                    </a>
+                                </td>
+
+                                <td style="display:none;">@item.ExhortoId</td>
+                                <td>@item.NoExhortoEnviado</td>
+                                <td>@item.NoExpediente</td>
+                                <td>@item.Estado</td>
+                                <td>@item.Municipio</td>
+                                <td>@item.tuaDestino</td>
+                                <td>@(string.IsNullOrWhiteSpace(item.FechaAcuerdo) ? string.Empty : item.FechaAcuerdo.Split(' ')[0])</td>
+                                <td>@(string.IsNullOrWhiteSpace(item.FechaEnvio) ? string.Empty : item.FechaEnvio.Split(' ')[0])</td>
+                                <td>@item.Estatus</td>
+                            </tr>
+                        }
+                    }
+                    else
                     {
                         <tr>
-                            <td class="text-center">
-                                <a asp-controller="ExhortosConsulta"
-                                       asp-action="DetalleExhorto"
-                                       asp-route-id="@item.ExhortoId"
-                                       title="Ver detalle">
-                                    <img src="~/Images/Icons/eye-fill.svg" width="20" alt="Ver" />
-                                </a>
+                            <td colspan="10" class="text-center text-muted">
+                                No hay exhortos para mostrar.
                             </td>
-
-                            <td style="display:none;">@item.ExhortoId</td>
-                            <td>@item.NoExhortoEnviado</td>
-                            <td>@item.NoExpediente</td>
-                            <td>@item.Estado</td>
-                            <td>@item.Municipio</td>
-                            <td>@item.tuaDestino</td>
-                            <td>@item.FechaAcuerdo?.Split(' ')[0]</td>
-                            <td>@item.FechaEnvio?.Split(' ')[0]</td>
-                            <td>@item.Estatus</td>
                         </tr>
                     }
                 </tbody>
@@ -67,7 +80,7 @@
 @section Scripts {
     <script>
         $(document).ready(function () {
-            var tabla = $('#tablaSeguimiento').DataTable({
+            const tabla = $('#tablaSeguimiento').DataTable({
                 pageLength: 10,
                 lengthChange: false,
                 dom: 'rtip',
@@ -76,8 +89,8 @@
                 }
             });
 
-            $('#btnBuscar').on('keyup', function () {
-                tabla.search(this.value).draw();
+            $('#txtBuscar').on('keyup', function () {
+                tabla.search($(this).val()).draw();
             });
         });
     </script>

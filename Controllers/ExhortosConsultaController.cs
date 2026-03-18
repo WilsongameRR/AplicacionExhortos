@@ -6,40 +6,42 @@ namespace AplicacionExhortos.Controllers
 {
     public class ExhortosConsultaController : Controller
     {
-        private readonly IConfiguration _configuration;
         private readonly ConsultaExhortoRepository _consultaExhortoRepository;
         private readonly DiligenciasRepository _diligenciasRepository;
 
         public ExhortosConsultaController(
-            IConfiguration configuration,
             ConsultaExhortoRepository consultaExhortoRepository,
             DiligenciasRepository diligenciasRepository)
         {
-            _configuration = configuration;
             _consultaExhortoRepository = consultaExhortoRepository;
             _diligenciasRepository = diligenciasRepository;
         }
 
+        [HttpGet]
         public IActionResult ExhortosConsulta()
         {
-            string? usuarioId = HttpContext.Session.GetString("UsuarioId");
+            string? usuarioId = ObtenerUsuarioIdSesion();
 
-            if (string.IsNullOrEmpty(usuarioId))
+            if (string.IsNullOrWhiteSpace(usuarioId))
             {
                 TempData["Error"] = "La sesión expiró. Inicie sesión nuevamente.";
                 return RedirectToAction("Login", "Login");
             }
 
             List<consultaExhortos> listaExhortos = _consultaExhortoRepository.ConsultaExhorto(usuarioId);
+
+            ViewBag.UsuarioIdSesion = usuarioId;
+            ViewBag.TotalRegistros = listaExhortos.Count;
 
             return View(listaExhortos);
         }
 
+        [HttpGet]
         public IActionResult DetalleExhorto(int id)
         {
-            string? usuarioId = HttpContext.Session.GetString("UsuarioId");
+            string? usuarioId = ObtenerUsuarioIdSesion();
 
-            if (string.IsNullOrEmpty(usuarioId))
+            if (string.IsNullOrWhiteSpace(usuarioId))
             {
                 TempData["Error"] = "La sesión expiró. Inicie sesión nuevamente.";
                 return RedirectToAction("Login", "Login");
@@ -47,12 +49,12 @@ namespace AplicacionExhortos.Controllers
 
             List<consultaExhortos> listaExhortos = _consultaExhortoRepository.ConsultaExhorto(usuarioId);
 
-            var exhorto = listaExhortos.FirstOrDefault(x => x.ExhortoId == id);
+            consultaExhortos? exhorto = listaExhortos.FirstOrDefault(x => x.ExhortoId == id);
 
             if (exhorto == null)
             {
                 TempData["Error"] = "No se encontró el exhorto seleccionado.";
-                return RedirectToAction("ExhortosConsulta");
+                return RedirectToAction(nameof(ExhortosConsulta));
             }
 
             var diligencias = _diligenciasRepository.ObtenerDiligencias(id);
@@ -66,17 +68,24 @@ namespace AplicacionExhortos.Controllers
             return View(model);
         }
 
+        [HttpGet]
         public IActionResult ExhortoSeguimiento()
         {
-            string? usuarioId = HttpContext.Session.GetString("UsuarioId");
+            string? usuarioId = ObtenerUsuarioIdSesion();
 
-            if (string.IsNullOrEmpty(usuarioId))
+            if (string.IsNullOrWhiteSpace(usuarioId))
             {
                 TempData["Error"] = "La sesión expiró. Inicie sesión nuevamente.";
                 return RedirectToAction("Login", "Login");
             }
 
+            ViewBag.UsuarioIdSesion = usuarioId;
             return View();
+        }
+
+        private string? ObtenerUsuarioIdSesion()
+        {
+            return HttpContext.Session.GetString("UsuarioId");
         }
     }
 }

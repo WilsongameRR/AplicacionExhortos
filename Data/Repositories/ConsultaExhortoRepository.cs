@@ -13,48 +13,45 @@ namespace AplicacionExhortos.Data.Repositories
             _db = db;
         }
 
-        public List<consultaExhortos> ConsultaExhorto(string IdUsuario)
+        public List<consultaExhortos> ConsultaExhorto(string usuarioId)
         {
+            var listaExhortos = new List<consultaExhortos>();
+
             using var conn = _db.GetConnection();
             conn.Open();
 
-            using var cmd = new MySqlCommand("sp_consulta_exhortos_enviados", conn);
+            using var cmd = new MySqlCommand("exhortos_db.sp_consulta_exhortos_enviados", conn);
             cmd.CommandType = CommandType.StoredProcedure;
 
-            List<consultaExhortos> listaExhortos = new List<consultaExhortos>();
+            cmd.Parameters.Add("pUsuarioid", MySqlDbType.VarChar, 40).Value = usuarioId;
 
-            cmd.Parameters.AddWithValue("pUsuarioid", IdUsuario);
+            using var reader = cmd.ExecuteReader();
 
-            using (var reader = cmd.ExecuteReader())
+            while (reader.Read())
             {
-                while (reader.Read())
+                var exhorto = new consultaExhortos
                 {
-                    var exhorto = new consultaExhortos
-                    {
-                        ExhortoId = Convert.ToInt32(reader["ExhortoId"].ToString()),
-                        idOrigen = reader["idOrigen"].ToString(),
-                        tuaOrigen = reader["tuaOrigen"].ToString(),
-                        NoExhortoEnviado = reader["NoExhortoEnviado"].ToString(),
-                        NoExpediente = reader["NoExpediente"].ToString(),
-                        NoOficio = reader["NoOficio"].ToString(),
-                        Estado = reader["Estado"].ToString(),
-                        Municipio = reader["Municipio"].ToString(),
-                        Poblado = reader["Poblado"].ToString(),
-                        idDestino = reader["idDestino"].ToString(),
-                        tuaDestino = reader["tuaDestino"].ToString(),
-                        FechaAcuerdo = reader["FechaAcuerdo"].ToString(),
-                        FechaAudiencia = reader["FechaAudiencia"].ToString(),
-                        FechaEnvio = reader["FechaEnvio"].ToString(),
-                        Estatus = reader["Estatus"].ToString(),
-                    };
+                    ExhortoId = reader["ExhortoId"] != DBNull.Value ? Convert.ToInt32(reader["ExhortoId"]) : 0,
+                    idOrigen = reader["idOrigen"]?.ToString(),
+                    tuaOrigen = reader["tuaOrigen"]?.ToString(),
+                    NoExhortoEnviado = reader["NoExhortoEnviado"]?.ToString(),
+                    NoExpediente = reader["NoExpediente"]?.ToString(),
+                    NoOficio = reader["NoOficio"]?.ToString(),
+                    Estado = reader["Estado"]?.ToString(),
+                    Municipio = reader["Municipio"]?.ToString(),
+                    Poblado = reader["Poblado"]?.ToString(),
+                    idDestino = reader["idDestino"]?.ToString(),
+                    tuaDestino = reader["tuaDestino"]?.ToString(),
+                    FechaAcuerdo = reader["FechaAcuerdo"]?.ToString(),
+                    FechaAudiencia = reader["FechaAudiencia"]?.ToString(),
+                    FechaEnvio = reader["FechaEnvio"]?.ToString(),
+                    Estatus = reader["Estatus"]?.ToString()
+                };
 
-                    listaExhortos.Add(exhorto);
-                }
+                listaExhortos.Add(exhorto);
             }
 
             return listaExhortos;
         }
     }
 }
-
-
