@@ -15,9 +15,13 @@
 
         public string? NoExhortoEnviado { get; set; }
 
+        public string? NoExhortoRecibido { get; set; }
+
         public string? NoExpediente { get; set; }
 
         public string? NoOficio { get; set; }
+
+        public string? Folio { get; set; }
 
         public string? Estado { get; set; }
 
@@ -34,6 +38,16 @@
         public string? FechaAudiencia { get; set; }
 
         public string? FechaEnvio { get; set; }
+
+        public string? FechaRecepcion { get; set; }
+
+        public string? FechaAcuerdoTuaExhortado { get; set; }
+
+        public string? FechaTurnoActuaria { get; set; }
+
+        public string? FechaVencimiento { get; set; }
+
+        public string? Observaciones { get; set; }
 
         public string? Estatus { get; set; }
     }

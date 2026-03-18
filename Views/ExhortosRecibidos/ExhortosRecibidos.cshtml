@@ -1,4 +1,6 @@
-﻿@{
+﻿@model List<consultaExhortos>
+
+@{
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -9,7 +11,6 @@
             <div class="text-center mt-4 mb-4">
                 <h2>EXHORTOS RECIBIDOS</h2>
             </div>
-
 
             <div class="row mb-3">
                 <div class="col-md-4">
@@ -30,11 +31,37 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td colspan="10" class="text-center text-muted">
-                            No hay exhortos recibidos para mostrar.
-                        </td>
-                    </tr>
+                    @if (Model != null && Model.Any())
+                    {
+                        foreach (var item in Model)
+                        {
+                            <tr>
+                                <td class="text-center">
+                                    <a asp-controller="ExhortosConsulta"
+                                           asp-action="DetalleExhorto"
+                                           asp-route-id="@item.ExhortoId"
+                                           title="Ver detalle">
+                                        <img src="~/Images/Icons/eye-fill.svg" width="20" alt="Ver" />
+                                    </a>
+                                </td>
+
+                                <td style="display:none;">@item.ExhortoId</td>
+                                <td>@item.NoExhortoEnviado</td>
+                                <td>@item.NoOficio</td>
+                                <td>@item.tuaOrigen</td>
+                                <td>@item.NoExpediente</td>
+                                <td>@item.Estatus</td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="7" class="text-center text-muted">
+                                No hay exhortos recibidos para mostrar.
+                            </td>
+                        </tr>
+                    }
                 </tbody>
             </table>
 

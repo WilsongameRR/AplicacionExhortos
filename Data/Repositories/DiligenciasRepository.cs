@@ -38,7 +38,7 @@ namespace AplicacionExhortos.Data.Repositories
 
                 foreach (var diligencia in model.Diligencias)
                 {
-                    using var cmd = new MySqlCommand("sp_inserta_diligencia", conn);
+                    using var cmd = new MySqlCommand("exhortos_db.sp_inserta_diligencia", conn);
                     cmd.CommandType = CommandType.StoredProcedure;
 
                     cmd.Parameters.AddWithValue("pExhortoEnviado", model.NoExhorto);
@@ -118,14 +118,14 @@ namespace AplicacionExhortos.Data.Repositories
 
         public List<DiligenciaModel> ObtenerDiligencias(int exhortoId)
         {
+            var lista = new List<DiligenciaModel>();
+
             using var conn = _db.GetConnection();
             conn.Open();
 
-            using var cmd = new MySqlCommand("sp_consulta_diligencias", conn);
+            using var cmd = new MySqlCommand("exhortos_db.sp_consulta_diligencias", conn);
             cmd.CommandType = CommandType.StoredProcedure;
             cmd.Parameters.AddWithValue("pExhortoId", exhortoId);
-
-            List<DiligenciaModel> lista = new();
 
             using var reader = cmd.ExecuteReader();
             while (reader.Read())
@@ -140,7 +140,7 @@ namespace AplicacionExhortos.Data.Repositories
                     Destinatario = reader["Destinatario"]?.ToString(),
                     FechaDiligencia = reader["FechaDiligencia"] != DBNull.Value
                         ? Convert.ToDateTime(reader["FechaDiligencia"]).ToString("dd/MM/yyyy")
-                        : "",
+                        : string.Empty,
                     EstatusDiligencia = reader["EstatusDiligencia"]?.ToString()
                 });
             }
