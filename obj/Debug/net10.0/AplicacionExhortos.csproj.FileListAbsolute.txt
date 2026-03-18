@@ -416,4 +416,4 @@ C:\Users\rperezr_ss\Documents\AplicacionExhortos\obj\Debug\net10.0\refint\Aplica
 C:\Users\rperezr_ss\Documents\AplicacionExhortos\obj\Debug\net10.0\AplicacionExhortos.pdb
 C:\Users\rperezr_ss\Documents\AplicacionExhortos\obj\Debug\net10.0\AplicacionExhortos.genruntimeconfig.cache
 C:\Users\rperezr_ss\Documents\AplicacionExhortos\obj\Debug\net10.0\ref\AplicacionExhortos.dll
-C:\Users\rperezr_ss\Documents\AplicacionExhortos\obj\Debug\net10.0\compressed\9x3ny45tnh-{0}-8lc48uo1qr-8lc48uo1qr.gz
+C:\Users\rperezr_ss\Documents\AplicacionExhortos\obj\Debug\net10.0\compressed\9x3ny45tnh-{0}-i09h7i4y3m-i09h7i4y3m.gz

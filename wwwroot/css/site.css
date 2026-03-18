@@ -1,71 +1,90 @@
+/* ================================
+   BASE
+================================ */
 html {
-  font-size: 14px;
+    font-size: 14px;
+    position: relative;
+    min-height: 100%;
 }
 
 @media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
-}
-
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
-}
-
-html {
-  position: relative;
-  min-height: 100%;
+    html {
+        font-size: 16px;
+    }
 }
 
 body {
-  margin-bottom: 60px;
+    margin: 0;
+    margin-bottom: 60px;
 }
 
-.form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
-  color: var(--bs-secondary-color);
-  text-align: end;
+/* ================================
+   FOCUS BOOTSTRAP
+================================ */
+.btn:focus,
+.btn:active:focus,
+.btn-link.nav-link:focus,
+.form-control:focus,
+.form-check-input:focus {
+    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
 }
 
-.form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
-  text-align: start;
+/* ================================
+   PLACEHOLDER
+================================ */
+.form-floating > .form-control-plaintext::placeholder,
+.form-floating > .form-control::placeholder {
+    color: var(--bs-secondary-color);
+    text-align: end;
 }
 
-/*Icono color blanco*/
+.form-floating > .form-control-plaintext:focus::placeholder,
+.form-floating > .form-control:focus::placeholder {
+    text-align: start;
+}
+
+/* ================================
+   ICONOS
+================================ */
 .icon-white {
     filter: brightness(0) invert(1);
 }
 
-/*boton login*/
+/* ================================
+   BOTONES (VERDE)
+================================ */
 .btn-tua {
     background-color: #357E73;
-    border-color: #357E73;
-    color: white;
+    color: #ffffff;
+    border: none;
 }
 
     .btn-tua:hover {
-        background-color: #2d6c62;
-        border-color: #2d6c62;
-        color: white;
+        background-color: #2e6b62;
+        color: #ffffff;
     }
 
-    .btn-tua:focus {
-        box-shadow: 0 0 0 0.2rem rgba(53, 126, 115, 0.4);
-    }
+/* ================================
+   MODAL HEADER (VERDE)
+================================ */
+.modal-header-tua {
+    background-color: #357E73;
+    color: #ffffff;
+}
 
-/*imagen de fondo*/
+/* ================================
+   FONDO
+================================ */
 .fondo-exhortos {
     background-image: url('/Images/FondoTSA.png');
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center 30%;
-    margin-top: 0 !important;
 }
 
-body {
-    margin: 0;
-}
-
-/* Necesario para poder ocultar el icono del date */
+/* ================================
+   INPUT DATE SIN ICONO
+================================ */
 input[type="date"].sin-icono {
     position: relative;
 }
@@ -75,16 +94,55 @@ input[type="date"].sin-icono {
         display: none;
     }
 
-    input[type="date"].sin-icono::-webkit-inner-spin-button {
-        display: none;
-    }
-
+    input[type="date"].sin-icono::-webkit-inner-spin-button,
     input[type="date"].sin-icono::-webkit-clear-button {
         display: none;
     }
 
-/* PAGINACIÓN DATATABLES */
+/* ================================
+   TABLAS (NARANJA)
+================================ */
+table thead.thead-tua th {
+    background: #E87A45 !important;
+    background-color: #E87A45 !important;
+    color: #ffffff !important;
+    border-color: #E87A45 !important;
+}
 
+/* Compatibilidad Bootstrap */
+.table > thead.thead-tua > tr > th {
+    background: #E87A45 !important;
+    background-color: #E87A45 !important;
+    color: #ffffff !important;
+    border-color: #E87A45 !important;
+}
+
+/* ================================
+   PAGINACIÓN (NARANJA)
+================================ */
+.pagination .page-link {
+    color: #E87A45 !important;
+}
+
+    .pagination .page-link:hover {
+        background-color: #E87A45 !important;
+        color: #ffffff !important;
+        border-color: #E87A45 !important;
+    }
+
+.pagination .page-item.active .page-link {
+    background-color: #E87A45 !important;
+    border-color: #E87A45 !important;
+    color: #ffffff !important;
+}
+
+.pagination .page-item.disabled .page-link {
+    color: #bfbfbf !important;
+}
+
+/* ================================
+   DATATABLES (OPCIONAL)
+================================ */
 .dataTables_wrapper .dataTables_paginate {
     margin-top: 15px;
     text-align: center;
@@ -100,25 +158,18 @@ input[type="date"].sin-icono {
 
         /* Página actual */
         .dataTables_wrapper .dataTables_paginate .paginate_button.current {
-            background-color: #198754 !important;
+            background-color: #E87A45 !important;
             color: white !important;
-            font-weight: bold;
             border: none;
         }
 
         /* Hover */
         .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
-            background-color: #0d6efd !important;
+            background-color: #E87A45 !important;
             color: white !important;
         }
 
-        /* Botones anterior / siguiente */
-        .dataTables_wrapper .dataTables_paginate .paginate_button.previous,
-        .dataTables_wrapper .dataTables_paginate .paginate_button.next {
-            font-weight: bold;
-        }
-
-/* TEXTO DE INFORMACIÓN DE REGISTROS */
+/* Info */
 .dataTables_info {
     font-weight: bold;
     font-size: 15px;

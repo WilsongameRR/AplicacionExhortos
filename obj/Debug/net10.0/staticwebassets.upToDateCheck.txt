@@ -1,4 +1,3 @@
-wwwroot\css\site.css
 wwwroot\favicon.ico
 wwwroot\Images\FondoTSA.png
 wwwroot\Images\Icons\calendar-event.svg
@@ -67,9 +66,10 @@ wwwroot\lib\jquery\dist\jquery.slim.js
 wwwroot\lib\jquery\dist\jquery.slim.min.js
 wwwroot\lib\jquery\dist\jquery.slim.min.map
 wwwroot\lib\jquery\LICENSE.txt
-C:\Users\rperezr_ss\Documents\AplicacionExhortos\wwwroot\lib\jquery\LICENSE.txt
-C:\Users\rperezr_ss\Documents\AplicacionExhortos\wwwroot\css\site.css
+wwwroot\css\site.css
+C:\Users\rperezr_ss\Documents\AplicacionExhortos\wwwroot\favicon.ico
 C:\Users\rperezr_ss\Documents\AplicacionExhortos\wwwroot\Images\Icons\calendar-event.svg
+C:\Users\rperezr_ss\Documents\AplicacionExhortos\wwwroot\Images\Icons\eye-fill.svg
 C:\Users\rperezr_ss\Documents\AplicacionExhortos\wwwroot\Images\Icons\person-walking.svg
 C:\Users\rperezr_ss\Documents\AplicacionExhortos\wwwroot\js\site.js
 C:\Users\rperezr_ss\Documents\AplicacionExhortos\wwwroot\lib\bootstrap\dist\css\bootstrap-grid.css
@@ -130,5 +130,5 @@ C:\Users\rperezr_ss\Documents\AplicacionExhortos\wwwroot\lib\jquery\dist\jquery.
 C:\Users\rperezr_ss\Documents\AplicacionExhortos\wwwroot\lib\jquery\dist\jquery.slim.js
 C:\Users\rperezr_ss\Documents\AplicacionExhortos\wwwroot\lib\jquery\dist\jquery.slim.min.js
 C:\Users\rperezr_ss\Documents\AplicacionExhortos\wwwroot\lib\jquery\dist\jquery.slim.min.map
-C:\Users\rperezr_ss\Documents\AplicacionExhortos\wwwroot\favicon.ico
-C:\Users\rperezr_ss\Documents\AplicacionExhortos\wwwroot\Images\Icons\eye-fill.svg
+C:\Users\rperezr_ss\Documents\AplicacionExhortos\wwwroot\lib\jquery\LICENSE.txt
+C:\Users\rperezr_ss\Documents\AplicacionExhortos\wwwroot\css\site.css
