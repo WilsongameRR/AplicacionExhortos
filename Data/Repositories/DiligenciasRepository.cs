@@ -98,9 +98,71 @@ namespace AplicacionExhortos.Data.Repositories
             return respuesta;
         }
 
+        public ResponseBd ActualizarEstatusExhorto(string noExhorto)
+        {
+            ResponseBd respuesta = new ResponseBd();
+
+            using var conn = _db.GetConnection();
+            conn.Open();
+
+            try
+            {
+                if (string.IsNullOrWhiteSpace(noExhorto))
+                {
+                    respuesta.NoError = 1;
+                    respuesta.Mensaje = "Debe proporcionar el número de exhorto.";
+                    return respuesta;
+                }
+
+                int exhortoId = ObtenerExhortoIdPorNumero(conn, noExhorto);
+
+                if (exhortoId == 0)
+                {
+                    respuesta.NoError = 1;
+                    respuesta.Mensaje = "El número de exhorto no existe.";
+                    return respuesta;
+                }
+
+                using var cmd = new MySqlCommand("exhortos_db.sp_actualiza_estatus_exhorto", conn);
+                cmd.CommandType = CommandType.StoredProcedure;
+
+                cmd.Parameters.AddWithValue("pExhortoId", exhortoId);
+
+                var pErrorNum = new MySqlParameter("p_error_num", MySqlDbType.Int32)
+                {
+                    Direction = ParameterDirection.Output
+                };
+                cmd.Parameters.Add(pErrorNum);
+
+                var pMensaje = new MySqlParameter("p_mensaje", MySqlDbType.VarChar, 100)
+                {
+                    Direction = ParameterDirection.Output
+                };
+                cmd.Parameters.Add(pMensaje);
+
+                cmd.ExecuteNonQuery();
+
+                int noError = cmd.Parameters["p_error_num"].Value != DBNull.Value
+                    ? Convert.ToInt32(cmd.Parameters["p_error_num"].Value)
+                    : 99;
+
+                string mensaje = cmd.Parameters["p_mensaje"].Value?.ToString() ?? "Error no identificado.";
+
+                respuesta.NoError = noError;
+                respuesta.Mensaje = mensaje;
+            }
+            catch (Exception ex)
+            {
+                respuesta.NoError = 99;
+                respuesta.Mensaje = ex.Message;
+            }
+
+            return respuesta;
+        }
+
         private int ObtenerExhortoIdPorNumero(MySqlConnection conn, string? noExhorto)
         {
-            if (string.IsNullOrEmpty(noExhorto))
+            if (string.IsNullOrWhiteSpace(noExhorto))
                 return 0;
 
             using var cmd = new MySqlCommand(

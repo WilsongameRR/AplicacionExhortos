@@ -2,6 +2,32 @@
 
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
+
+    int pageSize = 5;
+    int currentPage = 1;
+
+    if (!string.IsNullOrEmpty(Context.Request.Query["page"]))
+    {
+        int.TryParse(Context.Request.Query["page"], out currentPage);
+
+        if (currentPage <= 0)
+        {
+            currentPage = 1;
+        }
+    }
+
+    var totalItems = Model.Diligencias?.Count ?? 0;
+    var totalPages = (int)Math.Ceiling((double)totalItems / pageSize);
+
+    if (totalPages == 0)
+    {
+        totalPages = 1;
+    }
+
+    var diligenciasPaginadas = Model.Diligencias?
+        .Skip((currentPage - 1) * pageSize)
+        .Take(pageSize)
+        .ToList() ?? new List<AplicacionExhortos.Models.DiligenciaModel>();
 }
 
 <div class="container-fluid fondo-exhortos min-vh-100 pb-5" style="padding-top:80px;">
@@ -101,9 +127,9 @@
                             </thead>
 
                             <tbody>
-                                @if (Model.Diligencias != null && Model.Diligencias.Any())
+                                @if (diligenciasPaginadas.Any())
                                 {
-                                    @foreach (var item in Model.Diligencias)
+                                    @foreach (var item in diligenciasPaginadas)
                                     {
                                         <tr>
                                             <td>@item.TipoDiligenciaDesc</td>
@@ -122,6 +148,48 @@
                             </tbody>
                         </table>
                     </div>
+
+                    @if (Model.Diligencias != null && Model.Diligencias.Any())
+                    {
+                        <nav aria-label="Page navigation example" class="mt-4">
+                            <ul class="pagination justify-content-center">
+
+                                <li class="page-item @(currentPage == 1 ? "disabled" : "")">
+                                    <a class="page-link"
+                                           asp-controller="ExhortosConsulta"
+                                           asp-action="DetalleExhorto"
+                                           asp-route-id="@Model.Exhorto.ExhortoId"
+                                           asp-route-page="@(currentPage - 1)">
+                                        Previous
+                                    </a>
+                                </li>
+
+                                @for (int i = 1; i <= totalPages; i++)
+                                {
+                                    <li class="page-item @(i == currentPage ? "active" : "")">
+                                        <a class="page-link"
+                                               asp-controller="ExhortosConsulta"
+                                               asp-action="DetalleExhorto"
+                                               asp-route-id="@Model.Exhorto.ExhortoId"
+                                               asp-route-page="@i">
+                                            @i
+                                        </a>
+                                    </li>
+                                }
+
+                                <li class="page-item @(currentPage == totalPages ? "disabled" : "")">
+                                    <a class="page-link"
+                                           asp-controller="ExhortosConsulta"
+                                           asp-action="DetalleExhorto"
+                                           asp-route-id="@Model.Exhorto.ExhortoId"
+                                           asp-route-page="@(currentPage + 1)">
+                                        Next
+                                    </a>
+                                </li>
+
+                            </ul>
+                        </nav>
+                    }
 
                     <div class="text-center mt-4">
                         <a asp-controller="ExhortosConsulta"

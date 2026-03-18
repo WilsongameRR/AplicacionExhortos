@@ -14,9 +14,20 @@ namespace AplicacionExhortos.Controllers
         }
 
         [HttpGet]
-        public IActionResult AltaDiligencia()
+        public IActionResult AltaDiligencia(string? noExhorto = null)
         {
-            return View(new AltaDiligenciasModel());
+            AltaDiligenciasModel model = new AltaDiligenciasModel
+            {
+                NoExhorto = noExhorto ?? string.Empty
+            };
+
+            ViewBag.MostrarConfirmacionFinal = TempData["MostrarConfirmacionFinal"] != null;
+            ViewBag.MostrarPanelEnvio = TempData["MostrarPanelEnvio"] != null;
+            ViewBag.ExitoEnvio = TempData["ExitoEnvio"];
+            ViewBag.ErrorDiligencias = TempData["ErrorDiligencias"];
+            ViewBag.ExitoDiligencias = TempData["ExitoDiligencias"];
+
+            return View(model);
         }
 
         [HttpPost]
@@ -50,6 +61,31 @@ namespace AplicacionExhortos.Controllers
             }
 
             TempData["ExitoDiligencias"] = "Diligencias guardadas correctamente.";
+            TempData["MostrarConfirmacionFinal"] = true;
+
+            return RedirectToAction("AltaDiligencia", new { noExhorto = model.NoExhorto });
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult EnviarExhorto(string noExhorto)
+        {
+            if (string.IsNullOrWhiteSpace(noExhorto))
+            {
+                TempData["ErrorDiligencias"] = "Debe proporcionar el número de exhorto.";
+                return RedirectToAction("AltaDiligencia");
+            }
+
+            ResponseBd respuesta = _diligenciasRepository.ActualizarEstatusExhorto(noExhorto);
+
+            if (respuesta.NoError != 0)
+            {
+                TempData["ErrorDiligencias"] = "No fue posible enviar el exhorto.";
+                TempData["MostrarPanelEnvio"] = true;
+                return RedirectToAction("AltaDiligencia", new { noExhorto });
+            }
+
+            TempData["ExitoEnvio"] = "El exhorto fue enviado correctamente.";
             return RedirectToAction("AltaDiligencia");
         }
     }

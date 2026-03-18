@@ -1,7 +1,11 @@
 ﻿@model AplicacionExhortos.Models.AltaDiligenciasModel
 @using AplicacionExhortos.Models
+
 @{
     ViewData["Title"] = "Alta de Diligencia";
+
+    bool mostrarConfirmacionFinal = ViewBag.MostrarConfirmacionFinal ?? false;
+    bool mostrarPanelEnvio = ViewBag.MostrarPanelEnvio ?? false;
 }
 
 <div class="container-fluid fondo-exhortos min-vh-100 pb-5" style="padding-top:40px;">
@@ -18,11 +22,33 @@
                 </small>
             </div>
 
+            @if (ViewBag.ErrorDiligencias != null)
+            {
+                <div class="alert alert-danger text-center mt-3">
+                    @ViewBag.ErrorDiligencias
+                </div>
+            }
+
+            @if (ViewBag.ExitoDiligencias != null)
+            {
+                <div class="alert alert-success text-center mt-3">
+                    @ViewBag.ExitoDiligencias
+                </div>
+            }
+
+            @if (ViewBag.ExitoEnvio != null)
+            {
+                <div class="alert alert-success text-center mt-3">
+                    @ViewBag.ExitoEnvio
+                </div>
+            }
+
             <form id="formDiligencias"
                   method="post"
                   asp-controller="Diligencias"
                   asp-action="GuardarDiligencias"
                   novalidate>
+                @Html.AntiForgeryToken()
 
                 <input type="hidden" asp-for="NoExhorto" id="NoExhortoHidden" />
 
@@ -63,7 +89,6 @@
                             <span class="required">*</span> Destinatario
                         </label>
                         <input type="text"
-                               name="Destinatario"
                                class="form-control text-uppercase"
                                id="Destinatario"
                                maxlength="200" />
@@ -86,9 +111,7 @@
                     </div>
 
                     <div class="col-12 text-center mt-3">
-                        <button type="button"
-                                id="btnAgregarDiligencia"
-                                class="btn btn-tua">
+                        <button type="button" id="btnAgregarDiligencia" class="btn btn-tua">
                             Agregar
                         </button>
                     </div>
@@ -122,7 +145,7 @@
                     Debe agregar al menos una diligencia antes de guardar.
                 </div>
 
-                <div class="col-12 text-center mt-4">
+                <div class="col-12 text-center mt-4" id="panelGuardarDiligencias">
                     <button type="submit" id="btnGuardarDili" class="btn btn-success me-2">
                         Guardar diligencias
                     </button>
@@ -131,256 +154,283 @@
                         Cancelar
                     </button>
                 </div>
-
             </form>
 
-        </div>
-    </div>
-</div>
+            <div id="panelEnviarExhorto" class="col-12 text-center mt-4 d-none">
+                <p class="fw-semibold text-primary mb-3">
+                    Para que el TUA Destino reciba el exhorto registrado, debe dar clic en el botón
+                    “Enviar Exhorto” para que lo reciba.
+                </p>
 
-<div class="position-fixed bottom-0 end-0 p-3" style="z-index: 9999;">
-    <div id="toastDiligenciaGuardada"
-         class="toast align-items-center text-bg-success border-0"
-         role="alert"
-         aria-live="assertive"
-         aria-atomic="true"
-         data-bs-delay="1200">
-        <div class="d-flex">
-            <div class="toast-body">
-                Diligencias guardadas correctamente.
+                <form asp-controller="Diligencias"
+                      asp-action="EnviarExhorto"
+                      method="post"
+                      id="formEnviarExhorto">
+                    @Html.AntiForgeryToken()
+
+                    <input type="hidden" name="noExhorto" id="NoExhortoEnviar" />
+
+                    <button type="button" id="btnCancelarEnvio" class="btn btn-secondary me-2">
+                        Cancelar
+                    </button>
+
+                    <button type="submit" id="btnEnviarExhorto" class="btn btn-primary">
+                        Enviar Exhorto
+                    </button>
+                </form>
             </div>
-            <button type="button"
-                    class="btn-close btn-close-white me-2 m-auto"
-                    data-bs-dismiss="toast"
-                    aria-label="Cerrar"></button>
+
         </div>
     </div>
 </div>
 
 @section Scripts {
     <script>
-        const formDiligencias = document.getElementById("formDiligencias");
-        const tipoDiligencia = document.getElementById("TipoDiligenciaId");
-        const noExhorto = document.getElementById("NoExhorto");
-        const noExhortoHidden = document.getElementById("NoExhortoHidden");
-        const destinatario = document.getElementById("Destinatario");
-        const bloqueOtro = document.getElementById("bloqueOtro");
-        const otro = document.getElementById("Otro");
-        const btnAgregar = document.getElementById("btnAgregarDiligencia");
-        const tbody = document.querySelector("#tablaDiligencias tbody");
-        const contenedorHidden = document.getElementById("contenedorHiddenDiligencias");
-        const mensajeDiligencias = document.getElementById("mensajeDiligencias");
+        (() => {
+            const $ = (id) => document.getElementById(id);
 
-        let diligencias = [];
-        let enviandoFormulario = false;
+            const formDiligencias = $("formDiligencias");
+            const tipoDiligencia = $("TipoDiligenciaId");
+            const noExhorto = $("NoExhorto");
+            const noExhortoHidden = $("NoExhortoHidden");
+            const destinatario = $("Destinatario");
+            const bloqueOtro = $("bloqueOtro");
+            const otro = $("Otro");
+            const btnAgregar = $("btnAgregarDiligencia");
+            const tbody = document.querySelector("#tablaDiligencias tbody");
+            const contenedorHidden = $("contenedorHiddenDiligencias");
+            const mensajeDiligencias = $("mensajeDiligencias");
 
-        function convertirMayusculas(texto) {
-            return (texto || "").trim().toUpperCase();
-        }
+            const panelGuardar = $("panelGuardarDiligencias");
+            const panelEnviar = $("panelEnviarExhorto");
+            const btnCancelarEnvio = $("btnCancelarEnvio");
+            const noExhortoEnviar = $("NoExhortoEnviar");
 
-        function escaparHtml(texto) {
-            return (texto || "")
-                .replaceAll("&", "&amp;")
-                .replaceAll("<", "&lt;")
-                .replaceAll(">", "&gt;")
-                .replaceAll('"', "&quot;")
-                .replaceAll("'", "&#39;");
-        }
+            const mostrarConfirmacion = '@mostrarConfirmacionFinal'.toLowerCase() === 'true';
+            const mostrarEnvio = '@mostrarPanelEnvio'.toLowerCase() === 'true';
 
-        function limpiarValidacionesCaptura() {
-            noExhorto.classList.remove("is-invalid");
-            tipoDiligencia.classList.remove("is-invalid");
-            destinatario.classList.remove("is-invalid");
-            otro.classList.remove("is-invalid");
-        }
+            let diligencias = [];
+            let enviandoFormulario = false;
 
-        function limpiarCampos() {
-            tipoDiligencia.value = "";
-            destinatario.value = "";
-            otro.value = "";
+            const upper = (valor) => (valor || "").trim().toUpperCase();
 
-            bloqueOtro.classList.add("d-none");
-            otro.required = false;
+            const escapeHtml = (texto) =>
+                (texto || "")
+                    .replaceAll("&", "&amp;")
+                    .replaceAll("<", "&lt;")
+                    .replaceAll(">", "&gt;")
+                    .replaceAll('"', "&quot;")
+                    .replaceAll("'", "&#39;");
 
-            limpiarValidacionesCaptura();
-        }
-
-        function limpiarTodoFormulario() {
-            diligencias = [];
-            tbody.innerHTML = "";
-            contenedorHidden.innerHTML = "";
-            mensajeDiligencias.classList.add("d-none");
-
-            noExhorto.value = "";
-            noExhortoHidden.value = "";
-
-            tipoDiligencia.value = "";
-            destinatario.value = "";
-            otro.value = "";
-
-            bloqueOtro.classList.add("d-none");
-            otro.required = false;
-
-            limpiarValidacionesCaptura();
-        }
-
-        tipoDiligencia.addEventListener("change", function () {
-            const texto = this.options[this.selectedIndex].text.trim().toUpperCase();
-
-            bloqueOtro.classList.add("d-none");
-            otro.value = "";
-            otro.required = false;
-            otro.classList.remove("is-invalid");
-
-            if (texto === "OTRA") {
-                bloqueOtro.classList.remove("d-none");
-                otro.required = true;
-            }
-        });
-
-        btnAgregar.addEventListener("click", function () {
-            limpiarValidacionesCaptura();
-
-            const noExhortoValor = convertirMayusculas(noExhorto.value);
-            const tipoId = tipoDiligencia.value;
-            const tipoTexto = tipoDiligencia.options[tipoDiligencia.selectedIndex].text.trim().toUpperCase();
-            const destinatarioValor = convertirMayusculas(destinatario.value);
-            const otroValor = convertirMayusculas(otro.value);
-
-            noExhorto.value = noExhortoValor;
-            noExhortoHidden.value = noExhortoValor;
-            destinatario.value = destinatarioValor;
-            otro.value = otroValor;
-
-            let formularioValido = true;
-
-            if (noExhortoValor === "") {
-                noExhorto.classList.add("is-invalid");
-                formularioValido = false;
-            }
-
-            if (tipoId === "") {
-                tipoDiligencia.classList.add("is-invalid");
-                formularioValido = false;
-            }
-
-            if (destinatarioValor === "") {
-                destinatario.classList.add("is-invalid");
-                formularioValido = false;
-            }
-
-            if (tipoTexto === "OTRA" && otroValor === "") {
-                otro.classList.add("is-invalid");
-                formularioValido = false;
-            }
-
-            if (!formularioValido) {
-                return;
-            }
-
-            const item = {
-                NoExhorto: noExhortoValor,
-                TipoDiligenciaId: tipoId,
-                TipoDiligenciaDesc: tipoTexto,
-                Destinatario: destinatarioValor,
-                Otro: otroValor
+            const toggle = (elemento, mostrar) => {
+                elemento.classList.toggle("d-none", !mostrar);
             };
 
-            diligencias.push(item);
+            const limpiarInvalidos = () => {
+                [noExhorto, tipoDiligencia, destinatario, otro].forEach(campo => campo.classList.remove("is-invalid"));
+            };
 
-            renderTabla();
-            limpiarCampos();
-            mensajeDiligencias.classList.add("d-none");
-        });
+            const limpiarCaptura = () => {
+                tipoDiligencia.value = "";
+                destinatario.value = "";
+                otro.value = "";
+                otro.required = false;
+                toggle(bloqueOtro, false);
+                limpiarInvalidos();
+            };
 
-        function renderTabla() {
-            tbody.innerHTML = "";
-            contenedorHidden.innerHTML = "";
+            const resetFormularioCompleto = () => {
+                diligencias = [];
+                tbody.innerHTML = "";
+                contenedorHidden.innerHTML = "";
+                mensajeDiligencias.classList.add("d-none");
 
-            if (diligencias.length > 0) {
-                noExhortoHidden.value = diligencias[0].NoExhorto;
-            }
+                noExhorto.value = "";
+                noExhortoHidden.value = "";
+                noExhortoEnviar.value = "";
 
-            diligencias.forEach((d, index) => {
-                const fila = document.createElement("tr");
+                limpiarCaptura();
+                mostrarPanelGuardar();
+            };
 
-                fila.innerHTML = `
-                    <td>${escaparHtml(d.NoExhorto)}</td>
-                    <td>${escaparHtml(d.TipoDiligenciaDesc)}</td>
-                    <td>${escaparHtml(d.Destinatario)}</td>
-                    <td>${escaparHtml(d.Otro || "")}</td>
+            const mostrarPanelGuardar = () => {
+                toggle(panelGuardar, true);
+                toggle(panelEnviar, false);
+                noExhortoEnviar.value = "";
+            };
+
+            const mostrarPanelEnvio = () => {
+                const numero = upper(noExhortoHidden.value || noExhorto.value);
+                noExhortoEnviar.value = numero;
+                toggle(panelGuardar, false);
+                toggle(panelEnviar, true);
+            };
+
+            const obtenerTextoTipo = () =>
+                tipoDiligencia.options[tipoDiligencia.selectedIndex]?.text?.trim().toUpperCase() || "";
+
+            const validarCaptura = () => {
+                limpiarInvalidos();
+
+                const numero = upper(noExhorto.value);
+                const tipoId = tipoDiligencia.value;
+                const tipoTexto = obtenerTextoTipo();
+                const destinatarioValor = upper(destinatario.value);
+                const otroValor = upper(otro.value);
+
+                let esValido = true;
+
+                if (!numero) {
+                    noExhorto.classList.add("is-invalid");
+                    esValido = false;
+                }
+
+                if (!tipoId) {
+                    tipoDiligencia.classList.add("is-invalid");
+                    esValido = false;
+                }
+
+                if (!destinatarioValor) {
+                    destinatario.classList.add("is-invalid");
+                    esValido = false;
+                }
+
+                if (tipoTexto === "OTRA" && !otroValor) {
+                    otro.classList.add("is-invalid");
+                    esValido = false;
+                }
+
+                return esValido;
+            };
+
+            const obtenerDiligenciaActual = () => {
+                const numero = upper(noExhorto.value);
+                const tipoId = tipoDiligencia.value;
+                const tipoTexto = obtenerTextoTipo();
+                const destinatarioValor = upper(destinatario.value);
+                const otroValor = upper(otro.value);
+
+                noExhorto.value = numero;
+                noExhortoHidden.value = numero;
+                destinatario.value = destinatarioValor;
+                otro.value = otroValor;
+
+                return {
+                    NoExhorto: numero,
+                    TipoDiligenciaId: tipoId,
+                    TipoDiligenciaDesc: tipoTexto,
+                    Destinatario: destinatarioValor,
+                    Otro: otroValor
+                };
+            };
+
+            const construirHiddenInputs = (d, index) => `
+                <input type="hidden" name="Diligencias[${index}].NoExhorto" value="${escapeHtml(d.NoExhorto)}" />
+                <input type="hidden" name="Diligencias[${index}].TipoDiligenciaId" value="${escapeHtml(d.TipoDiligenciaId)}" />
+                <input type="hidden" name="Diligencias[${index}].TipoDiligenciaDesc" value="${escapeHtml(d.TipoDiligenciaDesc)}" />
+                <input type="hidden" name="Diligencias[${index}].Destinatario" value="${escapeHtml(d.Destinatario)}" />
+                <input type="hidden" name="Diligencias[${index}].OtraEspecificar" value="${escapeHtml(d.Otro || "")}" />
+            `;
+
+            const construirFila = (d, index) => `
+                <tr>
+                    <td>${escapeHtml(d.NoExhorto)}</td>
+                    <td>${escapeHtml(d.TipoDiligenciaDesc)}</td>
+                    <td>${escapeHtml(d.Destinatario)}</td>
+                    <td>${escapeHtml(d.Otro || "")}</td>
                     <td>
                         <button type="button" class="btn btn-danger btn-sm" onclick="eliminarDiligencia(${index})">
                             Eliminar
                         </button>
                     </td>
-                `;
+                </tr>
+            `;
 
-                tbody.appendChild(fila);
+            const renderTabla = () => {
+                tbody.innerHTML = diligencias.map(construirFila).join("");
+                contenedorHidden.innerHTML = diligencias.map(construirHiddenInputs).join("");
 
-                contenedorHidden.innerHTML += `
-                    <input type="hidden" name="Diligencias[${index}].NoExhorto" value="${escaparHtml(d.NoExhorto)}" />
-                    <input type="hidden" name="Diligencias[${index}].TipoDiligenciaId" value="${escaparHtml(d.TipoDiligenciaId)}" />
-                    <input type="hidden" name="Diligencias[${index}].TipoDiligenciaDesc" value="${escaparHtml(d.TipoDiligenciaDesc)}" />
-                    <input type="hidden" name="Diligencias[${index}].Destinatario" value="${escaparHtml(d.Destinatario)}" />
-                    <input type="hidden" name="Diligencias[${index}].Otro" value="${escaparHtml(d.Otro || "")}" />
-                `;
+                noExhortoHidden.value = diligencias.length > 0 ? diligencias[0].NoExhorto : "";
+
+                if (diligencias.length === 0) {
+                    mensajeDiligencias.classList.remove("d-none");
+                } else {
+                    mensajeDiligencias.classList.add("d-none");
+                }
+            };
+
+            const agregarDiligencia = () => {
+                if (!validarCaptura()) {
+                    return;
+                }
+
+                diligencias.push(obtenerDiligenciaActual());
+                renderTabla();
+                limpiarCaptura();
+            };
+
+            const eliminarDiligencia = (index) => {
+                diligencias.splice(index, 1);
+                renderTabla();
+            };
+
+            const prepararEnvioFormulario = (event) => {
+                if (enviandoFormulario) {
+                    return;
+                }
+
+                if (diligencias.length === 0) {
+                    event.preventDefault();
+                    mensajeDiligencias.classList.remove("d-none");
+                    return;
+                }
+
+                const numero = diligencias[0].NoExhorto || upper(noExhorto.value);
+
+                noExhorto.value = numero;
+                noExhortoHidden.value = numero;
+
+                formDiligencias
+                    .querySelectorAll("input[type='text']")
+                    .forEach(input => input.value = upper(input.value));
+
+                enviandoFormulario = true;
+            };
+
+            tipoDiligencia.addEventListener("change", () => {
+                const esOtra = obtenerTextoTipo() === "OTRA";
+                toggle(bloqueOtro, esOtra);
+                otro.required = esOtra;
+
+                if (!esOtra) {
+                    otro.value = "";
+                    otro.classList.remove("is-invalid");
+                }
             });
-        }
 
-        function eliminarDiligencia(index) {
-            diligencias.splice(index, 1);
-            renderTabla();
+            btnAgregar.addEventListener("click", agregarDiligencia);
 
-            if (diligencias.length === 0) {
-                mensajeDiligencias.classList.remove("d-none");
-                noExhortoHidden.value = "";
-            }
-        }
+            formDiligencias.addEventListener("submit", prepararEnvioFormulario);
 
-        formDiligencias.addEventListener("submit", function (event) {
-            if (enviandoFormulario) {
-                return;
-            }
-
-            const inputsTexto = formDiligencias.querySelectorAll("input[type='text']");
-            inputsTexto.forEach(input => {
-                input.value = input.value.toUpperCase();
+            formDiligencias.addEventListener("reset", () => {
+                setTimeout(resetFormularioCompleto, 0);
             });
 
-            if (diligencias.length === 0) {
-                event.preventDefault();
-                mensajeDiligencias.classList.remove("d-none");
-                return;
-            }
+            btnCancelarEnvio?.addEventListener("click", mostrarPanelGuardar);
 
-            const noExhortoValor = diligencias.length > 0
-                ? diligencias[0].NoExhorto
-                : convertirMayusculas(noExhorto.value);
+            window.eliminarDiligencia = eliminarDiligencia;
 
-            noExhorto.value = noExhortoValor;
-            noExhortoHidden.value = noExhortoValor;
-            mensajeDiligencias.classList.add("d-none");
+            document.addEventListener("DOMContentLoaded", () => {
+                noExhortoEnviar.value = upper(noExhortoHidden.value || noExhorto.value);
 
-            event.preventDefault();
+                if (mostrarConfirmacion) {
+                    const respuesta = confirm("Ha finalizado con el registro de diligencias");
+                    respuesta ? mostrarPanelEnvio() : mostrarPanelGuardar();
+                    return;
+                }
 
-            const toastElement = document.getElementById("toastDiligenciaGuardada");
-            const toast = new bootstrap.Toast(toastElement);
-            toast.show();
-
-            enviandoFormulario = true;
-
-            setTimeout(() => {
-                formDiligencias.submit();
-            }, 1200);
-        });
-
-        formDiligencias.addEventListener("reset", function () {
-            setTimeout(() => {
-                limpiarTodoFormulario();
-            }, 0);
-        });
-
-        window.eliminarDiligencia = eliminarDiligencia;
+                mostrarEnvio ? mostrarPanelEnvio() : mostrarPanelGuardar();
+            });
+        })();
     </script>
 }
