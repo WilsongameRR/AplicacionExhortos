@@ -2,8 +2,7 @@
 {
     public class DetalleExhortoModel
     {
-        public consultaExhortos Exhorto { get; set; } = new consultaExhortos();
-
-        public List<DiligenciaModel> Diligencias { get; set; } = new();
+        public ConsultaExhortos Exhorto { get; set; } = new ConsultaExhortos();
+        public List<DiligenciaModel> Diligencias { get; set; } = new List<DiligenciaModel>();
     }
 }

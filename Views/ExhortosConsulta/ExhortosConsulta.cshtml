@@ -1,4 +1,4 @@
-﻿@model List<consultaExhortos>
+﻿@model List<AplicacionExhortos.Models.ConsultaExhortos>
 
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -12,8 +12,6 @@
                 <h2>EXHORTOS ENVIADOS</h2>
             </div>
 
-            @* Diagnóstico temporal *@
-            
             <div class="row mb-3">
                 <div class="col-md-4">
                     <input class="form-control" id="txtBuscar" type="text" placeholder="Buscar..." />
@@ -55,7 +53,7 @@
                                 <td>@item.NoExpediente</td>
                                 <td>@item.Estado</td>
                                 <td>@item.Municipio</td>
-                                <td>@item.tuaDestino</td>
+                                <td>@item.TuaDestino</td>
                                 <td>@(string.IsNullOrWhiteSpace(item.FechaAcuerdo) ? string.Empty : item.FechaAcuerdo.Split(' ')[0])</td>
                                 <td>@(string.IsNullOrWhiteSpace(item.FechaEnvio) ? string.Empty : item.FechaEnvio.Split(' ')[0])</td>
                                 <td>@item.Estatus</td>

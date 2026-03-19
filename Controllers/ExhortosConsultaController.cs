@@ -28,7 +28,7 @@ namespace AplicacionExhortos.Controllers
                 return RedirectToAction("Login", "Login");
             }
 
-            List<consultaExhortos> listaExhortos = _consultaExhortoRepository.ConsultaExhorto(usuarioId);
+            List<ConsultaExhortos> listaExhortos = _consultaExhortoRepository.ConsultaExhorto(usuarioId);
 
             ViewBag.UsuarioIdSesion = usuarioId;
             ViewBag.TotalRegistros = listaExhortos.Count;
@@ -47,9 +47,9 @@ namespace AplicacionExhortos.Controllers
                 return RedirectToAction("Login", "Login");
             }
 
-            List<consultaExhortos> listaExhortos = _consultaExhortoRepository.ConsultaExhorto(usuarioId);
+            List<ConsultaExhortos> listaExhortos = _consultaExhortoRepository.ConsultaExhorto(usuarioId);
 
-            consultaExhortos? exhorto = listaExhortos.FirstOrDefault(x => x.ExhortoId == id);
+            ConsultaExhortos? exhorto = listaExhortos.FirstOrDefault(x => x.ExhortoId == id);
 
             if (exhorto == null)
             {
