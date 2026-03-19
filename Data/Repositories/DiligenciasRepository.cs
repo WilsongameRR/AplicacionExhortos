@@ -123,7 +123,10 @@ namespace AplicacionExhortos.Data.Repositories
                     return respuesta;
                 }
 
-                using var cmd = new MySqlCommand("exhortos_db.sp_actualiza_estatus_exhorto", conn);
+                // AQUÍ ESTABA EL CAMBIO IMPORTANTE:
+                // antes tenías: exhortos_db.sp_actualiza_estatus_exhorto
+                // ahora debe ser el SP correcto: exhortos_db.sp_envia_exhorto
+                using var cmd = new MySqlCommand("exhortos_db.sp_envia_exhorto", conn);
                 cmd.CommandType = CommandType.StoredProcedure;
 
                 cmd.Parameters.AddWithValue("pExhortoId", exhortoId);
@@ -166,10 +169,13 @@ namespace AplicacionExhortos.Data.Repositories
                 return 0;
 
             using var cmd = new MySqlCommand(
-                "SELECT ExhortoId FROM exhortos WHERE NoExhortoEnviado = @NoExhorto LIMIT 1",
+                @"SELECT ExhortoId
+          FROM exhortos_db.exhorto
+          WHERE TRIM(NoExhortoEnviado) = TRIM(@NoExhorto)
+          LIMIT 1",
                 conn);
 
-            cmd.Parameters.AddWithValue("@NoExhorto", noExhorto);
+            cmd.Parameters.AddWithValue("@NoExhorto", noExhorto.Trim());
 
             var resultado = cmd.ExecuteScalar();
 
@@ -201,8 +207,8 @@ namespace AplicacionExhortos.Data.Repositories
                     OtraEspecificar = reader["OtraEspecificar"]?.ToString(),
                     Destinatario = reader["Destinatario"]?.ToString(),
                     FechaDiligencia = reader["FechaDiligencia"] != DBNull.Value
-                        ? Convert.ToDateTime(reader["FechaDiligencia"]).ToString("dd/MM/yyyy")
-                        : string.Empty,
+                        ? Convert.ToDateTime(reader["FechaDiligencia"])
+                        : (DateTime?)null,
                     EstatusDiligencia = reader["EstatusDiligencia"]?.ToString()
                 });
             }

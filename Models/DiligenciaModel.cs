@@ -9,8 +9,8 @@
         public string? TipoDiligenciaDesc { get; set; }
         public string? OtraEspecificar { get; set; }
         public string? Destinatario { get; set; }
-        public string? FechaDiligencia { get; set; }
+        public DateTime? FechaDiligencia { get; set; }
         public string? EstatusDiligencia { get; set; }
-        public string? FechaAudiencia { get; set; }
+        public DateTime? FechaAudiencia { get; set; }
     }
 }

@@ -23,9 +23,9 @@ namespace AplicacionExhortos.Controllers
 
             ViewBag.MostrarConfirmacionFinal = TempData["MostrarConfirmacionFinal"] != null;
             ViewBag.MostrarPanelEnvio = TempData["MostrarPanelEnvio"] != null;
-            ViewBag.ExitoEnvio = TempData["ExitoEnvio"];
-            ViewBag.ErrorDiligencias = TempData["ErrorDiligencias"];
-            ViewBag.ExitoDiligencias = TempData["ExitoDiligencias"];
+            ViewBag.ExitoEnvio = TempData["ExitoEnvio"]?.ToString();
+            ViewBag.ErrorDiligencias = TempData["ErrorDiligencias"]?.ToString();
+            ViewBag.ExitoDiligencias = TempData["ExitoDiligencias"]?.ToString();
 
             return View(model);
         }
@@ -34,7 +34,7 @@ namespace AplicacionExhortos.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult GuardarDiligencias(AltaDiligenciasModel model)
         {
-            if (string.IsNullOrEmpty(model.NoExhorto))
+            if (string.IsNullOrWhiteSpace(model.NoExhorto))
             {
                 TempData["ErrorDiligencias"] = "Debe capturar el número de exhorto.";
                 return View("AltaDiligencia", model);
@@ -48,20 +48,21 @@ namespace AplicacionExhortos.Controllers
 
             ResponseBd respuesta = _diligenciasRepository.GuardarDiligencias(model);
 
-            if (respuesta.NoError == 1)
+            if (respuesta.NoError != 0)
             {
-                TempData["ErrorDiligencias"] = "El número de exhorto no existe.";
-                return View("AltaDiligencia", model);
+                TempData["ErrorDiligencias"] = string.IsNullOrWhiteSpace(respuesta.Mensaje)
+                    ? "No fue posible guardar las diligencias."
+                    : respuesta.Mensaje;
+
+                return RedirectToAction("AltaDiligencia", new { noExhorto = model.NoExhorto });
             }
 
-            if (respuesta.NoError == 99)
-            {
-                TempData["ErrorDiligencias"] = "Error inesperado en la base de datos.";
-                return View("AltaDiligencia", model);
-            }
+            TempData["ExitoDiligencias"] = string.IsNullOrWhiteSpace(respuesta.Mensaje)
+                ? "Diligencias guardadas correctamente."
+                : respuesta.Mensaje;
 
-            TempData["ExitoDiligencias"] = "Diligencias guardadas correctamente.";
             TempData["MostrarConfirmacionFinal"] = true;
+            TempData["MostrarPanelEnvio"] = true;
 
             return RedirectToAction("AltaDiligencia", new { noExhorto = model.NoExhorto });
         }
@@ -70,6 +71,8 @@ namespace AplicacionExhortos.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult EnviarExhorto(string noExhorto)
         {
+            noExhorto = noExhorto?.Trim();
+
             if (string.IsNullOrWhiteSpace(noExhorto))
             {
                 TempData["ErrorDiligencias"] = "Debe proporcionar el número de exhorto.";
@@ -80,13 +83,24 @@ namespace AplicacionExhortos.Controllers
 
             if (respuesta.NoError != 0)
             {
-                TempData["ErrorDiligencias"] = "No fue posible enviar el exhorto.";
+                TempData["ErrorDiligencias"] = string.IsNullOrWhiteSpace(respuesta.Mensaje)
+                    ? "No fue posible enviar el exhorto."
+                    : respuesta.Mensaje;
+
                 TempData["MostrarPanelEnvio"] = true;
+                TempData["MostrarConfirmacionFinal"] = true;
+
                 return RedirectToAction("AltaDiligencia", new { noExhorto });
             }
 
-            TempData["ExitoEnvio"] = "El exhorto fue enviado correctamente.";
-            return RedirectToAction("AltaDiligencia");
+            TempData["ExitoEnvio"] = string.IsNullOrWhiteSpace(respuesta.Mensaje)
+                ? "El exhorto fue enviado correctamente."
+                : respuesta.Mensaje;
+
+            TempData["MostrarPanelEnvio"] = true;
+            TempData["MostrarConfirmacionFinal"] = true;
+
+            return RedirectToAction("AltaDiligencia", new { noExhorto });
         }
     }
 }
