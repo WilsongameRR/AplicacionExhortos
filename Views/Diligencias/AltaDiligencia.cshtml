@@ -3,9 +3,6 @@
 
 @{
     ViewData["Title"] = "Alta de Diligencia";
-
-    bool mostrarConfirmacionFinal = ViewBag.MostrarConfirmacionFinal ?? false;
-    bool mostrarPanelEnvio = ViewBag.MostrarPanelEnvio ?? false;
 }
 
 <div class="container-fluid fondo-exhortos min-vh-100 pb-5" style="padding-top:40px;">
@@ -156,7 +153,7 @@
 
                 <div class="col-12 text-center mt-4" id="panelGuardarDiligencias">
                     <button type="submit" id="btnGuardarDili" class="btn btn-tua me-2">
-                        Guardar diligencias
+                        Guardar
                     </button>
 
                     <button type="reset" class="btn btn-secondary">
@@ -164,30 +161,6 @@
                     </button>
                 </div>
             </form>
-
-            <div id="panelEnviarExhorto" class="col-12 text-center mt-4 d-none">
-                <p class="fw-semibold text-primary mb-3">
-                    Para que el TUA Destino reciba el exhorto registrado, debe dar clic en el botón
-                    “Enviar Exhorto” para que lo reciba.
-                </p>
-
-                <form asp-controller="Diligencias"
-                      asp-action="EnviarExhorto"
-                      method="post"
-                      id="formEnviarExhorto">
-                    @Html.AntiForgeryToken()
-
-                    <input type="hidden" name="noExhorto" id="NoExhortoEnviar" />
-
-                    <button type="button" id="btnCancelarEnvio" class="btn btn-secondary me-2">
-                        Cancelar
-                    </button>
-
-                    <button type="submit" id="btnEnviarExhorto" class="btn btn-tua">
-                        Enviar Exhorto
-                    </button>
-                </form>
-            </div>
 
         </div>
     </div>
@@ -210,14 +183,6 @@
             const contenedorHidden = $("contenedorHiddenDiligencias");
             const mensajeDiligencias = $("mensajeDiligencias");
 
-            const panelGuardar = $("panelGuardarDiligencias");
-            const panelEnviar = $("panelEnviarExhorto");
-            const btnCancelarEnvio = $("btnCancelarEnvio");
-            const noExhortoEnviar = $("NoExhortoEnviar");
-
-            const mostrarConfirmacion = '@mostrarConfirmacionFinal'.toLowerCase() === 'true';
-            const mostrarEnvio = '@mostrarPanelEnvio'.toLowerCase() === 'true';
-
             let diligencias = [];
             let enviandoFormulario = false;
 
@@ -236,7 +201,9 @@
             };
 
             const limpiarInvalidos = () => {
-                [noExhorto, tipoDiligencia, destinatario, otro].forEach(campo => campo.classList.remove("is-invalid"));
+                [noExhorto, tipoDiligencia, destinatario, otro].forEach(campo => {
+                    if (campo) campo.classList.remove("is-invalid");
+                });
             };
 
             const limpiarCaptura = () => {
@@ -256,23 +223,8 @@
 
                 noExhorto.value = "";
                 noExhortoHidden.value = "";
-                noExhortoEnviar.value = "";
 
                 limpiarCaptura();
-                mostrarPanelGuardar();
-            };
-
-            const mostrarPanelGuardar = () => {
-                toggle(panelGuardar, true);
-                toggle(panelEnviar, false);
-                noExhortoEnviar.value = "";
-            };
-
-            const mostrarPanelEnvio = () => {
-                const numero = upper(noExhortoHidden.value || noExhorto.value);
-                noExhortoEnviar.value = numero;
-                toggle(panelGuardar, false);
-                toggle(panelEnviar, true);
             };
 
             const obtenerTextoTipo = () =>
@@ -425,21 +377,7 @@
                 setTimeout(resetFormularioCompleto, 0);
             });
 
-            btnCancelarEnvio?.addEventListener("click", mostrarPanelGuardar);
-
             window.eliminarDiligencia = eliminarDiligencia;
-
-            document.addEventListener("DOMContentLoaded", () => {
-                noExhortoEnviar.value = upper(noExhortoHidden.value || noExhorto.value);
-
-                if (mostrarConfirmacion) {
-                    const respuesta = confirm("Ha finalizado con el registro de diligencias");
-                    respuesta ? mostrarPanelEnvio() : mostrarPanelGuardar();
-                    return;
-                }
-
-                mostrarEnvio ? mostrarPanelEnvio() : mostrarPanelGuardar();
-            });
         })();
     </script>
 }

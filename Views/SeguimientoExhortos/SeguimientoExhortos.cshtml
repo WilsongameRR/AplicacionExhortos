@@ -1,0 +1,108 @@
+﻿@model List<AplicacionExhortos.Models.ConsultaExhortos>
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid fondo-exhortos min-vh-100 pb-5" style="padding-top:80px;">
+    <div class="row justify-content-center">
+        <div class="col-12 col-lg-10">
+
+            <!-- TÍTULO -->
+            <div class="text-center mt-4 mb-4">
+                <h2>SEGUIMIENTO DE EXHORTOS</h2>
+            </div>
+
+            <!-- MENSAJES -->
+            @if (TempData["Error"] != null)
+            {
+                <div class="alert alert-warning text-center">
+                    @TempData["Error"]
+                </div>
+            }
+
+            @if (TempData["Exito"] != null)
+            {
+                <div class="alert alert-success text-center">
+                    @TempData["Exito"]
+                </div>
+            }
+
+            <!-- BUSCADOR -->
+            <div class="row mb-3">
+                <div class="col-md-4">
+                    <input class="form-control" id="txtBuscarSeguimiento" type="text" placeholder="Buscar..." />
+                </div>
+            </div>
+
+            <!-- TABLA -->
+            <div class="table-responsive">
+                <table id="tablaSeguimientoExhortos" class="table table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th>Acción</th>
+                            <th style="display:none;">ID</th>
+                            <th>No. Exhorto</th>
+                            <th>Folio</th>
+                            <th>TUA Origen</th>
+                            <th>Expediente</th>
+                            <th>Estatus</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model != null && Model.Any())
+                        {
+                            foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td class="text-center">
+                                        <a asp-controller="SeguimientoExhortos"
+                                               asp-action="DetalleSeguimiento"
+                                               asp-route-id="@item.ExhortoId"
+                                               title="Ver seguimiento">
+                                            <img src="~/Images/Icons/eye-fill.svg" width="20" alt="Ver" />
+                                        </a>
+                                    </td>
+
+                                    <td style="display:none;">@item.ExhortoId</td>
+                                    <td>@item.NoExhortoEnviado</td>
+                                    <td>@item.Folio</td>
+                                    <td>@item.TuaOrigen</td>
+                                    <td>@item.NoExpediente</td>
+                                    <td>
+                                        <span class="badge bg-primary">
+                                            @item.Estatus
+                                        </span>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+
+            const tabla = $('#tablaSeguimientoExhortos').DataTable({
+                pageLength: 10,
+                lengthChange: false,
+                dom: 'rtip',
+                language: {
+                    url: '//cdn.datatables.net/plug-ins/1.13.8/i18n/es-ES.json',
+                    emptyTable: 'No hay registros de seguimiento para mostrar.'
+                }
+            });
+
+            $('#txtBuscarSeguimiento').on('keyup', function () {
+                tabla.search($(this).val()).draw();
+            });
+
+        });
+    </script>
+}

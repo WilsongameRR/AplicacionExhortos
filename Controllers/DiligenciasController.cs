@@ -21,8 +21,6 @@ namespace AplicacionExhortos.Controllers
                 NoExhorto = noExhorto ?? string.Empty
             };
 
-            ViewBag.MostrarConfirmacionFinal = TempData["MostrarConfirmacionFinal"] != null;
-            ViewBag.MostrarPanelEnvio = TempData["MostrarPanelEnvio"] != null;
             ViewBag.ExitoEnvio = TempData["ExitoEnvio"]?.ToString();
             ViewBag.ErrorDiligencias = TempData["ErrorDiligencias"]?.ToString();
             ViewBag.ExitoDiligencias = TempData["ExitoDiligencias"]?.ToString();
@@ -49,61 +47,43 @@ namespace AplicacionExhortos.Controllers
                 return View("AltaDiligencia", model);
             }
 
-            ResponseBd respuesta = _diligenciasRepository.GuardarDiligencias(model);
+            // 1. Guardar diligencias
+            ResponseBd respuestaGuardar = _diligenciasRepository.GuardarDiligencias(model);
 
-            if (respuesta.NoError != 0)
+            if (respuestaGuardar.NoError != 0)
             {
-                TempData["ErrorDiligencias"] = string.IsNullOrWhiteSpace(respuesta.Mensaje)
+                TempData["ErrorDiligencias"] = string.IsNullOrWhiteSpace(respuestaGuardar.Mensaje)
                     ? "No fue posible guardar las diligencias."
-                    : respuesta.Mensaje;
+                    : respuestaGuardar.Mensaje;
 
                 return RedirectToAction("AltaDiligencia", new { noExhorto = model.NoExhorto });
             }
 
-            TempData["ExitoDiligencias"] = string.IsNullOrWhiteSpace(respuesta.Mensaje)
-                ? "Diligencias guardadas correctamente."
-                : respuesta.Mensaje;
+            // 2. Enviar exhorto automáticamente
+            ResponseBd respuestaEnviar = _diligenciasRepository.ActualizarEstatusExhorto(model.NoExhorto);
 
-            TempData["MostrarConfirmacionFinal"] = true;
-            TempData["MostrarPanelEnvio"] = true;
+            if (respuestaEnviar.NoError != 0)
+            {
+                TempData["ErrorDiligencias"] = string.IsNullOrWhiteSpace(respuestaEnviar.Mensaje)
+                    ? "Las diligencias se guardaron, pero no fue posible enviar el exhorto."
+                    : respuestaEnviar.Mensaje;
+
+                TempData["ExitoDiligencias"] = string.IsNullOrWhiteSpace(respuestaGuardar.Mensaje)
+                    ? "Diligencias guardadas correctamente."
+                    : respuestaGuardar.Mensaje;
+
+                return RedirectToAction("AltaDiligencia", new { noExhorto = model.NoExhorto });
+            }
+
+            TempData["ExitoDiligencias"] = string.IsNullOrWhiteSpace(respuestaGuardar.Mensaje)
+                ? "Diligencias guardadas correctamente."
+                : respuestaGuardar.Mensaje;
+
+            TempData["ExitoEnvio"] = string.IsNullOrWhiteSpace(respuestaEnviar.Mensaje)
+                ? "El exhorto fue enviado correctamente."
+                : respuestaEnviar.Mensaje;
 
             return RedirectToAction("AltaDiligencia", new { noExhorto = model.NoExhorto });
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult EnviarExhorto(string noExhorto)
-        {
-            noExhorto = noExhorto?.Trim();
-
-            if (string.IsNullOrWhiteSpace(noExhorto))
-            {
-                TempData["ErrorDiligencias"] = "Debe proporcionar el número de exhorto.";
-                return RedirectToAction("AltaDiligencia");
-            }
-
-            ResponseBd respuesta = _diligenciasRepository.ActualizarEstatusExhorto(noExhorto);
-
-            if (respuesta.NoError != 0)
-            {
-                TempData["ErrorDiligencias"] = string.IsNullOrWhiteSpace(respuesta.Mensaje)
-                    ? "No fue posible enviar el exhorto."
-                    : respuesta.Mensaje;
-
-                TempData["MostrarPanelEnvio"] = true;
-                TempData["MostrarConfirmacionFinal"] = true;
-
-                return RedirectToAction("AltaDiligencia", new { noExhorto });
-            }
-
-            TempData["ExitoEnvio"] = string.IsNullOrWhiteSpace(respuesta.Mensaje)
-                ? "El exhorto fue enviado correctamente."
-                : respuesta.Mensaje;
-
-            TempData["MostrarPanelEnvio"] = true;
-            TempData["MostrarConfirmacionFinal"] = true;
-
-            return RedirectToAction("AltaDiligencia", new { noExhorto });
         }
     }
 }
