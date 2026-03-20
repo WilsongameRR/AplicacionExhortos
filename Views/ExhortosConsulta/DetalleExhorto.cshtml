@@ -55,6 +55,11 @@
 
                         <div class="row mb-3">
                             <div class="col-md-3">
+                                <label class="form-label fw-bold">No. Exhorto Recibido</label>
+                                <div class="form-control bg-light">@Model.Exhorto.NoExhortoRecibido</div>
+                            </div>
+
+                            <div class="col-md-3">
                                 <label class="form-label fw-bold">TUA Exhortante</label>
                                 <div class="form-control bg-light">@Model.Exhorto.TuaOrigen</div>
                             </div>
@@ -68,14 +73,14 @@
                                 <label class="form-label fw-bold">Expediente</label>
                                 <div class="form-control bg-light">@Model.Exhorto.NoExpediente</div>
                             </div>
+                        </div>
 
+                        <div class="row mb-3">
                             <div class="col-md-3">
                                 <label class="form-label fw-bold">Oficio</label>
                                 <div class="form-control bg-light">@Model.Exhorto.NoOficio</div>
                             </div>
-                        </div>
 
-                        <div class="row mb-3">
                             <div class="col-md-3">
                                 <label class="form-label fw-bold">Estado</label>
                                 <div class="form-control bg-light">@Model.Exhorto.Estado</div>
@@ -133,6 +138,7 @@
                                         <th>Destinatario</th>
                                         <th>Fecha Diligencia</th>
                                         <th>Estatus</th>
+                                        <th>Editar</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -149,13 +155,21 @@
                                                         : "")
                                                 </td>
                                                 <td>@d.EstatusDiligencia</td>
+                                                <td class="text-center">
+                                                    <a asp-controller="Diligencias"
+                                                           asp-action="EditarDiligencia"
+                                                           asp-route-id="@d.DiligenciaId"
+                                                           class="btn btn-sm btn-outline-primary">
+                                                        Editar
+                                                    </a>
+                                                </td>
                                             </tr>
                                         }
                                     }
                                     else
                                     {
                                         <tr>
-                                            <td colspan="4" class="text-center text-muted">
+                                            <td colspan="5" class="text-center text-muted">
                                                 No hay diligencias registradas.
                                             </td>
                                         </tr>
@@ -205,75 +219,104 @@
                             <h4 class="fw-bold">SEGUIMIENTO</h4>
                         </div>
 
-                        <div class="row mb-3">
-                            <div class="col-md-3">
-                                <label class="form-label fw-bold">No. Exhorto Recibido</label>
-                                <div class="form-control bg-light">@Model.Exhorto.NoExhortoRecibido</div>
-                            </div>
+                        <form method="post">
+                            <div class="row mb-3">
+                                <div class="col-md-4">
+                                    <label class="form-label fw-bold">* Fecha de Recepción</label>
+                                    <input type="date"
+                                           class="form-control"
+                                           name="FechaRecibido"
+                                           value="@(Model.Exhorto.FechaRecibido != null ? Convert.ToDateTime(Model.Exhorto.FechaRecibido).ToString("yyyy-MM-dd") : "")" />
+                                </div>
 
-                            <div class="col-md-3">
-                                <label class="form-label fw-bold">Fecha de Recepción</label>
-                                <div class="form-control bg-light">
-                                    @(Model.Exhorto.FechaRecibido != null
-                                        ? Convert.ToDateTime(Model.Exhorto.FechaRecibido).ToString("dd/MM/yyyy")
-                                        : "")
+                                <div class="col-md-4">
+                                    <label class="form-label fw-bold">* No. De Folio</label>
+                                    <input type="text"
+                                           class="form-control upper"
+                                           name="Folio"
+                                           value="@Model.Exhorto.Folio" />
+                                </div>
+
+                                <div class="col-md-4">
+                                    <label class="form-label fw-bold">* Estatus</label>
+                                    <select class="form-select upper" name="Estatus">
+                                        @if (string.Equals(Model.Exhorto.Estatus, "TRAMITE", StringComparison.OrdinalIgnoreCase))
+                                        {
+                                            <option value="TRAMITE" selected>TRAMITE</option>
+                                        }
+                                        else
+                                        {
+                                            <option value="TRAMITE">TRAMITE</option>
+                                        }
+
+                                        @if (string.Equals(Model.Exhorto.Estatus, "PENDIENTE", StringComparison.OrdinalIgnoreCase))
+                                        {
+                                            <option value="PENDIENTE" selected>PENDIENTE</option>
+                                        }
+                                        else
+                                        {
+                                            <option value="PENDIENTE">PENDIENTE</option>
+                                        }
+
+                                        @if (string.Equals(Model.Exhorto.Estatus, "CONCLUIDO", StringComparison.OrdinalIgnoreCase))
+                                        {
+                                            <option value="CONCLUIDO" selected>CONCLUIDO</option>
+                                        }
+                                        else
+                                        {
+                                            <option value="CONCLUIDO">CONCLUIDO</option>
+                                        }
+                                    </select>
                                 </div>
                             </div>
 
-                            <div class="col-md-3">
-                                <label class="form-label fw-bold">No. Folio</label>
-                                <div class="form-control bg-light">@Model.Exhorto.Folio</div>
-                            </div>
+                            <div class="row mb-3">
+                                <div class="col-md-4">
+                                    <label class="form-label fw-bold">* Fecha Acuerdo TUA Exhortado</label>
+                                    <input type="date"
+                                           class="form-control"
+                                           name="FechaAcuerdoExhortado"
+                                           value="@(Model.Exhorto.FechaAcuerdoExhortado != null ? Convert.ToDateTime(Model.Exhorto.FechaAcuerdoExhortado).ToString("yyyy-MM-dd") : "")" />
+                                </div>
 
-                            <div class="col-md-3">
-                                <label class="form-label fw-bold">Estatus del Exhorto</label>
-                                <div class="form-control bg-light">@Model.Exhorto.Estatus</div>
-                            </div>
-                        </div>
+                                <div class="col-md-4">
+                                    <label class="form-label fw-bold">* Fecha Turno Actuaría</label>
+                                    <input type="date"
+                                           class="form-control"
+                                           name="FechaTurnoActuaria"
+                                           value="@(Model.Exhorto.FechaTurnoActuaria != null ? Convert.ToDateTime(Model.Exhorto.FechaTurnoActuaria).ToString("yyyy-MM-dd") : "")" />
+                                </div>
 
-                        <div class="row mb-3">
-                            <div class="col-md-4">
-                                <label class="form-label fw-bold">Fecha Acuerdo TUA Exhortado</label>
-                                <div class="form-control bg-light">
-                                    @(Model.Exhorto.FechaAcuerdoExhortado != null
-                                        ? Convert.ToDateTime(Model.Exhorto.FechaAcuerdoExhortado).ToString("dd/MM/yyyy")
-                                        : "")
+                                <div class="col-md-4">
+                                    <label class="form-label fw-bold">Fecha de Vencimiento</label>
+                                    <input type="date"
+                                           class="form-control"
+                                           name="FechaDevolucion"
+                                           value="@(Model.Exhorto.FechaDevolucion != null ? Convert.ToDateTime(Model.Exhorto.FechaDevolucion).ToString("yyyy-MM-dd") : "")" />
                                 </div>
                             </div>
 
-                            <div class="col-md-4">
-                                <label class="form-label fw-bold">Fecha Turno Actuaría</label>
-                                <div class="form-control bg-light">
-                                    @(Model.Exhorto.FechaTurnoActuaria != null
-                                        ? Convert.ToDateTime(Model.Exhorto.FechaTurnoActuaria).ToString("dd/MM/yyyy")
-                                        : "")
+                            <div class="row mb-4">
+                                <div class="col-12">
+                                    <label class="form-label fw-bold">Observaciones</label>
+                                    <textarea class="form-control upper"
+                                              name="Observaciones"
+                                              rows="3">@Model.Exhorto.Observaciones</textarea>
                                 </div>
                             </div>
 
-                            <div class="col-md-4">
-                                <label class="form-label fw-bold">Fecha de Vencimiento</label>
-                                <div class="form-control bg-light">
-                                    @(Model.Exhorto.FechaDevolucion != null
-                                        ? Convert.ToDateTime(Model.Exhorto.FechaDevolucion).ToString("dd/MM/yyyy")
-                                        : "")
-                                </div>
-                            </div>
-                        </div>
+                            <div class="d-flex justify-content-end gap-2">
+                                <a asp-controller="ExhortosConsulta"
+                                       asp-action="ExhortosConsulta"
+                                       class="btn btn-secondary">
+                                    Regresar
+                                </a>
 
-                        <div class="row mb-4">
-                            <div class="col-12">
-                                <label class="form-label fw-bold">Observaciones</label>
-                                <div class="form-control bg-light" style="min-height:70px;">
-                                    @Model.Exhorto.Observaciones
-                                </div>
+                                <button type="submit" class="btn btn-primary">
+                                    Guardar
+                                </button>
                             </div>
-                        </div>
-
-                        <a asp-controller="ExhortosConsulta"
-                               asp-action="ExhortosConsulta"
-                               class="btn btn-secondary">
-                            Regresar
-                        </a>
+                        </form>
 
                     </div>
                 </div>
@@ -281,3 +324,17 @@
         </div>
     </div>
 </div>
+
+<script>
+    document.addEventListener("input", function (e) {
+        if (e.target.classList.contains("upper")) {
+            e.target.value = e.target.value.toUpperCase();
+        }
+    });
+
+    document.addEventListener("change", function (e) {
+        if (e.target.classList.contains("upper")) {
+            e.target.value = e.target.value.toUpperCase();
+        }
+    });
+</script>
