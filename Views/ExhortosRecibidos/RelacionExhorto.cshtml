@@ -2,6 +2,32 @@
 
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
+
+    int pageSize = 5;
+    int currentPage = 1;
+
+    if (!string.IsNullOrEmpty(Context.Request.Query["page"]))
+    {
+        int.TryParse(Context.Request.Query["page"], out currentPage);
+
+        if (currentPage <= 0)
+        {
+            currentPage = 1;
+        }
+    }
+
+    var totalItems = Model?.Diligencias?.Count ?? 0;
+    var totalPages = (int)Math.Ceiling((double)totalItems / pageSize);
+
+    if (totalPages == 0)
+    {
+        totalPages = 1;
+    }
+
+    var diligenciasPaginadas = Model?.Diligencias?
+        .Skip((currentPage - 1) * pageSize)
+        .Take(pageSize)
+        .ToList() ?? new List<AplicacionExhortos.Models.DiligenciaModel>();
 }
 
 <div class="container-fluid fondo-exhortos min-vh-100 pb-5" style="padding-top:80px;">
@@ -20,159 +46,275 @@
             }
             else
             {
-                <!-- ===================== -->
-                <!-- DATOS GENERALES -->
-                <!-- ===================== -->
-                <div class="card mb-4">
-                    <div class="card-header bg-dark text-white">
-                        DATOS GENERALES
-                    </div>
-
+                <div class="card shadow-sm">
                     <div class="card-body">
 
+                        <!-- ===================== -->
+                        <!-- DATOS DEL EXHORTO -->
+                        <!-- ===================== -->
+                        <div class="text-center mb-4">
+                            <h4 class="fw-bold">DATOS DEL EXHORTO</h4>
+                        </div>
+
                         <div class="row mb-3">
-                            <div class="col-md-4">
-                                <label class="form-label fw-bold">No. Exhorto:</label>
-                                <div class="form-control bg-light">@Model.Exhorto.NoExhortoEnviado</div>
+                            <div class="col-md-3">
+                                <label class="form-label fw-bold">TUA Exhortante</label>
+                                <div class="form-control bg-light">
+                                    @Model.Exhorto.TuaOrigen
+                                </div>
                             </div>
 
-                            <div class="col-md-4">
-                                <label class="form-label fw-bold">Expediente:</label>
-                                <div class="form-control bg-light">@Model.Exhorto.NoExpediente</div>
+                            <div class="col-md-3">
+                                <label class="form-label fw-bold">No. Exhorto Exhortante</label>
+                                <div class="form-control bg-light">
+                                    @Model.Exhorto.NoExhortoEnviado
+                                </div>
                             </div>
 
-                            <div class="col-md-4">
-                                <label class="form-label fw-bold">Oficio:</label>
-                                <div class="form-control bg-light">@Model.Exhorto.NoOficio</div>
+                            <div class="col-md-3">
+                                <label class="form-label fw-bold">Expediente</label>
+                                <div class="form-control bg-light">
+                                    @Model.Exhorto.NoExpediente
+                                </div>
+                            </div>
+
+                            <div class="col-md-3">
+                                <label class="form-label fw-bold">Oficio</label>
+                                <div class="form-control bg-light">
+                                    @Model.Exhorto.NoOficio
+                                </div>
                             </div>
                         </div>
 
                         <div class="row mb-3">
-                            <div class="col-md-4">
-                                <label class="form-label fw-bold">TUA Origen:</label>
-                                <div class="form-control bg-light">@Model.Exhorto.TuaOrigen</div>
+                            <div class="col-md-3">
+                                <label class="form-label fw-bold">Estado</label>
+                                <div class="form-control bg-light">
+                                    @Model.Exhorto.Estado
+                                </div>
                             </div>
 
-                            <div class="col-md-4">
-                                <label class="form-label fw-bold">TUA Destino:</label>
-                                <div class="form-control bg-light">@Model.Exhorto.TuaDestino</div>
+                            <div class="col-md-3">
+                                <label class="form-label fw-bold">Municipio</label>
+                                <div class="form-control bg-light">
+                                    @Model.Exhorto.Municipio
+                                </div>
                             </div>
 
-                            <div class="col-md-4">
-                                <label class="form-label fw-bold">Estatus:</label>
-                                <div class="form-control bg-light">@Model.Exhorto.Estatus</div>
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
-
-                <!-- ===================== -->
-                <!-- FECHAS -->
-                <!-- ===================== -->
-                <div class="card mb-4">
-                    <div class="card-header bg-secondary text-white">
-                        FECHAS
-                    </div>
-
-                    <div class="card-body">
-
-                        <div class="row mb-3">
-                            <div class="col-md-4">
-                                <label class="form-label fw-bold">Fecha Acuerdo:</label>
-                                <div class="form-control bg-light">@Model.Exhorto.FechaAcuerdo</div>
+                            <div class="col-md-3">
+                                <label class="form-label fw-bold">Poblado</label>
+                                <div class="form-control bg-light">
+                                    @Model.Exhorto.Poblado
+                                </div>
                             </div>
 
-                            <div class="col-md-4">
-                                <label class="form-label fw-bold">Fecha Audiencia:</label>
-                                <div class="form-control bg-light">@Model.Exhorto.FechaAudiencia</div>
-                            </div>
-
-                            <div class="col-md-4">
-                                <label class="form-label fw-bold">Fecha Envío:</label>
-                                <div class="form-control bg-light">@Model.Exhorto.FechaEnvio</div>
-                            </div>
-                        </div>
-
-                        <div class="row mb-3">
-                            <div class="col-md-4">
-                                <label class="form-label fw-bold">Fecha Recibido:</label>
-                                <div class="form-control bg-light">@Model.Exhorto.FechaRecibido</div>
-                            </div>
-
-                            <div class="col-md-4">
-                                <label class="form-label fw-bold">Fecha Acuerdo TUA Exhortado:</label>
-                                <div class="form-control bg-light">@Model.Exhorto.FechaAcuerdoExhortado</div>
-                            </div>
-
-                            <div class="col-md-4">
-                                <label class="form-label fw-bold">Fecha Turno Actuaría:</label>
-                                <div class="form-control bg-light">@Model.Exhorto.FechaTurnoActuaria</div>
+                            <!-- DOCUMENTOS (VISUAL) -->
+                            <div class="col-md-3">
+                                <label class="form-label fw-bold">Documentos</label>
+                                <div class="table-responsive">
+                                    <table class="table table-bordered table-sm mb-0">
+                                        <thead class="table-success">
+                                            <tr>
+                                                <th>Tipo Documento</th>
+                                                <th>Link</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>Exhorto</td>
+                                                <td class="text-center">
+                                                    <span class="text-muted">Sin archivo</span>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                         </div>
 
-                        <div class="row mb-3">
+                        <div class="row mb-4">
                             <div class="col-md-4">
-                                <label class="form-label fw-bold">Fecha Devolución:</label>
-                                <div class="form-control bg-light">@Model.Exhorto.FechaDevolucion</div>
+                                <label class="form-label fw-bold">Fecha de Acuerdo</label>
+                                <div class="form-control bg-light">
+                                    @Model.Exhorto.FechaAcuerdo
+                                </div>
+                            </div>
+
+                            <div class="col-md-4">
+                                <label class="form-label fw-bold">Fecha de Auditoría</label>
+                                <div class="form-control bg-light">
+                                    @Model.Exhorto.FechaAudiencia
+                                </div>
+                            </div>
+
+                            <div class="col-md-4">
+                                <label class="form-label fw-bold">Fecha de Envío</label>
+                                <div class="form-control bg-light">
+                                    @Model.Exhorto.FechaEnvio
+                                </div>
                             </div>
                         </div>
 
-                    </div>
-                </div>
+                        <!-- ===================== -->
+                        <!-- DILIGENCIAS -->
+                        <!-- ===================== -->
+                        <div class="text-center mb-3">
+                            <h4 class="fw-bold">DILIGENCIAS</h4>
+                        </div>
 
-                <!-- ===================== -->
-                <!-- DILIGENCIAS -->
-                <!-- ===================== -->
-                <div class="card mb-4">
-                    <div class="card-header bg-info text-white">
-                        DILIGENCIAS
-                    </div>
-
-                    <div class="card-body">
-
-                        <table class="table table-bordered table-striped">
-                            <thead>
-                                <tr>
-                                    <th>Tipo</th>
-                                    <th>Destinatario</th>
-                                    <th>Fecha</th>
-                                    <th>Estatus</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @if (Model.Diligencias != null && Model.Diligencias.Any())
-                                {
-                                    foreach (var d in Model.Diligencias)
+                        <div class="table-responsive mt-2">
+                            <table class="table table-bordered table-striped">
+                                <thead class="thead-tua">
+                                    <tr>
+                                        <th>Diligencia</th>
+                                        <th>Destinatario</th>
+                                        <th>Fecha Diligencia</th>
+                                        <th>Estatus</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if (diligenciasPaginadas.Any())
+                                    {
+                                        @foreach (var d in diligenciasPaginadas)
+                                        {
+                                            <tr>
+                                                <td>@d.TipoDiligenciaDesc</td>
+                                                <td>@d.Destinatario</td>
+                                                <td>@d.FechaDiligencia</td>
+                                                <td>@d.EstatusDiligencia</td>
+                                            </tr>
+                                        }
+                                    }
+                                    else
                                     {
                                         <tr>
-                                            <td>@d.TipoDiligenciaDesc</td>
-                                            <td>@d.Destinatario</td>
-                                            <td>@d.FechaDiligencia</td>
-                                            <td>@d.EstatusDiligencia</td>
+                                            <td colspan="4" class="text-center text-muted">
+                                                No hay diligencias registradas.
+                                            </td>
                                         </tr>
                                     }
-                                }
-                                else
-                                {
-                                    <tr>
-                                        <td colspan="4" class="text-center text-muted">
-                                            No hay diligencias registradas.
-                                        </td>
-                                    </tr>
-                                }
-                            </tbody>
-                        </table>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- PAGINACIÓN -->
+                        @if (Model?.Diligencias != null && Model.Diligencias.Any())
+                        {
+                            <nav class="mt-4">
+                                <ul class="pagination justify-content-center">
+
+                                    <li class="page-item @(currentPage == 1 ? "disabled" : "")">
+                                        <a class="page-link"
+                                               asp-action="DetalleExhorto"
+                                               asp-route-id="@Model.Exhorto.ExhortoId"
+                                               asp-route-page="@(currentPage - 1)">
+                                            Anterior
+                                        </a>
+                                    </li>
+
+                                    @for (int i = 1; i <= totalPages; i++)
+                                    {
+                                        <li class="page-item @(i == currentPage ? "active" : "")">
+                                            <a class="page-link"
+                                                   asp-action="DetalleExhorto"
+                                                   asp-route-id="@Model.Exhorto.ExhortoId"
+                                                   asp-route-page="@i">
+                                                @i
+                                            </a>
+                                        </li>
+                                    }
+
+                                    <li class="page-item @(currentPage == totalPages ? "disabled" : "")">
+                                        <a class="page-link"
+                                               asp-action="DetalleExhorto"
+                                               asp-route-id="@Model.Exhorto.ExhortoId"
+                                               asp-route-page="@(currentPage + 1)">
+                                            Siguiente
+                                        </a>
+                                    </li>
+
+                                </ul>
+                            </nav>
+                        }
+
+                        <!-- ===================== -->
+                        <!-- SEGUIMIENTO -->
+                        <!-- ===================== -->
+                        <div class="text-center mt-5 mb-4">
+                            <h4 class="fw-bold">SEGUIMIENTO</h4>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-3">
+                                <label class="form-label fw-bold">No. Exhorto Recibido</label>
+                                <div class="form-control bg-light">
+                                    @Model.Exhorto.NoExhortoRecibido
+                                </div>
+                            </div>
+
+                            <div class="col-md-3">
+                                <label class="form-label fw-bold">Fecha de Recepción</label>
+                                <div class="form-control bg-light">
+                                    @Model.Exhorto.FechaRecibido
+                                </div>
+                            </div>
+
+                            <div class="col-md-3">
+                                <label class="form-label fw-bold">No. Folio</label>
+                                <div class="form-control bg-light">
+                                    FOLIO
+                                </div>
+                            </div>
+
+                            <div class="col-md-3">
+                                <label class="form-label fw-bold">Estatus del Exhorto</label>
+                                <div class="form-control bg-light">
+                                    @Model.Exhorto.Estatus
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-4">
+                                <label class="form-label fw-bold">Fecha Acuerdo TUA Exhortado</label>
+                                <div class="form-control bg-light">
+                                    @Model.Exhorto.FechaAcuerdoExhortado
+                                </div>
+                            </div>
+
+                            <div class="col-md-4">
+                                <label class="form-label fw-bold">Fecha Turno Actuaría</label>
+                                <div class="form-control bg-light">
+                                    @Model.Exhorto.FechaTurnoActuaria
+                                </div>
+                            </div>
+
+                            <div class="col-md-4">
+                                <label class="form-label fw-bold">Fecha de Vencimiento</label>
+                                <div class="form-control bg-light">
+                                    @Model.Exhorto.FechaDevolucion
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row mb-4">
+                            <div class="col-12">
+                                <label class="form-label fw-bold">Observaciones</label>
+                                <div class="form-control bg-light" style="min-height:70px;">
+                                    OBSERVACIONES
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="text-center mt-4">
+                            <a asp-action="ExhortosRecibidos" class="btn btn-secondary">
+                                Regresar
+                            </a>
+                        </div>
 
                     </div>
                 </div>
             }
-
-            <div class="text-center mt-3">
-                <a asp-action="ExhortosRecibidos" class="btn btn-secondary">
-                    Regresar
-                </a>
-            </div>
 
         </div>
     </div>
