@@ -53,6 +53,11 @@
                             <h4 class="fw-bold">DATOS DEL EXHORTO</h4>
                         </div>
 
+                        <div class="col-md-3">
+                            <label class="form-label fw-bold">No. Exhorto Recibido</label>
+                            <div class="form-control bg-light">@Model.Exhorto.NoExhortoRecibido</div>
+                        </div>
+
                         <div class="row mb-3">
                             <div class="col-md-3">
                                 <label class="form-label fw-bold">TUA Exhortante</label>
@@ -90,24 +95,34 @@
                                 <label class="form-label fw-bold">Poblado</label>
                                 <div class="form-control bg-light">@Model.Exhorto.Poblado</div>
                             </div>
-
-                           
                         </div>
 
                         <div class="row mb-4">
                             <div class="col-md-4">
                                 <label class="form-label fw-bold">Fecha de Acuerdo</label>
-                                <div class="form-control bg-light">@Model.Exhorto.FechaAcuerdo</div>
+                                <div class="form-control bg-light">
+                                    @(Model.Exhorto.FechaAcuerdo != null
+                                        ? Convert.ToDateTime(Model.Exhorto.FechaAcuerdo).ToString("dd/MM/yyyy")
+                                        : "")
+                                </div>
                             </div>
 
                             <div class="col-md-4">
                                 <label class="form-label fw-bold">Fecha de Auditoría</label>
-                                <div class="form-control bg-light">@Model.Exhorto.FechaAudiencia</div>
+                                <div class="form-control bg-light">
+                                    @(Model.Exhorto.FechaAudiencia != null
+                                        ? Convert.ToDateTime(Model.Exhorto.FechaAudiencia).ToString("dd/MM/yyyy")
+                                        : "")
+                                </div>
                             </div>
 
                             <div class="col-md-4">
                                 <label class="form-label fw-bold">Fecha de Envío</label>
-                                <div class="form-control bg-light">@Model.Exhorto.FechaEnvio</div>
+                                <div class="form-control bg-light">
+                                    @(Model.Exhorto.FechaEnvio != null
+                                        ? Convert.ToDateTime(Model.Exhorto.FechaEnvio).ToString("dd/MM/yyyy")
+                                        : "")
+                                </div>
                             </div>
                         </div>
 
@@ -135,7 +150,7 @@
                                                 <td>@d.Destinatario</td>
                                                 <td>
                                                     @(d.FechaDiligencia != null
-                                                        ? d.FechaDiligencia?.ToString("dd/MM/yyyy")
+                                                        ? Convert.ToDateTime(d.FechaDiligencia).ToString("dd/MM/yyyy")
                                                         : "")
                                                 </td>
                                                 <td>@d.EstatusDiligencia</td>
@@ -154,7 +169,7 @@
                             </table>
                         </div>
 
-                        @if (Model.Diligencias.Any())
+                        @if (Model?.Diligencias != null && Model.Diligencias.Any())
                         {
                             <nav aria-label="Paginación de diligencias" class="mt-4">
                                 <ul class="pagination justify-content-center">
@@ -195,59 +210,80 @@
                             <h4 class="fw-bold">SEGUIMIENTO</h4>
                         </div>
 
-                        <div class="row mb-3">
-                            <div class="col-md-3">
-                                <label class="form-label fw-bold">No. Exhorto Recibido</label>
-                                <div class="form-control bg-light">@Model.Exhorto.NoExhortoRecibido</div>
-                            </div>
+                        <form method="post">
+                            <div class="row mb-3">
+                               
+                                <div class="col-md-3">
+                                    <label class="form-label fw-bold">Fecha de Recepción</label>
+                                    <input type="date"
+                                           class="form-control"
+                                           name="FechaRecibido"
+                                           value="@(Model.Exhorto.FechaRecibido != null ? Convert.ToDateTime(Model.Exhorto.FechaRecibido).ToString("yyyy-MM-dd") : "")" />
+                                </div>
 
-                            <div class="col-md-3">
-                                <label class="form-label fw-bold">Fecha de Recepción</label>
-                                <div class="form-control bg-light">@Model.Exhorto.FechaRecibido</div>
-                            </div>
+                                <div class="col-md-3">
+                                    <label class="form-label fw-bold">No. Folio</label>
+                                    <input type="text"
+                                           class="form-control upper"
+                                           name="Folio"
+                                           value="@Model.Exhorto.Folio" />
+                                </div>
 
-                            <div class="col-md-3">
-                                <label class="form-label fw-bold">No. Folio</label>
-                                <div class="form-control bg-light">@Model.Exhorto.Folio</div>
-                            </div>
-
-                            <div class="col-md-3">
-                                <label class="form-label fw-bold">Estatus del Exhorto</label>
-                                <div class="form-control bg-light">@Model.Exhorto.Estatus</div>
-                            </div>
-                        </div>
-
-                        <div class="row mb-3">
-                            <div class="col-md-4">
-                                <label class="form-label fw-bold">Fecha Acuerdo TUA Exhortado</label>
-                                <div class="form-control bg-light">@Model.Exhorto.FechaAcuerdoExhortado</div>
-                            </div>
-
-                            <div class="col-md-4">
-                                <label class="form-label fw-bold">Fecha Turno Actuaría</label>
-                                <div class="form-control bg-light">@Model.Exhorto.FechaTurnoActuaria</div>
-                            </div>
-
-                            <div class="col-md-4">
-                                <label class="form-label fw-bold">Fecha de Vencimiento</label>
-                                <div class="form-control bg-light">@Model.Exhorto.FechaDevolucion</div>
-                            </div>
-                        </div>
-
-                        <div class="row mb-4">
-                            <div class="col-12">
-                                <label class="form-label fw-bold">Observaciones</label>
-                                <div class="form-control bg-light" style="min-height:70px;">
-                                    @Model.Exhorto.Observaciones
+                                <div class="col-md-3">
+                                    <label class="form-label fw-bold">Estatus del Exhorto</label>
+                                    <select class="form-select upper" name="Estatus">
+                                        <option value="TRAMITE" selected="@(Model.Exhorto.Estatus == "TRAMITE")">TRAMITE</option>
+                                        <option value="PENDIENTE" selected="@(Model.Exhorto.Estatus == "PENDIENTE")">PENDIENTE</option>
+                                        <option value="CONCLUIDO" selected="@(Model.Exhorto.Estatus == "CONCLUIDO")">CONCLUIDO</option>
+                                    </select>
                                 </div>
                             </div>
-                        </div>
 
-                        <div class="text-center mt-4">
-                            <a asp-action="ExhortosRecibidos" class="btn btn-secondary">
-                                Regresar
-                            </a>
-                        </div>
+                            <div class="row mb-3">
+                                <div class="col-md-4">
+                                    <label class="form-label fw-bold">Fecha Acuerdo TUA Exhortado</label>
+                                    <input type="date"
+                                           class="form-control"
+                                           name="FechaAcuerdoExhortado"
+                                           value="@(Model.Exhorto.FechaAcuerdoExhortado != null ? Convert.ToDateTime(Model.Exhorto.FechaAcuerdoExhortado).ToString("yyyy-MM-dd") : "")" />
+                                </div>
+
+                                <div class="col-md-4">
+                                    <label class="form-label fw-bold">Fecha Turno Actuaría</label>
+                                    <input type="date"
+                                           class="form-control"
+                                           name="FechaTurnoActuaria"
+                                           value="@(Model.Exhorto.FechaTurnoActuaria != null ? Convert.ToDateTime(Model.Exhorto.FechaTurnoActuaria).ToString("yyyy-MM-dd") : "")" />
+                                </div>
+
+                                <div class="col-md-4">
+                                    <label class="form-label fw-bold">Fecha de Vencimiento</label>
+                                    <input type="date"
+                                           class="form-control"
+                                           name="FechaDevolucion"
+                                           value="@(Model.Exhorto.FechaDevolucion != null ? Convert.ToDateTime(Model.Exhorto.FechaDevolucion).ToString("yyyy-MM-dd") : "")" />
+                                </div>
+                            </div>
+
+                            <div class="row mb-4">
+                                <div class="col-12">
+                                    <label class="form-label fw-bold">Observaciones</label>
+                                    <textarea class="form-control upper"
+                                              name="Observaciones"
+                                              rows="3">@Model.Exhorto.Observaciones</textarea>
+                                </div>
+                            </div>
+
+                            <div class="text-center mt-4 d-flex justify-content-center gap-2">
+                                <a asp-action="ExhortosRecibidos" class="btn btn-secondary">
+                                    Regresar
+                                </a>
+
+                                <button type="submit" class="btn btn-primary">
+                                    Guardar
+                                </button>
+                            </div>
+                        </form>
 
                     </div>
                 </div>
@@ -255,3 +291,11 @@
         </div>
     </div>
 </div>
+
+<script>
+    document.addEventListener("input", function (e) {
+        if (e.target.classList.contains("upper")) {
+            e.target.value = e.target.value.toUpperCase();
+        }
+    });
+</script>

@@ -47,9 +47,7 @@ namespace AplicacionExhortos.Controllers
                 return RedirectToAction("Login", "Login");
             }
 
-            List<ConsultaExhortos> listaExhortos = _consultaExhortoRepository.ConsultaExhorto(usuarioId);
-
-            ConsultaExhortos? exhorto = listaExhortos.FirstOrDefault(x => x.ExhortoId == id);
+            ConsultaExhortos? exhorto = _consultaExhortoRepository.ObtenerDetalleExhortoRecibido(id);
 
             if (exhorto == null)
             {

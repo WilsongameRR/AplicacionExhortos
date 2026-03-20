@@ -62,7 +62,7 @@ namespace AplicacionExhortos.Controllers
             }
 
             ConsultaExhortos? exhorto =
-                _consultaExhortoRepository.ObtenerDetalleExhortoRecibido(id, tuaIdSession.Value);
+                _consultaExhortoRepository.ObtenerDetalleExhortoRecibido(id);
 
             if (exhorto == null)
             {

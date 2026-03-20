@@ -99,48 +99,43 @@ namespace AplicacionExhortos.Data.Repositories
             return listaExhortos;
         }
 
-        public ConsultaExhortos? ObtenerDetalleExhortoRecibido(int exhortoId, int tuaIdDestino)
+        public ConsultaExhortos? ObtenerDetalleExhortoRecibido(int exhortoId)
         {
             using MySqlConnection conn = _db.GetConnection();
             conn.Open();
 
-            using MySqlCommand cmd = new("exhortos_db.sp_consulta_exhortos_recibidos", conn);
+            using MySqlCommand cmd = new("exhortos_db.sp_datos_exhorto", conn);
             cmd.CommandType = CommandType.StoredProcedure;
-            cmd.Parameters.Add("pTUAIdDestino", MySqlDbType.Int32).Value = tuaIdDestino;
+            cmd.Parameters.Add("pExhortoId", MySqlDbType.Int32).Value = exhortoId;
 
             using MySqlDataReader reader = cmd.ExecuteReader();
 
-            while (reader.Read())
+            if (reader.Read())
             {
-                int exhortoIdActual = ObtenerEntero(reader, "ExhortoId");
-
-                if (exhortoIdActual == exhortoId)
+                return new ConsultaExhortos
                 {
-                    return new ConsultaExhortos
-                    {
-                        ExhortoId = exhortoIdActual,
-                        NoExhortoEnviado = ObtenerTexto(reader, "NoExhortoEnviado"),
-                        NoExhortoRecibido = ObtenerTexto(reader, "NoExhortoRecibido"),
-                        NoExpediente = ObtenerTexto(reader, "NoExpediente"),
-                        TuaOrigen = ObtenerTexto(reader, "tuaOrigen"),
-                        Estatus = ObtenerTexto(reader, "Estatus"),
-                        NoOficio = ObtenerTexto(reader, "NoOficio"),
-                        Folio = ObtenerTexto(reader, "NoFolio"),
-                        Estado = ObtenerTexto(reader, "Estado"),
-                        Municipio = ObtenerTexto(reader, "Municipio"),
-                        Poblado = ObtenerTexto(reader, "Poblado"),
-                        IdDestino = ObtenerTexto(reader, "idDestino"),
-                        TuaDestino = ObtenerTexto(reader, "tuaDestino"),
-                        FechaAcuerdo = FormatearFecha(reader["FechaAcuerdo"]),
-                        FechaAudiencia = FormatearFecha(reader["FechaAudiencia"]),
-                        FechaEnvio = FormatearFecha(reader["FechaEnvio"]),
-                        FechaRecibido = FormatearFecha(reader["FechaRecibido"]),
-                        FechaAcuerdoExhortado = FormatearFecha(reader["FechaAcuerdoExhortado"]),
-                        FechaTurnoActuaria = FormatearFecha(reader["FechaTurnoActuaria"]),
-                        FechaDevolucion = FormatearFecha(reader["FechaDevolucion"]),
-                        Observaciones = ObtenerTexto(reader, "Observaciones")
-                    };
-                }
+                    ExhortoId = ObtenerEntero(reader, "ExhortoId"),
+                    NoExhortoEnviado = ObtenerTexto(reader, "NoExhortoEnviado"),
+                    NoExhortoRecibido = ObtenerTexto(reader, "NoExhortoRecibido"),
+                    NoExpediente = ObtenerTexto(reader, "NoExpediente"),
+                    TuaOrigen = ObtenerTexto(reader, "tuaOrigen"),
+                    Estatus = ObtenerTexto(reader, "Estatus"),
+                    NoOficio = ObtenerTexto(reader, "NoOficio"),
+                    Folio = ObtenerTexto(reader, "NoFolio"),
+                    Estado = ObtenerTexto(reader, "Estado"),
+                    Municipio = ObtenerTexto(reader, "Municipio"),
+                    Poblado = ObtenerTexto(reader, "Poblado"),
+                    IdDestino = ObtenerTexto(reader, "idDestino"),
+                    TuaDestino = ObtenerTexto(reader, "tuaDestino"),
+                    FechaAcuerdo = FormatearFecha(reader["FechaAcuerdo"]),
+                    FechaAudiencia = FormatearFecha(reader["FechaAudiencia"]),
+                    FechaEnvio = FormatearFecha(reader["FechaEnvio"]),
+                    FechaRecibido = FormatearFecha(reader["FechaRecibido"]),
+                    FechaAcuerdoExhortado = FormatearFecha(reader["FechaAcuerdoExhortado"]),
+                    FechaTurnoActuaria = FormatearFecha(reader["FechaTurnoActuaria"]),
+                    FechaDevolucion = FormatearFecha(reader["FechaDevolucion"]),
+                    Observaciones = ObtenerTexto(reader, "Observaciones")
+                };
             }
 
             return null;
