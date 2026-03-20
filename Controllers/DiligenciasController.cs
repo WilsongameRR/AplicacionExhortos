@@ -27,6 +27,9 @@ namespace AplicacionExhortos.Controllers
             ViewBag.ErrorDiligencias = TempData["ErrorDiligencias"]?.ToString();
             ViewBag.ExitoDiligencias = TempData["ExitoDiligencias"]?.ToString();
 
+            ViewBag.MensajeExito = TempData["MensajeExito"]?.ToString();
+            ViewBag.NumeroExhorto = TempData["NumeroExhorto"]?.ToString();
+
             return View(model);
         }
 

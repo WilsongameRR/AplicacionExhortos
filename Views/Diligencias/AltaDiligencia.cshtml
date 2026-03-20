@@ -16,6 +16,15 @@
                 <h2>ALTA DE DILIGENCIAS</h2>
             </div>
 
+            @if (ViewBag.MensajeExito != null)
+            {
+                <div class="alert alert-success text-center">
+                    <strong>@ViewBag.MensajeExito</strong><br />
+                    Número de exhorto generado:
+                    <strong>@ViewBag.NumeroExhorto</strong>
+                </div>
+            }
+
             <div class="col-12 text-start mt-2">
                 <small class="text-muted">
                     Los campos marcados con <span class="text-danger">*</span> son obligatorios.

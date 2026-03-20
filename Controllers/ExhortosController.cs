@@ -33,8 +33,6 @@ namespace AplicacionExhortos.Controllers
                     return RedirectToAction("Login", "Login");
                 }
 
-                TempData.Remove("Error");
-
                 CargarCatalogos();
 
                 return View("~/Views/AltaDeExhortos/AltaDeExhortos.cshtml");
@@ -42,9 +40,7 @@ namespace AplicacionExhortos.Controllers
             catch (Exception ex)
             {
                 TempData["Error"] = "Error al cargar los catálogos: " + ex.Message;
-
                 CargarCatalogos();
-
                 return View("~/Views/AltaDeExhortos/AltaDeExhortos.cshtml");
             }
         }
@@ -75,12 +71,12 @@ namespace AplicacionExhortos.Controllers
 
                 string conexion = _configuration.GetConnectionString("MySqlConnection");
 
+                int exhortoIdGenerado = 0;
+                string numeroExhortoGenerado = string.Empty;
+
                 using (MySqlConnection conn = new MySqlConnection(conexion))
                 {
                     conn.Open();
-
-                    int exhortoIdGenerado = 0;
-                    string numeroExhortoGenerado = string.Empty;
 
                     using (MySqlCommand cmd = new MySqlCommand("sp_inserta_exhorto", conn))
                     {
@@ -130,13 +126,14 @@ namespace AplicacionExhortos.Controllers
 
                         exhortoIdGenerado = Convert.ToInt32(cmd.Parameters["pExhortoId"].Value);
                         numeroExhortoGenerado = cmd.Parameters["pExhortoEnviado"].Value?.ToString() ?? string.Empty;
-
-                        TempData["NumeroExhorto"] = numeroExhortoGenerado;
-                        TempData["IdExhorto"] = exhortoIdGenerado;
                     }
                 }
 
-                return RedirectToAction("AltaDeExhortos", "Exhortos");
+                TempData["MensajeExito"] = "El exhorto se guardó correctamente.";
+                TempData["NumeroExhorto"] = numeroExhortoGenerado;
+                TempData["IdExhorto"] = exhortoIdGenerado;
+
+                return RedirectToAction("AltaDiligencia", "Diligencias", new { noExhorto = numeroExhortoGenerado });
             }
             catch (Exception ex)
             {
