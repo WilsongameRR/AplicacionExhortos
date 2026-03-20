@@ -6,7 +6,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Servicios MVC
 builder.Services.AddControllersWithViews();
 
-// Repositories
+// Registro de dependencias
 builder.Services.AddSingleton<BDConnection>();
 builder.Services.AddScoped<LoginRepository>();
 builder.Services.AddScoped<TuaRepository>();
@@ -14,8 +14,7 @@ builder.Services.AddScoped<TipoDiligenciaRepository>();
 builder.Services.AddScoped<DiligenciasRepository>();
 builder.Services.AddScoped<ConsultaExhortoRepository>();
 
-
-// SESSION
+// Configuración de sesión
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>
 {
@@ -26,7 +25,7 @@ builder.Services.AddSession(options =>
 
 var app = builder.Build();
 
-// Pipeline
+// Configuración del pipeline HTTP
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
@@ -38,7 +37,7 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
-app.UseSession();   // IMPORTANTE
+app.UseSession();
 
 app.UseAuthorization();
 

@@ -22,6 +22,7 @@ namespace AplicacionExhortos.Controllers
         {
             string? usuarioId = HttpContext.Session.GetString("UsuarioId");
             int? tuaIdSession = HttpContext.Session.GetInt32("TuaId");
+            string? numTuaSession = HttpContext.Session.GetString("NumTua");
 
             if (string.IsNullOrWhiteSpace(usuarioId))
             {
@@ -35,31 +36,47 @@ namespace AplicacionExhortos.Controllers
                 return View(new List<ConsultaExhortos>());
             }
 
+            
             List<ConsultaExhortos> listaExhortos =
                 _consultaExhortoRepository.ConsultaExhortosRecibidos(tuaIdSession.Value);
 
-            ViewBag.DebugTuaId = tuaIdSession.Value;
-            ViewBag.DebugTotal = listaExhortos.Count;
 
             return View(listaExhortos);
         }
 
         [HttpGet]
-        public IActionResult RelacionExhorto(int id)
+        public IActionResult DetalleExhorto(int id)
         {
+            int? tuaIdSession = HttpContext.Session.GetInt32("TuaId");
+
             if (id <= 0)
             {
                 TempData["Error"] = "El identificador del exhorto no es válido.";
-                return RedirectToAction("ExhortosRecibidos");
+                return RedirectToAction(nameof(ExhortosRecibidos));
             }
 
-            var model = new DetalleExhortoModel
+            if (!tuaIdSession.HasValue || tuaIdSession.Value <= 0)
             {
-                Exhorto = new ConsultaExhortos(),
+                TempData["Error"] = "La sesión expiró o no contiene el TUA del usuario.";
+                return RedirectToAction("Login", "Login");
+            }
+
+            ConsultaExhortos? exhorto =
+                _consultaExhortoRepository.ObtenerDetalleExhortoRecibido(id, tuaIdSession.Value);
+
+            if (exhorto == null)
+            {
+                TempData["Error"] = "No se encontró el detalle del exhorto.";
+                return RedirectToAction(nameof(ExhortosRecibidos));
+            }
+
+            DetalleExhortoModel model = new()
+            {
+                Exhorto = exhorto,
                 Diligencias = _diligenciasRepository.ObtenerDiligencias(id)
             };
 
-            return View(model);
+            return View("RelacionExhorto", model);
         }
     }
 }

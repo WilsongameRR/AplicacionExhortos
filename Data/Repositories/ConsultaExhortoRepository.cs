@@ -15,36 +15,36 @@ namespace AplicacionExhortos.Data.Repositories
 
         public List<ConsultaExhortos> ConsultaExhorto(string usuarioId)
         {
-            var listaExhortos = new List<ConsultaExhortos>();
+            List<ConsultaExhortos> listaExhortos = new();
 
-            using var conn = _db.GetConnection();
+            using MySqlConnection conn = _db.GetConnection();
             conn.Open();
 
-            using var cmd = new MySqlCommand("exhortos_db.sp_consulta_exhortos_enviados", conn);
+            using MySqlCommand cmd = new("exhortos_db.sp_consulta_exhortos_enviados", conn);
             cmd.CommandType = CommandType.StoredProcedure;
             cmd.Parameters.Add("pUsuarioid", MySqlDbType.VarChar, 40).Value = usuarioId;
 
-            using var reader = cmd.ExecuteReader();
+            using MySqlDataReader reader = cmd.ExecuteReader();
 
             while (reader.Read())
             {
-                var exhorto = new ConsultaExhortos
+                ConsultaExhortos exhorto = new()
                 {
-                    ExhortoId = reader["ExhortoId"] != DBNull.Value ? Convert.ToInt32(reader["ExhortoId"]) : 0,
-                    IdOrigen = reader["idOrigen"]?.ToString(),
-                    TuaOrigen = reader["tuaOrigen"]?.ToString(),
-                    NoExhortoEnviado = reader["NoExhortoEnviado"]?.ToString(),
-                    NoExpediente = reader["NoExpediente"]?.ToString(),
-                    NoOficio = reader["NoOficio"]?.ToString(),
-                    Estado = reader["Estado"]?.ToString(),
-                    Municipio = reader["Municipio"]?.ToString(),
-                    Poblado = reader["Poblado"]?.ToString(),
-                    IdDestino = reader["idDestino"]?.ToString(),
-                    TuaDestino = reader["tuaDestino"]?.ToString(),
-                    FechaAcuerdo = reader["FechaAcuerdo"]?.ToString(),
-                    FechaAudiencia = reader["FechaAudiencia"]?.ToString(),
-                    FechaEnvio = reader["FechaEnvio"]?.ToString(),
-                    Estatus = reader["Estatus"]?.ToString()
+                    ExhortoId = ObtenerEntero(reader, "ExhortoId"),
+                    IdOrigen = ObtenerTexto(reader, "idOrigen"),
+                    TuaOrigen = ObtenerTexto(reader, "tuaOrigen"),
+                    NoExhortoEnviado = ObtenerTexto(reader, "NoExhortoEnviado"),
+                    NoExpediente = ObtenerTexto(reader, "NoExpediente"),
+                    NoOficio = ObtenerTexto(reader, "NoOficio"),
+                    Estado = ObtenerTexto(reader, "Estado"),
+                    Municipio = ObtenerTexto(reader, "Municipio"),
+                    Poblado = ObtenerTexto(reader, "Poblado"),
+                    IdDestino = ObtenerTexto(reader, "idDestino"),
+                    TuaDestino = ObtenerTexto(reader, "tuaDestino"),
+                    FechaAcuerdo = FormatearFecha(reader["FechaAcuerdo"]),
+                    FechaAudiencia = FormatearFecha(reader["FechaAudiencia"]),
+                    FechaEnvio = FormatearFecha(reader["FechaEnvio"]),
+                    Estatus = ObtenerTexto(reader, "Estatus")
                 };
 
                 listaExhortos.Add(exhorto);
@@ -55,59 +55,124 @@ namespace AplicacionExhortos.Data.Repositories
 
         public List<ConsultaExhortos> ConsultaExhortosRecibidos(int tuaIdDestino)
         {
-            var listaExhortos = new List<ConsultaExhortos>();
+            List<ConsultaExhortos> listaExhortos = new();
 
-            try
+            using MySqlConnection conn = _db.GetConnection();
+            conn.Open();
+
+            using MySqlCommand cmd = new("exhortos_db.sp_consulta_exhortos_recibidos", conn);
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.Parameters.Add("pTUAIdDestino", MySqlDbType.Int32).Value = tuaIdDestino;
+
+            using MySqlDataReader reader = cmd.ExecuteReader();
+
+            while (reader.Read())
             {
-                using var conn = _db.GetConnection();
-                conn.Open();
-
-                using var cmd = new MySqlCommand("exhortos_db.sp_consulta_exhortos_recibidos", conn);
-                cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.Add("pTUAIdDestino", MySqlDbType.Int32).Value = tuaIdDestino;
-
-                using var reader = cmd.ExecuteReader();
-
-                while (reader.Read())
+                ConsultaExhortos exhorto = new()
                 {
-                    var exhorto = new ConsultaExhortos
-                    {
-                        ExhortoId = reader["ExhortoId"] != DBNull.Value ? Convert.ToInt32(reader["ExhortoId"]) : 0,
-                        NoExhortoEnviado = reader["NoExhortoEnviado"]?.ToString(),
-                        NoExpediente = reader["NoExpediente"]?.ToString(),
-                        TuaOrigen = reader["tuaOrigen"]?.ToString(),
-                        Estatus = reader["Estatus"]?.ToString(),
-                        NoOficio = reader["NoOficio"]?.ToString(),
-                        Estado = reader["Estado"]?.ToString(),
-                        Municipio = reader["Municipio"]?.ToString(),
-                        Poblado = reader["Poblado"]?.ToString(),
-                        IdDestino = reader["idDestino"]?.ToString(),
-                        TuaDestino = reader["tuaDestino"]?.ToString(),
-                        FechaAcuerdo = reader["FechaAcuerdo"]?.ToString(),
-                        FechaAudiencia = reader["FechaAudiencia"]?.ToString(),
-                        FechaEnvio = reader["FechaEnvio"]?.ToString(),
-                        FechaRecibido = reader["FechaRecibido"]?.ToString(),
-                        Folio = reader["NoFolio"]?.ToString(),
-                        NoExhortoRecibido = reader["NoExhortoRecibido"]?.ToString(),
-                        FechaAcuerdoExhortado = reader["FechaAcuerdoExhortado"]?.ToString(),
-                        FechaTurnoActuaria = reader["FechaTurnoActuaria"]?.ToString(),
-                        FechaDevolucion = reader["FechaDevolucion"]?.ToString(),
-                        Observaciones = reader["Observaciones"]?.ToString()
-                    };
+                    ExhortoId = ObtenerEntero(reader, "ExhortoId"),
+                    NoExhortoEnviado = ObtenerTexto(reader, "NoExhortoEnviado"),
+                    NoExpediente = ObtenerTexto(reader, "NoExpediente"),
+                    TuaOrigen = ObtenerTexto(reader, "tuaOrigen"),
+                    Estatus = ObtenerTexto(reader, "Estatus"),
+                    NoOficio = ObtenerTexto(reader, "NoOficio"),
+                    Estado = ObtenerTexto(reader, "Estado"),
+                    Municipio = ObtenerTexto(reader, "Municipio"),
+                    Poblado = ObtenerTexto(reader, "Poblado"),
+                    IdDestino = ObtenerTexto(reader, "idDestino"),
+                    TuaDestino = ObtenerTexto(reader, "tuaDestino"),
+                    FechaAcuerdo = FormatearFecha(reader["FechaAcuerdo"]),
+                    FechaAudiencia = FormatearFecha(reader["FechaAudiencia"]),
+                    FechaEnvio = FormatearFecha(reader["FechaEnvio"]),
+                    FechaRecibido = FormatearFecha(reader["FechaRecibido"]),
+                    Folio = ObtenerTexto(reader, "NoFolio"),
+                    NoExhortoRecibido = ObtenerTexto(reader, "NoExhortoRecibido"),
+                    FechaAcuerdoExhortado = FormatearFecha(reader["FechaAcuerdoExhortado"]),
+                    FechaTurnoActuaria = FormatearFecha(reader["FechaTurnoActuaria"]),
+                    FechaDevolucion = FormatearFecha(reader["FechaDevolucion"]),
+                    Observaciones = ObtenerTexto(reader, "Observaciones")
+                };
 
-                    listaExhortos.Add(exhorto);
-                }
-            }
-            catch (MySqlException)
-            {
-                return new List<ConsultaExhortos>();
-            }
-            catch (Exception)
-            {
-                return new List<ConsultaExhortos>();
+                listaExhortos.Add(exhorto);
             }
 
             return listaExhortos;
+        }
+
+        public ConsultaExhortos? ObtenerDetalleExhortoRecibido(int exhortoId, int tuaIdDestino)
+        {
+            using MySqlConnection conn = _db.GetConnection();
+            conn.Open();
+
+            using MySqlCommand cmd = new("exhortos_db.sp_consulta_exhortos_recibidos", conn);
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.Parameters.Add("pTUAIdDestino", MySqlDbType.Int32).Value = tuaIdDestino;
+
+            using MySqlDataReader reader = cmd.ExecuteReader();
+
+            while (reader.Read())
+            {
+                int exhortoIdActual = ObtenerEntero(reader, "ExhortoId");
+
+                if (exhortoIdActual == exhortoId)
+                {
+                    return new ConsultaExhortos
+                    {
+                        ExhortoId = exhortoIdActual,
+                        NoExhortoEnviado = ObtenerTexto(reader, "NoExhortoEnviado"),
+                        NoExhortoRecibido = ObtenerTexto(reader, "NoExhortoRecibido"),
+                        NoExpediente = ObtenerTexto(reader, "NoExpediente"),
+                        TuaOrigen = ObtenerTexto(reader, "tuaOrigen"),
+                        Estatus = ObtenerTexto(reader, "Estatus"),
+                        NoOficio = ObtenerTexto(reader, "NoOficio"),
+                        Folio = ObtenerTexto(reader, "NoFolio"),
+                        Estado = ObtenerTexto(reader, "Estado"),
+                        Municipio = ObtenerTexto(reader, "Municipio"),
+                        Poblado = ObtenerTexto(reader, "Poblado"),
+                        IdDestino = ObtenerTexto(reader, "idDestino"),
+                        TuaDestino = ObtenerTexto(reader, "tuaDestino"),
+                        FechaAcuerdo = FormatearFecha(reader["FechaAcuerdo"]),
+                        FechaAudiencia = FormatearFecha(reader["FechaAudiencia"]),
+                        FechaEnvio = FormatearFecha(reader["FechaEnvio"]),
+                        FechaRecibido = FormatearFecha(reader["FechaRecibido"]),
+                        FechaAcuerdoExhortado = FormatearFecha(reader["FechaAcuerdoExhortado"]),
+                        FechaTurnoActuaria = FormatearFecha(reader["FechaTurnoActuaria"]),
+                        FechaDevolucion = FormatearFecha(reader["FechaDevolucion"]),
+                        Observaciones = ObtenerTexto(reader, "Observaciones")
+                    };
+                }
+            }
+
+            return null;
+        }
+
+        private static string? ObtenerTexto(MySqlDataReader reader, string columna)
+        {
+            return reader[columna] == DBNull.Value
+                ? null
+                : reader[columna].ToString();
+        }
+
+        private static int ObtenerEntero(MySqlDataReader reader, string columna)
+        {
+            return reader[columna] == DBNull.Value
+                ? 0
+                : Convert.ToInt32(reader[columna]);
+        }
+
+        private static string? FormatearFecha(object valor)
+        {
+            if (valor == null || valor == DBNull.Value)
+            {
+                return null;
+            }
+
+            if (DateTime.TryParse(valor.ToString(), out DateTime fecha))
+            {
+                return fecha.ToString("dd/MM/yyyy");
+            }
+
+            return valor.ToString();
         }
     }
 }

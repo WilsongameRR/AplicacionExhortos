@@ -19,6 +19,8 @@
                 </div>
             }
 
+          
+
             <div class="row mb-3">
                 <div class="col-md-4">
                     <input class="form-control" id="txtBuscar" type="text" placeholder="Buscar..." />
@@ -45,7 +47,7 @@
                             <tr>
                                 <td class="text-center">
                                     <a asp-controller="ExhortosRecibidos"
-                                           asp-action="RelacionExhorto"
+                                           asp-action="DetalleExhorto"
                                            asp-route-id="@item.ExhortoId"
                                            title="Ver detalle">
                                         <img src="~/Images/Icons/eye-fill.svg" width="20" alt="Ver" />
@@ -53,7 +55,7 @@
                                 </td>
                                 <td style="display:none;">@item.ExhortoId</td>
                                 <td>@item.NoExhortoEnviado</td>
-                                <td>@item.NoOficio</td>
+                                <td>@item.Folio</td>
                                 <td>@item.TuaOrigen</td>
                                 <td>@item.NoExpediente</td>
                                 <td>@item.Estatus</td>
