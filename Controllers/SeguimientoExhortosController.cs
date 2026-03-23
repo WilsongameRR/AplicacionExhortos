@@ -7,10 +7,14 @@ namespace AplicacionExhortos.Controllers
     public class SeguimientoExhortosController : Controller
     {
         private readonly ConsultaExhortoRepository _consultaExhortoRepository;
+        private readonly DiligenciasRepository _diligenciasRepository;
 
-        public SeguimientoExhortosController(ConsultaExhortoRepository consultaExhortoRepository)
+        public SeguimientoExhortosController(
+            ConsultaExhortoRepository consultaExhortoRepository,
+            DiligenciasRepository diligenciasRepository)
         {
             _consultaExhortoRepository = consultaExhortoRepository;
+            _diligenciasRepository = diligenciasRepository;
         }
 
         [HttpGet]
@@ -44,14 +48,14 @@ namespace AplicacionExhortos.Controllers
 
             if (exhorto == null)
             {
-                TempData["Error"] = "No se encontró el detalle del exhorto.";
+                TempData["Error"] = "No se encontró información del exhorto.";
                 return RedirectToAction(nameof(SeguimientoExhortos));
             }
 
-            DetalleExhortoModel model = new DetalleExhortoModel
+            DetalleExhortoModel model = new()
             {
                 Exhorto = exhorto,
-                Diligencias = new List<DiligenciaModel>()
+                Diligencias = _diligenciasRepository.ObtenerDiligencias(id)
             };
 
             return View(model);
