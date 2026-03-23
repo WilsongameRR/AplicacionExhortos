@@ -29,5 +29,32 @@ namespace AplicacionExhortos.Controllers
 
             return View(lista);
         }
+
+        [HttpGet]
+        public IActionResult DetalleSeguimiento(int id)
+        {
+            if (id <= 0)
+            {
+                TempData["Error"] = "El identificador del exhorto no es válido.";
+                return RedirectToAction(nameof(SeguimientoExhortos));
+            }
+
+            ConsultaExhortos? exhorto =
+                _consultaExhortoRepository.ObtenerDetalleExhortoRecibido(id);
+
+            if (exhorto == null)
+            {
+                TempData["Error"] = "No se encontró el detalle del exhorto.";
+                return RedirectToAction(nameof(SeguimientoExhortos));
+            }
+
+            DetalleExhortoModel model = new DetalleExhortoModel
+            {
+                Exhorto = exhorto,
+                Diligencias = new List<DiligenciaModel>()
+            };
+
+            return View(model);
+        }
     }
 }

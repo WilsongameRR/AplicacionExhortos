@@ -1,0 +1,173 @@
+﻿@model AplicacionExhortos.Models.DetalleExhortoModel
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid fondo-exhortos min-vh-100 pb-5" style="padding-top:80px;">
+    <div class="row justify-content-center">
+        <div class="col-12 col-lg-10">
+
+            <div class="text-center mt-4 mb-4">
+                <h2>DETALLE DE SEGUIMIENTO</h2>
+            </div>
+
+            <div class="card shadow-sm">
+                <div class="card-body">
+
+                    <!-- ===================== -->
+                    <!-- DATOS DEL EXHORTO -->
+                    <!-- ===================== -->
+                    <div class="text-center mb-4">
+                        <h4 class="fw-bold">DATOS DEL EXHORTO</h4>
+                    </div>
+
+                    <div class="row mb-3">
+
+                        <div class="col-md-3">
+                            <label class="form-label fw-bold">TUA Exhortante</label>
+                            <div class="form-control bg-light"></div>
+                        </div>
+
+                        <div class="col-md-3">
+                            <label class="form-label fw-bold">No. Exhorto Exhortante</label>
+                            <div class="form-control bg-light"></div>
+                        </div>
+
+                        <div class="col-md-3">
+                            <label class="form-label fw-bold">Expediente</label>
+                            <div class="form-control bg-light"></div>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+
+                        <div class="col-md-3">
+                            <label class="form-label fw-bold">Oficio</label>
+                            <div class="form-control bg-light"></div>
+                        </div>
+
+                        <div class="col-md-3">
+                            <label class="form-label fw-bold">Estado</label>
+                            <div class="form-control bg-light"></div>
+                        </div>
+
+                        <div class="col-md-3">
+                            <label class="form-label fw-bold">Municipio</label>
+                            <div class="form-control bg-light"></div>
+                        </div>
+
+                        <div class="col-md-3">
+                            <label class="form-label fw-bold">Poblado</label>
+                            <div class="form-control bg-light"></div>
+                        </div>
+                    </div>
+
+                    <div class="row mb-4">
+
+                        <div class="col-md-4">
+                            <label class="form-label fw-bold">Fecha de Acuerdo</label>
+                            <div class="form-control bg-light"></div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label fw-bold">Fecha de Audiencia</label>
+                            <div class="form-control bg-light"></div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label fw-bold">Fecha de Envío</label>
+                            <div class="form-control bg-light"></div>
+                        </div>
+                    </div>
+
+                    <!-- ===================== -->
+                    <!-- DILIGENCIAS -->
+                    <!-- ===================== -->
+                    <div class="text-center mb-3">
+                        <h4 class="fw-bold">DILIGENCIAS</h4>
+                    </div>
+
+                    <div class="table-responsive mt-2">
+                        <table class="table table-bordered table-striped">
+                            <thead class="thead-tua">
+                                <tr>
+                                    <th>Diligencia</th>
+                                    <th>Destinatario</th>
+                                    <th>Fecha Diligencia</th>
+                                    <th>Estatus</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td colspan="4" class="text-center text-muted">
+                                        No hay diligencias registradas.
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- ===================== -->
+                    <!-- SEGUIMIENTO -->
+                    <!-- ===================== -->
+                    <div class="text-center mt-5 mb-4">
+                        <h4 class="fw-bold">SEGUIMIENTO</h4>
+                    </div>
+
+                    <div class="row mb-3">
+
+                        <div class="col-md-4">
+                            <label class="form-label fw-bold">Fecha de Recepción</label>
+                            <div class="form-control bg-light"></div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label fw-bold">No. De Folio</label>
+                            <div class="form-control bg-light"></div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label fw-bold">Estatus</label>
+                            <div class="form-control bg-light"></div>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+
+                        <div class="col-md-4">
+                            <label class="form-label fw-bold">Fecha Acuerdo TUA Exhortado</label>
+                            <div class="form-control bg-light"></div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label fw-bold">Fecha Turno Actuaría</label>
+                            <div class="form-control bg-light"></div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label fw-bold">Fecha de Vencimiento</label>
+                            <div class="form-control bg-light"></div>
+                        </div>
+                    </div>
+
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <label class="form-label fw-bold">Observaciones</label>
+                            <div class="form-control bg-light" style="min-height: 90px;"></div>
+                        </div>
+                    </div>
+
+                    <!-- BOTÓN -->
+                    <div class="d-flex justify-content-end">
+                        <a asp-action="SeguimientoExhortos" class="btn btn-secondary">
+                            Regresar
+                        </a>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
