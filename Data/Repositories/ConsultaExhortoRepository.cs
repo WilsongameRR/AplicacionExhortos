@@ -53,6 +53,46 @@ namespace AplicacionExhortos.Data.Repositories
             return listaExhortos;
         }
 
+        public List<ConsultaExhortos> ConsultaSeguimientoExhortos(int tuaIdDestino)
+        {
+            List<ConsultaExhortos> listaExhortos = new();
+
+            using MySqlConnection conn = _db.GetConnection();
+            conn.Open();
+
+            using MySqlCommand cmd = new("exhortos_db.sp_seguimiento_exhortos", conn);
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.Parameters.Add("pTUAIdDestino", MySqlDbType.Int32).Value = tuaIdDestino;
+
+            using MySqlDataReader reader = cmd.ExecuteReader();
+
+            while (reader.Read())
+            {
+                ConsultaExhortos exhorto = new()
+                {
+                    ExhortoId = ObtenerEntero(reader, "ExhortoId"),
+                    //IdOrigen = ObtenerTexto(reader, "idOrigen"),
+                    TuaOrigen = ObtenerTexto(reader, "tuaOrigen"),
+                    NoExhortoEnviado = ObtenerTexto(reader, "NoExhortoEnviado"),
+                    NoExpediente = ObtenerTexto(reader, "NoExpediente"),
+                    NoOficio = ObtenerTexto(reader, "NoOficio"),
+                    Estado = ObtenerTexto(reader, "Estado"),
+                    Municipio = ObtenerTexto(reader, "Municipio"),
+                    Poblado = ObtenerTexto(reader, "Poblado"),
+                    //IdDestino = ObtenerTexto(reader, "idDestino"),
+                    TuaDestino = ObtenerTexto(reader, "tuaDestino"),
+                    FechaAcuerdo = FormatearFecha(reader["FechaAcuerdo"]),
+                    FechaAudiencia = FormatearFecha(reader["FechaAudiencia"]),
+                    FechaEnvio = FormatearFecha(reader["FechaEnvio"]),
+                    Estatus = ObtenerTexto(reader, "Estatus")
+                };
+
+                listaExhortos.Add(exhorto);
+            }
+
+            return listaExhortos;
+        }
+
         public List<ConsultaExhortos> ConsultaExhortosRecibidos(int tuaIdDestino)
         {
             List<ConsultaExhortos> listaExhortos = new();
