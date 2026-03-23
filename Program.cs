@@ -1,7 +1,13 @@
 using AplicacionExhortos.Data;
 using AplicacionExhortos.Data.Repositories;
+using System.Globalization;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Configurar cultura global
+var culture = new CultureInfo("es-MX");
+CultureInfo.DefaultThreadCurrentCulture = culture;
+CultureInfo.DefaultThreadCurrentUICulture = culture;
 
 // Servicios MVC
 builder.Services.AddControllersWithViews();
