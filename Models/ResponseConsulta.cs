@@ -29,5 +29,6 @@
         public string? FechaDevolucion { get; set; }
         public string? Observaciones { get; set; }
         public string? Estatus { get; set; }
+
     }
 }
