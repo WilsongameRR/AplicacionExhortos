@@ -60,14 +60,6 @@
                             </tr>
                         }
                     }
-                    else
-                    {
-                        <tr>
-                            <td colspan="10" class="text-center text-muted">
-                                No hay exhortos para mostrar.
-                            </td>
-                        </tr>
-                    }
                 </tbody>
             </table>
 
@@ -83,7 +75,9 @@
                 lengthChange: false,
                 dom: 'rtip',
                 language: {
-                    url: '/js/datatables/spanish.json'
+                    url: '/js/datatables/spanish.json',
+                    emptyTable: 'Sin exhortos registrados.',
+                    zeroRecords: 'Sin exhortos registrados.'
                 }
             });
 

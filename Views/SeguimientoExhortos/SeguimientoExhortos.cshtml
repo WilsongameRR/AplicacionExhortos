@@ -52,14 +52,6 @@
                             </tr>
                         }
                     }
-                    else
-                    {
-                        <tr>
-                            <td colspan="6" class="text-center text-muted">
-                                No hay registros de seguimiento para mostrar.
-                            </td>
-                        </tr>
-                    }
                 </tbody>
             </table>
 
@@ -75,7 +67,9 @@
                 lengthChange: false,
                 dom: 'rtip',
                 language: {
-                    url: '/js/datatables/spanish.json'
+                    url: '/js/datatables/spanish.json',
+                    emptyTable: 'Sin registros de seguimiento.',
+                    zeroRecords: 'Sin registros de seguimiento.'
                 }
             });
 

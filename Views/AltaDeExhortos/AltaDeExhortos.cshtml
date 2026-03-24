@@ -132,16 +132,15 @@
                         <span class="input-group-text" id="iconoCalendarioAudiencia" style="cursor:pointer;">
                             <i class="bi bi-calendar-event"></i>
                         </span>
-
                         <input asp-for="FechaAudiencia"
                                type="date"
                                class="form-control sin-icono"
-                               min="@DateTime.Today.AddYears(-1).ToString("yyyy-MM-dd")"
-                               max="@DateTime.Today.AddYears(5).ToString("yyyy-MM-dd")"
+                               min="@DateTime.Today.ToString("yyyy-MM-dd")"
+                               max="@DateTime.Today.AddYears(1).ToString("yyyy-MM-dd")"
                                required />
 
                         <div class="invalid-feedback">
-                            Ingrese una fecha de audiencia.
+                            Ingrese una Fecha de Audiencia 
                         </div>
                     </div>
                 </div>
