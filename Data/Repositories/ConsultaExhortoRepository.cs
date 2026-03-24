@@ -71,7 +71,6 @@ namespace AplicacionExhortos.Data.Repositories
                 ConsultaExhortos exhorto = new()
                 {
                     ExhortoId = ObtenerEntero(reader, "ExhortoId"),
-                    //IdOrigen = ObtenerTexto(reader, "idOrigen"),
                     TuaOrigen = ObtenerTexto(reader, "tuaOrigen"),
                     NoExhortoEnviado = ObtenerTexto(reader, "NoExhortoEnviado"),
                     NoExpediente = ObtenerTexto(reader, "NoExpediente"),
@@ -79,7 +78,6 @@ namespace AplicacionExhortos.Data.Repositories
                     Estado = ObtenerTexto(reader, "Estado"),
                     Municipio = ObtenerTexto(reader, "Municipio"),
                     Poblado = ObtenerTexto(reader, "Poblado"),
-                    //IdDestino = ObtenerTexto(reader, "idDestino"),
                     TuaDestino = ObtenerTexto(reader, "tuaDestino"),
                     FechaAcuerdo = FormatearFecha(reader["FechaAcuerdo"]),
                     FechaAudiencia = FormatearFecha(reader["FechaAudiencia"]),
@@ -108,13 +106,20 @@ namespace AplicacionExhortos.Data.Repositories
 
             while (reader.Read())
             {
+                string? estatus = ObtenerTexto(reader, "Estatus");
+
+                if (estatus != "PENDIENTE" && estatus != "TRAMITE")
+                {
+                    continue;
+                }
+
                 ConsultaExhortos exhorto = new()
                 {
                     ExhortoId = ObtenerEntero(reader, "ExhortoId"),
                     NoExhortoEnviado = ObtenerTexto(reader, "NoExhortoEnviado"),
                     NoExpediente = ObtenerTexto(reader, "NoExpediente"),
                     TuaOrigen = ObtenerTexto(reader, "tuaOrigen"),
-                    Estatus = ObtenerTexto(reader, "Estatus"),
+                    Estatus = estatus,
                     NoOficio = ObtenerTexto(reader, "NoOficio"),
                     Estado = ObtenerTexto(reader, "Estado"),
                     Municipio = ObtenerTexto(reader, "Municipio"),
@@ -137,6 +142,28 @@ namespace AplicacionExhortos.Data.Repositories
             }
 
             return listaExhortos;
+        }
+
+        public string? AsignarExhortoRecibido(int exhortoId, string usuario)
+        {
+            using MySqlConnection conn = _db.GetConnection();
+            conn.Open();
+
+            using MySqlCommand cmd = new("exhortos_db.sp_asigna_exhorto_recibido", conn);
+            cmd.CommandType = CommandType.StoredProcedure;
+
+            cmd.Parameters.Add("pExhortoId", MySqlDbType.Int32).Value = exhortoId;
+            cmd.Parameters.Add("pUsuario", MySqlDbType.VarChar, 40).Value = usuario;
+
+            MySqlParameter pExhortoRecibido = new("pExhortoRecibido", MySqlDbType.VarChar, 40)
+            {
+                Direction = ParameterDirection.Output
+            };
+            cmd.Parameters.Add(pExhortoRecibido);
+
+            cmd.ExecuteNonQuery();
+
+            return cmd.Parameters["pExhortoRecibido"].Value?.ToString();
         }
 
         public ConsultaExhortos? ObtenerDetalleExhortoRecibido(int exhortoId)
