@@ -43,6 +43,15 @@ namespace AplicacionExhortos.Controllers
                 return RedirectToAction(nameof(SeguimientoExhortos));
             }
 
+            string? usuario = HttpContext.Session.GetString("UsuarioId");
+
+            if (string.IsNullOrWhiteSpace(usuario))
+            {
+                TempData["Error"] = "La sesión expiró. Inicie sesión nuevamente.";
+                return RedirectToAction("Login", "Login");
+            }
+
+            // Primero obtenemos el detalle actual
             ConsultaExhortos? exhorto =
                 _consultaExhortoRepository.ObtenerDetalleExhortoRecibido(id);
 
@@ -50,6 +59,23 @@ namespace AplicacionExhortos.Controllers
             {
                 TempData["Error"] = "No se encontró información del exhorto.";
                 return RedirectToAction(nameof(SeguimientoExhortos));
+            }
+
+            // Si sigue pendiente, asigna número de exhorto recibido
+            // y con eso debe pasar a trámite según tu SP
+            if (!string.IsNullOrWhiteSpace(exhorto.Estatus) &&
+                exhorto.Estatus.Trim().ToUpper() == "PENDIENTE")
+            {
+                _consultaExhortoRepository.AsignarExhortoRecibido(id, usuario);
+
+                // Volver a consultar ya actualizado
+                exhorto = _consultaExhortoRepository.ObtenerDetalleExhortoRecibido(id);
+
+                if (exhorto == null)
+                {
+                    TempData["Error"] = "No se encontró información del exhorto después de actualizar.";
+                    return RedirectToAction(nameof(SeguimientoExhortos));
+                }
             }
 
             DetalleExhortoModel model = new()
