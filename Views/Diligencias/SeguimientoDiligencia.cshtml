@@ -1,0 +1,97 @@
+﻿@model AplicacionExhortos.Models.DiligenciaModel
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid fondo-exhortos min-vh-100 pb-5" style="padding-top:80px;">
+    <div class="row justify-content-center">
+        <div class="col-12 col-lg-8">
+
+            @if (TempData["Error"] != null)
+            {
+                <div class="alert alert-warning text-center">
+                    @TempData["Error"]
+                </div>
+            }
+
+            @if (TempData["Exito"] != null)
+            {
+                <div class="alert alert-success text-center">
+                    @TempData["Exito"]
+                </div>
+            }
+
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <div class="text-center mb-4">
+                        <h3 class="fw-bold">Seguimiento a Diligencia</h3>
+                    </div>
+
+                    <form asp-action="GuardarSeguimientoDiligencia" asp-controller="Diligencias" method="post">
+                        @Html.AntiForgeryToken()
+
+                        <input type="hidden" asp-for="ExhortoId" />
+                        <input type="hidden" asp-for="DiligenciaId" />
+                        <input type="hidden" asp-for="TipoDiligenciaId" />
+                        <input type="hidden" asp-for="TipoDiligenciaDesc" />
+                        <input type="hidden" asp-for="OtraEspecificar" />
+                        <input type="hidden" asp-for="Destinatario" />
+
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">Tipo Diligencia:</label>
+                                <div class="form-control bg-light">@Model.TipoDiligenciaDesc</div>
+                            </div>
+
+                            @if (!string.IsNullOrWhiteSpace(Model.OtraEspecificar))
+                            {
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold">Especificar:</label>
+                                    <div class="form-control bg-light">@Model.OtraEspecificar</div>
+                                </div>
+                            }
+                        </div>
+
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">Destinatario:</label>
+                                <div class="form-control bg-light">@Model.Destinatario</div>
+                            </div>
+                        </div>
+
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">* Fecha Diligencia:</label>
+                                <input asp-for="FechaDiligencia" type="date" class="form-control" />
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">* Estatus:</label>
+                                <select asp-for="EstatusDiligencia" class="form-control">
+                                    <option value="">Seleccione</option>
+                                    <option value="DILIGENCIADO">DILIGENCIADO</option>
+                                    <option value="NO DILIGENCIADO">NO DILIGENCIADO</option>
+                                    <option value="RAZON ACTUARIAL">RAZON ACTUARIAL</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-center gap-3">
+                            <a asp-controller="SeguimientoExhortos"
+                                   asp-action="SeguimientoExhortos"
+                                   class="btn btn-secondary">
+                                Regresar
+                            </a>
+
+                            <button type="submit" class="btn btn-primary">
+                                Guardar
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>

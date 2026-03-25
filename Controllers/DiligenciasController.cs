@@ -47,7 +47,6 @@ namespace AplicacionExhortos.Controllers
                 return View("AltaDiligencia", model);
             }
 
-            // 1. Guardar diligencias
             ResponseBd respuestaGuardar = _diligenciasRepository.GuardarDiligencias(model);
 
             if (respuestaGuardar.NoError != 0)
@@ -59,7 +58,6 @@ namespace AplicacionExhortos.Controllers
                 return RedirectToAction("AltaDiligencia", new { noExhorto = model.NoExhorto });
             }
 
-            // 2. Enviar exhorto automáticamente
             ResponseBd respuestaEnviar = _diligenciasRepository.ActualizarEstatusExhorto(model.NoExhorto);
 
             if (respuestaEnviar.NoError != 0)
@@ -84,6 +82,99 @@ namespace AplicacionExhortos.Controllers
                 : respuestaEnviar.Mensaje;
 
             return RedirectToAction("AltaDiligencia", new { noExhorto = model.NoExhorto });
+        }
+
+        [HttpGet]
+        public IActionResult SeguimientoDiligencia(int exhortoId, int diligenciaId)
+        {
+            var model = _diligenciasRepository.ObtenerDiligenciaPorId(exhortoId, diligenciaId);
+
+            if (model == null)
+            {
+                TempData["Error"] = "No se encontró la diligencia seleccionada.";
+                return RedirectToAction("SeguimientoExhortos", "SeguimientoExhortos");
+            }
+
+            return View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult GuardarSeguimientoDiligencia(DiligenciaModel model)
+        {
+            if (model.ExhortoId <= 0 || model.DiligenciaId <= 0)
+            {
+                TempData["Error"] = "No se identificó correctamente la diligencia.";
+                return RedirectToAction("SeguimientoExhortos", "SeguimientoExhortos");
+            }
+
+            if (!model.FechaDiligencia.HasValue)
+            {
+                TempData["Error"] = "Debe capturar la fecha de diligencia.";
+                return RedirectToAction("SeguimientoDiligencia", new
+                {
+                    exhortoId = model.ExhortoId,
+                    diligenciaId = model.DiligenciaId
+                });
+            }
+
+            DateTime hoy = DateTime.Today;
+            DateTime fechaMinima = hoy.AddYears(-1);
+
+            if (model.FechaDiligencia.Value.Date > hoy)
+            {
+                TempData["Error"] = "La fecha de diligencia no puede ser mayor a la fecha actual.";
+                return RedirectToAction("SeguimientoDiligencia", new
+                {
+                    exhortoId = model.ExhortoId,
+                    diligenciaId = model.DiligenciaId
+                });
+            }
+
+            if (model.FechaDiligencia.Value.Date < fechaMinima)
+            {
+                TempData["Error"] = "La fecha de diligencia no puede ser mayor a un año anterior.";
+                return RedirectToAction("SeguimientoDiligencia", new
+                {
+                    exhortoId = model.ExhortoId,
+                    diligenciaId = model.DiligenciaId
+                });
+            }
+
+            if (string.IsNullOrWhiteSpace(model.EstatusDiligencia))
+            {
+                TempData["Error"] = "Debe seleccionar un estatus.";
+                return RedirectToAction("SeguimientoDiligencia", new
+                {
+                    exhortoId = model.ExhortoId,
+                    diligenciaId = model.DiligenciaId
+                });
+            }
+
+            ResponseBd respuesta = _diligenciasRepository.ActualizarDiligencia(model);
+
+            if (respuesta.NoError != 0)
+            {
+                TempData["Error"] = string.IsNullOrWhiteSpace(respuesta.Mensaje)
+                    ? "No fue posible actualizar la diligencia."
+                    : respuesta.Mensaje;
+
+                return RedirectToAction("SeguimientoDiligencia", new
+                {
+                    exhortoId = model.ExhortoId,
+                    diligenciaId = model.DiligenciaId
+                });
+            }
+
+            TempData["Exito"] = string.IsNullOrWhiteSpace(respuesta.Mensaje)
+                ? "Diligencia actualizada correctamente."
+                : respuesta.Mensaje;
+
+            return RedirectToAction("SeguimientoDiligencia", new
+            {
+                exhortoId = model.ExhortoId,
+                diligenciaId = model.DiligenciaId
+            });
         }
     }
 }

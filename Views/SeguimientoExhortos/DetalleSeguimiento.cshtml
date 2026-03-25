@@ -156,11 +156,11 @@
                                                 <!-- 👁️ ICONO SVG -->
                                                 <td class="text-center">
                                                     <a asp-controller="Diligencias"
-                                                           asp-action="DetalleDiligencia"
-                                                           asp-route-id="@d.DiligenciaId"
-                                                           title="Ver detalle">
-
-                                                        <img src="~/images/icons/eye-fill.svg"
+                                                           asp-action="SeguimientoDiligencia"
+                                                           asp-route-diligenciaId="@d.DiligenciaId"
+                                                           asp-route-exhortoId="@d.ExhortoId"
+                                                           title="Ver seguimiento">
+                                                        <img src="~/images/Icons/eye-fill.svg"
                                                              alt="Ver"
                                                              style="width:20px; height:20px; cursor:pointer;" />
                                                     </a>

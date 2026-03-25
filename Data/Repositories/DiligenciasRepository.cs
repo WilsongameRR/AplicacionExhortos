@@ -206,13 +206,58 @@ namespace AplicacionExhortos.Data.Repositories
                     FechaDiligencia = reader["FechaDiligencia"] != DBNull.Value
                         ? Convert.ToDateTime(reader["FechaDiligencia"])
                         : (DateTime?)null,
-                    EstatusDiligencia = reader["EstatusDiligencia"]?.ToString()
+                    EstatusDiligencia = reader["EstatusDiligencia"]?.ToString(),
+
+                    // COMO TU SP NO TRAE FechaAudiencia, la dejamos nula
+                    FechaAudiencia = null
                 });
             }
 
             return lista;
         }
 
+        public DiligenciaModel? ObtenerDiligenciaPorId(int exhortoId, int diligenciaId)
+        {
+            DiligenciaModel? model = null;
+
+            using var conn = _db.GetConnection();
+            conn.Open();
+
+            using var cmd = new MySqlCommand("exhortos_db.sp_consulta_diligencias", conn);
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.Parameters.AddWithValue("pExhortoId", exhortoId);
+
+            using var reader = cmd.ExecuteReader();
+
+            while (reader.Read())
+            {
+                int idActual = reader["DiligenciaId"] != DBNull.Value
+                    ? Convert.ToInt32(reader["DiligenciaId"])
+                    : 0;
+
+                if (idActual == diligenciaId)
+                {
+                    model = new DiligenciaModel
+                    {
+                        ExhortoId = reader["ExhortoId"] != DBNull.Value ? Convert.ToInt32(reader["ExhortoId"]) : 0,
+                        DiligenciaId = reader["DiligenciaId"] != DBNull.Value ? Convert.ToInt32(reader["DiligenciaId"]) : 0,
+                        TipoDiligenciaId = reader["TipoDiligenciaId"] != DBNull.Value ? Convert.ToInt32(reader["TipoDiligenciaId"]) : 0,
+                        TipoDiligenciaDesc = reader["TipoDiligenciaDesc"]?.ToString(),
+                        OtraEspecificar = reader["OtraEspecificar"]?.ToString(),
+                        Destinatario = reader["Destinatario"]?.ToString(),
+                        FechaDiligencia = reader["FechaDiligencia"] != DBNull.Value
+                            ? Convert.ToDateTime(reader["FechaDiligencia"])
+                            : (DateTime?)null,
+                        EstatusDiligencia = reader["EstatusDiligencia"]?.ToString(),
+                        FechaAudiencia = null
+                    };
+
+                    break;
+                }
+            }
+
+            return model;
+        }
         public bool ValidaDiligencias(int exhortoId)
         {
             using var conn = _db.GetConnection();
@@ -258,9 +303,57 @@ namespace AplicacionExhortos.Data.Repositories
                 ? Convert.ToInt32(cmd.Parameters["pTotal"].Value)
                 : 0;
 
-            // Si total > 0, hay diligencias pendientes
-            // entonces NO debería permitir cerrar como diligenciado
             return total == 0;
+        }
+
+        public ResponseBd ActualizarDiligencia(DiligenciaModel model)
+        {
+            ResponseBd respuesta = new ResponseBd();
+
+            using var conn = _db.GetConnection();
+            conn.Open();
+
+            try
+            {
+                using var cmd = new MySqlCommand("exhortos_db.sp_actualiza_diligencia", conn);
+                cmd.CommandType = CommandType.StoredProcedure;
+
+                cmd.Parameters.AddWithValue("pExhortoId", model.ExhortoId);
+                cmd.Parameters.AddWithValue("pDiligenciaId", model.DiligenciaId);
+                cmd.Parameters.AddWithValue("pFechaDiligencia", model.FechaDiligencia.HasValue
+                    ? model.FechaDiligencia.Value
+                    : DBNull.Value);
+                cmd.Parameters.AddWithValue("pEstatus", string.IsNullOrWhiteSpace(model.EstatusDiligencia)
+                    ? DBNull.Value
+                    : model.EstatusDiligencia);
+
+                var pErrorNum = new MySqlParameter("p_error_num", MySqlDbType.Int32)
+                {
+                    Direction = ParameterDirection.Output
+                };
+                cmd.Parameters.Add(pErrorNum);
+
+                var pMensaje = new MySqlParameter("p_mensaje", MySqlDbType.VarChar, 100)
+                {
+                    Direction = ParameterDirection.Output
+                };
+                cmd.Parameters.Add(pMensaje);
+
+                cmd.ExecuteNonQuery();
+
+                respuesta.NoError = cmd.Parameters["p_error_num"].Value != DBNull.Value
+                    ? Convert.ToInt32(cmd.Parameters["p_error_num"].Value)
+                    : 99;
+
+                respuesta.Mensaje = cmd.Parameters["p_mensaje"].Value?.ToString() ?? "Error no identificado.";
+            }
+            catch (Exception ex)
+            {
+                respuesta.NoError = 99;
+                respuesta.Mensaje = ex.Message;
+            }
+
+            return respuesta;
         }
     }
 }
