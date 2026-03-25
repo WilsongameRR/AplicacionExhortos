@@ -35,9 +35,9 @@ namespace AplicacionExhortos.Controllers
         }
 
         [HttpGet]
-        public IActionResult DetalleSeguimiento(int id)
+        public IActionResult DetalleSeguimiento(int exhortoId)
         {
-            if (id <= 0)
+            if (exhortoId <= 0)
             {
                 TempData["Error"] = "El identificador del exhorto no es válido.";
                 return RedirectToAction(nameof(SeguimientoExhortos));
@@ -52,7 +52,7 @@ namespace AplicacionExhortos.Controllers
             }
 
             ConsultaExhortos? exhorto =
-                _consultaExhortoRepository.ObtenerDetalleExhortoRecibido(id);
+                _consultaExhortoRepository.ObtenerDetalleExhortoRecibido(exhortoId);
 
             if (exhorto == null)
             {
@@ -63,9 +63,9 @@ namespace AplicacionExhortos.Controllers
             if (!string.IsNullOrWhiteSpace(exhorto.Estatus) &&
                 exhorto.Estatus.Trim().ToUpper() == "PENDIENTE")
             {
-                _consultaExhortoRepository.AsignarExhortoRecibido(id, usuario);
+                _consultaExhortoRepository.AsignarExhortoRecibido(exhortoId, usuario);
 
-                exhorto = _consultaExhortoRepository.ObtenerDetalleExhortoRecibido(id);
+                exhorto = _consultaExhortoRepository.ObtenerDetalleExhortoRecibido(exhortoId);
 
                 if (exhorto == null)
                 {
@@ -77,7 +77,7 @@ namespace AplicacionExhortos.Controllers
             DetalleExhortoModel model = new()
             {
                 Exhorto = exhorto,
-                Diligencias = _diligenciasRepository.ObtenerDiligencias(id)
+                Diligencias = _diligenciasRepository.ObtenerDiligencias(exhortoId)
             };
 
             model.Seguimiento.ExhortoId = exhorto.ExhortoId;

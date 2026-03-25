@@ -1,4 +1,5 @@
 ﻿using AplicacionExhortos.Data.Repositories;
+using AplicacionExhortos.Models;
 using AplicacionExhortos.Models.Exhortos;
 using Microsoft.AspNetCore.Mvc;
 using MySql.Data.MySqlClient;
@@ -44,6 +45,8 @@ namespace AplicacionExhortos.Controllers
                 return View("~/Views/AltaDeExhortos/AltaDeExhortos.cshtml");
             }
         }
+
+        
 
         [HttpPost]
         [ValidateAntiForgeryToken]

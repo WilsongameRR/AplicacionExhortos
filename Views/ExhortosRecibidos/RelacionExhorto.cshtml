@@ -53,11 +53,6 @@
                             <h4 class="fw-bold">DATOS DEL EXHORTO</h4>
                         </div>
 
-                        <div class="col-md-3">
-                            <label class="form-label fw-bold">No. Exhorto Recibido</label>
-                            <div class="form-control bg-light">@Model.Exhorto.NoExhortoRecibido</div>
-                        </div>
-
                         <div class="row mb-3">
                             <div class="col-md-3">
                                 <label class="form-label fw-bold">TUA Exhortante</label>
@@ -73,14 +68,14 @@
                                 <label class="form-label fw-bold">Expediente</label>
                                 <div class="form-control bg-light">@Model.Exhorto.NoExpediente</div>
                             </div>
+                        </div>
 
+                        <div class="row mb-3">
                             <div class="col-md-3">
                                 <label class="form-label fw-bold">Oficio</label>
                                 <div class="form-control bg-light">@Model.Exhorto.NoOficio</div>
                             </div>
-                        </div>
 
-                        <div class="row mb-3">
                             <div class="col-md-3">
                                 <label class="form-label fw-bold">Estado</label>
                                 <div class="form-control bg-light">@Model.Exhorto.Estado</div>
@@ -108,7 +103,7 @@
                             </div>
 
                             <div class="col-md-4">
-                                <label class="form-label fw-bold">Fecha de Auditoría</label>
+                                <label class="form-label fw-bold">Fecha de Audiencia</label>
                                 <div class="form-control bg-light">
                                     @(Model.Exhorto.FechaAudiencia != null
                                         ? Convert.ToDateTime(Model.Exhorto.FechaAudiencia).ToString("dd/MM/yyyy")
@@ -175,8 +170,9 @@
                                 <ul class="pagination justify-content-center">
                                     <li class="page-item @(currentPage == 1 ? "disabled" : "")">
                                         <a class="page-link"
-                                               asp-action="DetalleExhorto"
-                                               asp-route-id="@Model.Exhorto.ExhortoId"
+                                               asp-controller="ExhortosRecibidos"
+                                               asp-action="RelacionExhorto"
+                                               asp-route-exhortoId="@Model.Exhorto.ExhortoId"
                                                asp-route-page="@(currentPage - 1)">
                                             Anterior
                                         </a>
@@ -186,8 +182,9 @@
                                     {
                                         <li class="page-item @(i == currentPage ? "active" : "")">
                                             <a class="page-link"
-                                                   asp-action="DetalleExhorto"
-                                                   asp-route-id="@Model.Exhorto.ExhortoId"
+                                                   asp-controller="ExhortosRecibidos"
+                                                   asp-action="RelacionExhorto"
+                                                   asp-route-exhortoId="@Model.Exhorto.ExhortoId"
                                                    asp-route-page="@i">
                                                 @i
                                             </a>
@@ -196,8 +193,9 @@
 
                                     <li class="page-item @(currentPage == totalPages ? "disabled" : "")">
                                         <a class="page-link"
-                                               asp-action="DetalleExhorto"
-                                               asp-route-id="@Model.Exhorto.ExhortoId"
+                                               asp-controller="ExhortosRecibidos"
+                                               asp-action="RelacionExhorto"
+                                               asp-route-exhortoId="@Model.Exhorto.ExhortoId"
                                                asp-route-page="@(currentPage + 1)">
                                             Siguiente
                                         </a>
@@ -210,78 +208,72 @@
                             <h4 class="fw-bold">SEGUIMIENTO</h4>
                         </div>
 
-                        <form method="post">
-                            <div class="row mb-3">
-                               
-                                <div class="col-md-3">
-                                    <label class="form-label fw-bold">Fecha de Recepción</label>
-                                    <input type="date"
-                                           class="form-control"
-                                           name="FechaRecibido"
-                                           value="@(Model.Exhorto.FechaRecibido != null ? Convert.ToDateTime(Model.Exhorto.FechaRecibido).ToString("yyyy-MM-dd") : "")" />
-                                </div>
-
-                                <div class="col-md-3">
-                                    <label class="form-label fw-bold">No. Folio</label>
-                                    <input type="text"
-                                           class="form-control upper"
-                                           name="Folio"
-                                           value="@Model.Exhorto.Folio" />
-                                </div>
-
-                                <div class="col-md-3">
-                                    <label class="form-label fw-bold">Estatus del Exhorto</label>
-                                    <select class="form-select upper" name="Estatus">
-                                        <option value="TRAMITE" selected="@(Model.Exhorto.Estatus == "TRAMITE")">TRAMITE</option>
-                                        <option value="PENDIENTE" selected="@(Model.Exhorto.Estatus == "PENDIENTE")">PENDIENTE</option>
-                                        <option value="CONCLUIDO" selected="@(Model.Exhorto.Estatus == "CONCLUIDO")">CONCLUIDO</option>
-                                    </select>
+                        <div class="row mb-3">
+                            <div class="col-md-4">
+                                <label class="form-label fw-bold">Fecha de Recepción</label>
+                                <div class="form-control bg-light">
+                                    @(Model.Exhorto.FechaRecibido != null
+                                        ? Convert.ToDateTime(Model.Exhorto.FechaRecibido).ToString("dd/MM/yyyy")
+                                        : "")
                                 </div>
                             </div>
 
-                            <div class="row mb-3">
-                                <div class="col-md-4">
-                                    <label class="form-label fw-bold">Fecha Acuerdo TUA Exhortado</label>
-                                    <input type="date"
-                                           class="form-control"
-                                           name="FechaAcuerdoExhortado"
-                                           value="@(Model.Exhorto.FechaAcuerdoExhortado != null ? Convert.ToDateTime(Model.Exhorto.FechaAcuerdoExhortado).ToString("yyyy-MM-dd") : "")" />
-                                </div>
+                            <div class="col-md-4">
+                                <label class="form-label fw-bold">No. De Folio</label>
+                                <div class="form-control bg-light">@Model.Exhorto.Folio</div>
+                            </div>
 
-                                <div class="col-md-4">
-                                    <label class="form-label fw-bold">Fecha Turno Actuaría</label>
-                                    <input type="date"
-                                           class="form-control"
-                                           name="FechaTurnoActuaria"
-                                           value="@(Model.Exhorto.FechaTurnoActuaria != null ? Convert.ToDateTime(Model.Exhorto.FechaTurnoActuaria).ToString("yyyy-MM-dd") : "")" />
-                                </div>
+                            <div class="col-md-4">
+                                <label class="form-label fw-bold">Estatus</label>
+                                <div class="form-control bg-light">@Model.Exhorto.Estatus</div>
+                            </div>
+                        </div>
 
-                                <div class="col-md-4">
-                                    <label class="form-label fw-bold">Fecha de Vencimiento</label>
-                                    <input type="date"
-                                           class="form-control"
-                                           name="FechaDevolucion"
-                                           value="@(Model.Exhorto.FechaDevolucion != null ? Convert.ToDateTime(Model.Exhorto.FechaDevolucion).ToString("yyyy-MM-dd") : "")" />
+                        <div class="row mb-3">
+                            <div class="col-md-4">
+                                <label class="form-label fw-bold">Fecha Acuerdo TUA Exhortado</label>
+                                <div class="form-control bg-light">
+                                    @(Model.Exhorto.FechaAcuerdoExhortado != null
+                                        ? Convert.ToDateTime(Model.Exhorto.FechaAcuerdoExhortado).ToString("dd/MM/yyyy")
+                                        : "")
                                 </div>
                             </div>
 
-                            <div class="row mb-4">
-                                <div class="col-12">
-                                    <label class="form-label fw-bold">Observaciones</label>
-                                    <textarea class="form-control upper"
-                                              name="Observaciones"
-                                              rows="3">@Model.Exhorto.Observaciones</textarea>
+                            <div class="col-md-4">
+                                <label class="form-label fw-bold">Fecha Turno Actuaría</label>
+                                <div class="form-control bg-light">
+                                    @(Model.Exhorto.FechaTurnoActuaria != null
+                                        ? Convert.ToDateTime(Model.Exhorto.FechaTurnoActuaria).ToString("dd/MM/yyyy")
+                                        : "")
                                 </div>
                             </div>
 
-                            <div class="text-center mt-4 d-flex justify-content-center gap-2">
-                                <a asp-action="ExhortosRecibidos" class="btn btn-secondary">
-                                    Regresar
-                                </a>
-
-                                
+                            <div class="col-md-4">
+                                <label class="form-label fw-bold">Fecha de Vencimiento</label>
+                                <div class="form-control bg-light">
+                                    @(Model.Exhorto.FechaDevolucion != null
+                                        ? Convert.ToDateTime(Model.Exhorto.FechaDevolucion).ToString("dd/MM/yyyy")
+                                        : "")
+                                </div>
                             </div>
-                        </form>
+                        </div>
+
+                        <div class="row mb-4">
+                            <div class="col-12">
+                                <label class="form-label fw-bold">Observaciones</label>
+                                <div class="form-control bg-light" style="min-height: 90px;">
+                                    @Model.Exhorto.Observaciones
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-end">
+                            <a asp-controller="ExhortosRecibidos"
+                                   asp-action="ExhortosRecibidos"
+                                   class="btn btn-secondary">
+                                Regresar
+                            </a>
+                        </div>
 
                     </div>
                 </div>
@@ -289,11 +281,3 @@
         </div>
     </div>
 </div>
-
-<script>
-    document.addEventListener("input", function (e) {
-        if (e.target.classList.contains("upper")) {
-            e.target.value = e.target.value.toUpperCase();
-        }
-    });
-</script>

@@ -49,10 +49,10 @@
                             <tr>
                                 <td class="text-center">
                                     <a asp-controller="ExhortosRecibidos"
-                                           asp-action="DetalleExhorto"
-                                           asp-route-id="@item.ExhortoId"
+                                           asp-action="RelacionExhorto"
+                                           asp-route-exhortoId="@item.ExhortoId"
                                            title="Ver detalle">
-                                        <img src="~/Images/Icons/eye-fill.svg" width="20" alt="Ver" />
+                                        <img src="~/Images/Icons/eye-fill.svg" width="20" alt="Ver detalle" />
                                     </a>
                                 </td>
                                 <td style="display:none;">@item.ExhortoId</td>

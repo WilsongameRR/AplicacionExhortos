@@ -103,6 +103,7 @@ namespace AplicacionExhortos.Controllers
             return RedirectToAction(nameof(DetalleExhorto), new { id });
         }
 
+
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         [HttpGet]
         public IActionResult DetalleExhorto(int id)
@@ -134,6 +135,43 @@ namespace AplicacionExhortos.Controllers
             {
                 Exhorto = exhorto,
                 Diligencias = _diligenciasRepository.ObtenerDiligencias(id)
+            };
+
+            return View("RelacionExhorto", model);
+
+        }
+
+        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+        [HttpGet]
+        public IActionResult RelacionExhorto(int exhortoId)
+        {
+            int? tuaIdSession = HttpContext.Session.GetInt32("TuaId");
+
+            if (exhortoId <= 0)
+            {
+                TempData["Error"] = "El identificador del exhorto no es válido.";
+                return RedirectToAction(nameof(ExhortosRecibidos));
+            }
+
+            if (!tuaIdSession.HasValue || tuaIdSession.Value <= 0)
+            {
+                TempData["Error"] = "La sesión expiró o no contiene el TUA del usuario.";
+                return RedirectToAction("Login", "Login");
+            }
+
+            ConsultaExhortos? exhorto =
+                _consultaExhortoRepository.ObtenerDetalleExhortoRecibido(exhortoId);
+
+            if (exhorto == null)
+            {
+                TempData["Error"] = "No se encontró el detalle del exhorto.";
+                return RedirectToAction(nameof(ExhortosRecibidos));
+            }
+
+            DetalleExhortoModel model = new()
+            {
+                Exhorto = exhorto,
+                Diligencias = _diligenciasRepository.ObtenerDiligencias(exhortoId)
             };
 
             return View("RelacionExhorto", model);

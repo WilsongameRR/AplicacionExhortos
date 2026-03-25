@@ -3,6 +3,7 @@ wwwroot\favicon.ico
 wwwroot\Images\FondoTSA.png
 wwwroot\Images\Icons\calendar-event.svg
 wwwroot\Images\Icons\eye-fill.svg
+wwwroot\Images\Icons\pencil.svg
 wwwroot\Images\Icons\person-walking.svg
 wwwroot\Images\ImagensTSA.jpg
 wwwroot\Images\LogoTUA.png
@@ -134,3 +135,4 @@ C:\Users\rperezr_ss\Documents\AplicacionExhortos\wwwroot\Images\Icons\person-wal
 C:\Users\rperezr_ss\Documents\AplicacionExhortos\wwwroot\css\site.css
 C:\Users\rperezr_ss\Documents\AplicacionExhortos\wwwroot\lib\jquery\LICENSE.txt
 C:\Users\rperezr_ss\Documents\AplicacionExhortos\wwwroot\lib\jquery\dist\jquery.slim.js
+C:\Users\rperezr_ss\Documents\AplicacionExhortos\wwwroot\Images\Icons\pencil.svg

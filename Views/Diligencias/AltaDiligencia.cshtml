@@ -13,12 +13,53 @@
                 <h2>ALTA DE DILIGENCIAS</h2>
             </div>
 
-            @if (ViewBag.MensajeExito != null)
+            @if (TempData["MensajeExito"] != null)
             {
-                <div class="alert alert-success text-center">
-                    <strong>@ViewBag.MensajeExito</strong><br />
+                <div class="alert alert-success alert-dismissible fade show text-center mt-3" role="alert">
+                    <strong>@TempData["MensajeExito"]</strong><br />
                     Número de exhorto generado:
-                    <strong>@ViewBag.NumeroExhorto</strong>
+                    <strong>@TempData["NumeroExhorto"]</strong>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            }
+
+            @if (TempData["ErrorDiligencias"] != null)
+            {
+                <div class="alert alert-danger alert-dismissible fade show text-center mt-3" role="alert">
+                    @TempData["ErrorDiligencias"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            }
+
+            @if (TempData["ExitoDiligencias"] != null)
+            {
+                <div class="alert alert-success alert-dismissible fade show text-center mt-3" role="alert">
+                    @TempData["ExitoDiligencias"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            }
+
+            @if (TempData["ExitoEnvio"] != null)
+            {
+                <div class="alert alert-success alert-dismissible fade show text-center mt-3" role="alert">
+                    @TempData["ExitoEnvio"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            }
+
+            @if (TempData["Error"] != null)
+            {
+                <div class="alert alert-danger alert-dismissible fade show text-center mt-3" role="alert">
+                    @TempData["Error"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            }
+
+            @if (TempData["Exito"] != null)
+            {
+                <div class="alert alert-success alert-dismissible fade show text-center mt-3" role="alert">
+                    @TempData["Exito"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                 </div>
             }
 
@@ -27,27 +68,6 @@
                     Los campos marcados con <span class="text-danger">*</span> son obligatorios.
                 </small>
             </div>
-
-            @if (ViewBag.ErrorDiligencias != null)
-            {
-                <div class="alert alert-danger text-center mt-3">
-                    @ViewBag.ErrorDiligencias
-                </div>
-            }
-
-            @if (ViewBag.ExitoDiligencias != null)
-            {
-                <div class="alert alert-success text-center mt-3">
-                    @ViewBag.ExitoDiligencias
-                </div>
-            }
-
-            @if (ViewBag.ExitoEnvio != null)
-            {
-                <div class="alert alert-success text-center mt-3">
-                    @ViewBag.ExitoEnvio
-                </div>
-            }
 
             <form id="formDiligencias"
                   method="post"
@@ -379,5 +399,17 @@
 
             window.eliminarDiligencia = eliminarDiligencia;
         })();
+
+        setTimeout(function () {
+            let alerts = document.querySelectorAll(".alert");
+
+            alerts.forEach(function (alert) {
+                alert.style.transition = "opacity 0.5s ease, transform 0.5s ease";
+                alert.style.opacity = "0";
+                alert.style.transform = "translateY(-10px)";
+
+                setTimeout(() => alert.remove(), 500);
+            });
+        }, 3000);
     </script>
 }

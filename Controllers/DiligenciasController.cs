@@ -87,12 +87,24 @@ namespace AplicacionExhortos.Controllers
         [HttpGet]
         public IActionResult SeguimientoDiligencia(int exhortoId, int diligenciaId)
         {
+            if (exhortoId <= 0)
+            {
+                TempData["Error"] = "El identificador del exhorto no es válido.";
+                return RedirectToAction("SeguimientoExhortos", "SeguimientoExhortos");
+            }
+
+            if (diligenciaId <= 0)
+            {
+                TempData["Error"] = "El identificador de la diligencia no es válido.";
+                return RedirectToAction("DetalleSeguimiento", "SeguimientoExhortos", new { exhortoId });
+            }
+
             var model = _diligenciasRepository.ObtenerDiligenciaPorId(exhortoId, diligenciaId);
 
             if (model == null)
             {
-                TempData["Error"] = "No se encontró la diligencia seleccionada.";
-                return RedirectToAction("SeguimientoExhortos", "SeguimientoExhortos");
+                TempData["Error"] = "No se encontró la diligencia.";
+                return RedirectToAction("DetalleSeguimiento", "SeguimientoExhortos", new { exhortoId });
             }
 
             return View(model);
