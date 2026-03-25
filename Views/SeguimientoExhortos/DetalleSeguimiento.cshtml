@@ -139,6 +139,7 @@
                                         <th>Destinatario</th>
                                         <th>Fecha Diligencia</th>
                                         <th>Estatus</th>
+                                        <th class="text-center">Ver</th> <!-- NUEVA -->
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -151,13 +152,26 @@
                                                 <td>@d.Destinatario</td>
                                                 <td>@(d.FechaDiligencia.HasValue? d.FechaDiligencia.Value.ToString("dd/MM/yyyy") : "")</td>
                                                 <td>@d.EstatusDiligencia</td>
+
+                                                <!-- 👁️ ICONO SVG -->
+                                                <td class="text-center">
+                                                    <a asp-controller="Diligencias"
+                                                           asp-action="DetalleDiligencia"
+                                                           asp-route-id="@d.DiligenciaId"
+                                                           title="Ver detalle">
+
+                                                        <img src="~/images/icons/eye-fill.svg"
+                                                             alt="Ver"
+                                                             style="width:20px; height:20px; cursor:pointer;" />
+                                                    </a>
+                                                </td>
                                             </tr>
                                         }
                                     }
                                     else
                                     {
                                         <tr>
-                                            <td colspan="4" class="text-center text-muted">
+                                            <td colspan="5" class="text-center text-muted">
                                                 No hay diligencias registradas.
                                             </td>
                                         </tr>
