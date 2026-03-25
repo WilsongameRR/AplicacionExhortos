@@ -186,7 +186,7 @@ namespace AplicacionExhortos.Controllers
                 s.NoFolio,
                 s.FechaAcuerdoTuaExhortado,
                 s.FechaTurnoActuaria,
-                null,
+                s.FechaDevolucion,
                 s.Observaciones,
                 usuarioId
             );

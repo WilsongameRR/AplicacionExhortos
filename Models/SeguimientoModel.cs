@@ -24,5 +24,6 @@ namespace AplicacionExhortos.Models
         public string? Observaciones { get; set; }
 
         public DateTime? FechaAudiencia { get; set; }
+        public DateTime? FechaDevolucion { get; set; }
     }
 }

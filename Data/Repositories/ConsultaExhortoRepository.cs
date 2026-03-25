@@ -209,15 +209,15 @@ namespace AplicacionExhortos.Data.Repositories
         }
 
         public bool ActualizarSeguimientoExhorto(
-     int exhortoId,
-     string? estatus,
-     DateTime? fechaRecibido,
-     string? noFolio,
-     DateTime? fechaAcuerdoExhortado,
-     DateTime? fechaTurnoActuaria,
-     DateTime? fechaDevolucion,
-     string? observaciones,
-     string? usuarioId)
+    int exhortoId,
+    string? estatus,
+    DateTime? fechaRecibido,
+    string? noFolio,
+    DateTime? fechaAcuerdoExhortado,
+    DateTime? fechaTurnoActuaria,
+    DateTime? fechaDevolucion,
+    string? observaciones,
+    string? usuarioId)
         {
             using MySqlConnection conn = _db.GetConnection();
             conn.Open();

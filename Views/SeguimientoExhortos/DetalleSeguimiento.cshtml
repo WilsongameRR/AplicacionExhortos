@@ -224,7 +224,8 @@
 
                                 <div class="col-md-4">
                                     <label class="form-label fw-bold">Fecha de Vencimiento</label>
-                                    <input type="date" class="form-control" />
+                                    <input asp-for="Seguimiento.FechaDevolucion" type="date" class="form-control" />
+                                    <span asp-validation-for="Seguimiento.FechaDevolucion" class="text-danger"></span>
                                 </div>
 
                             </div>
