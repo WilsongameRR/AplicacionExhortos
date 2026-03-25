@@ -123,9 +123,6 @@ namespace AplicacionExhortos.Data.Repositories
                     return respuesta;
                 }
 
-                // AQUÍ ESTABA EL CAMBIO IMPORTANTE:
-                // antes tenías: exhortos_db.sp_actualiza_estatus_exhorto
-                // ahora debe ser el SP correcto: exhortos_db.sp_envia_exhorto
                 using var cmd = new MySqlCommand("exhortos_db.sp_envia_exhorto", conn);
                 cmd.CommandType = CommandType.StoredProcedure;
 
@@ -170,9 +167,9 @@ namespace AplicacionExhortos.Data.Repositories
 
             using var cmd = new MySqlCommand(
                 @"SELECT ExhortoId
-          FROM exhortos_db.exhorto
-          WHERE TRIM(NoExhortoEnviado) = TRIM(@NoExhorto)
-          LIMIT 1",
+                  FROM exhortos_db.exhorto
+                  WHERE TRIM(NoExhortoEnviado) = TRIM(@NoExhorto)
+                  LIMIT 1",
                 conn);
 
             cmd.Parameters.AddWithValue("@NoExhorto", noExhorto.Trim());
@@ -214,6 +211,56 @@ namespace AplicacionExhortos.Data.Repositories
             }
 
             return lista;
+        }
+
+        public bool ValidaDiligencias(int exhortoId)
+        {
+            using var conn = _db.GetConnection();
+            conn.Open();
+
+            using var cmd = new MySqlCommand("exhortos_db.sp_valida_diligencias", conn);
+            cmd.CommandType = CommandType.StoredProcedure;
+
+            cmd.Parameters.AddWithValue("pExhortoId", exhortoId);
+
+            var pTotal = new MySqlParameter("pTotal", MySqlDbType.Int32)
+            {
+                Direction = ParameterDirection.Output
+            };
+            cmd.Parameters.Add(pTotal);
+
+            var pErrorNum = new MySqlParameter("p_error_num", MySqlDbType.Int32)
+            {
+                Direction = ParameterDirection.Output
+            };
+            cmd.Parameters.Add(pErrorNum);
+
+            var pMensaje = new MySqlParameter("p_mensaje", MySqlDbType.VarChar, 100)
+            {
+                Direction = ParameterDirection.Output
+            };
+            cmd.Parameters.Add(pMensaje);
+
+            cmd.ExecuteNonQuery();
+
+            int noError = cmd.Parameters["p_error_num"].Value != DBNull.Value
+                ? Convert.ToInt32(cmd.Parameters["p_error_num"].Value)
+                : 99;
+
+            string mensaje = cmd.Parameters["p_mensaje"].Value?.ToString() ?? "Error no identificado.";
+
+            if (noError != 0)
+            {
+                throw new Exception(mensaje);
+            }
+
+            int total = cmd.Parameters["pTotal"].Value != DBNull.Value
+                ? Convert.ToInt32(cmd.Parameters["pTotal"].Value)
+                : 0;
+
+            // Si total > 0, hay diligencias pendientes
+            // entonces NO debería permitir cerrar como diligenciado
+            return total == 0;
         }
     }
 }

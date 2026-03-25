@@ -208,18 +208,69 @@ namespace AplicacionExhortos.Data.Repositories
             return null;
         }
 
+        public bool ActualizarSeguimientoExhorto(
+     int exhortoId,
+     string? estatus,
+     DateTime? fechaRecibido,
+     string? noFolio,
+     DateTime? fechaAcuerdoExhortado,
+     DateTime? fechaTurnoActuaria,
+     DateTime? fechaDevolucion,
+     string? observaciones,
+     string? usuarioId)
+        {
+            using MySqlConnection conn = _db.GetConnection();
+            conn.Open();
+
+            using MySqlCommand cmd = new("exhortos_db.sp_actualiza_exhorto", conn);
+            cmd.CommandType = CommandType.StoredProcedure;
+
+            cmd.Parameters.AddWithValue("pExhortoId", exhortoId);
+            cmd.Parameters.AddWithValue("pEstatus", (object?)estatus ?? DBNull.Value);
+            cmd.Parameters.AddWithValue("pFechaRecibido", (object?)fechaRecibido ?? DBNull.Value);
+            cmd.Parameters.AddWithValue("pNoFolio", (object?)noFolio ?? DBNull.Value);
+            cmd.Parameters.AddWithValue("pFechaAcuerdoExhortado", (object?)fechaAcuerdoExhortado ?? DBNull.Value);
+            cmd.Parameters.AddWithValue("pFechaTurnoActuaria", (object?)fechaTurnoActuaria ?? DBNull.Value);
+            cmd.Parameters.AddWithValue("pFechaDevolucion", (object?)fechaDevolucion ?? DBNull.Value);
+            cmd.Parameters.AddWithValue("pObservaciones", (object?)observaciones ?? DBNull.Value);
+            cmd.Parameters.AddWithValue("pUsuarioId", (object?)usuarioId ?? DBNull.Value);
+
+            var pErrorNum = new MySqlParameter("p_error_num", MySqlDbType.Int32)
+            {
+                Direction = ParameterDirection.Output
+            };
+            cmd.Parameters.Add(pErrorNum);
+
+            var pMensaje = new MySqlParameter("p_mensaje", MySqlDbType.VarChar, 100)
+            {
+                Direction = ParameterDirection.Output
+            };
+            cmd.Parameters.Add(pMensaje);
+
+            cmd.ExecuteNonQuery();
+
+            int noError = cmd.Parameters["p_error_num"].Value != DBNull.Value
+                ? Convert.ToInt32(cmd.Parameters["p_error_num"].Value)
+                : 99;
+
+            string mensaje = cmd.Parameters["p_mensaje"].Value?.ToString() ?? "Error no identificado.";
+
+            if (noError != 0)
+            {
+                throw new Exception(mensaje);
+            }
+
+            return true;
+        }
+
         private static string? ObtenerTexto(MySqlDataReader reader, string columna)
         {
-            return reader[columna] == DBNull.Value
-                ? null
-                : reader[columna].ToString();
+            return reader[columna] == DBNull.Value ? null : reader[columna].ToString();
         }
 
         private static int ObtenerEntero(MySqlDataReader reader, string columna)
         {
-            return reader[columna] == DBNull.Value
-                ? 0
-                : Convert.ToInt32(reader[columna]);
+            return reader[columna] == DBNull.Value ? 0 : Convert.ToInt32(reader[columna]);
         }
 
         private static string? FormatearFecha(object valor)
