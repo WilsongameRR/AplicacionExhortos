@@ -106,20 +106,13 @@ namespace AplicacionExhortos.Data.Repositories
 
             while (reader.Read())
             {
-                string? estatus = ObtenerTexto(reader, "Estatus");
-
-                if (estatus != "PENDIENTE" && estatus != "TRAMITE")
-                {
-                    continue;
-                }
-
                 ConsultaExhortos exhorto = new()
                 {
                     ExhortoId = ObtenerEntero(reader, "ExhortoId"),
                     NoExhortoEnviado = ObtenerTexto(reader, "NoExhortoEnviado"),
                     NoExpediente = ObtenerTexto(reader, "NoExpediente"),
                     TuaOrigen = ObtenerTexto(reader, "tuaOrigen"),
-                    Estatus = estatus,
+                    Estatus = ObtenerTexto(reader, "Estatus"),
                     NoOficio = ObtenerTexto(reader, "NoOficio"),
                     Estado = ObtenerTexto(reader, "Estado"),
                     Municipio = ObtenerTexto(reader, "Municipio"),
