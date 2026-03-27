@@ -160,8 +160,8 @@
                                                            asp-route-diligenciaId="@d.DiligenciaId"
                                                            asp-route-exhortoId="@d.ExhortoId"
                                                            title="Ver seguimiento">
-                                                        <img src="~/images/Icons/pencil.svg"
-                                                             alt="Ver"
+                                                        <img src="@Url.Content("~/images/Icons/pencil.svg")"
+                                                             alt="Editar"
                                                              style="width:20px; height:20px; cursor:pointer;" />
                                                     </a>
                                                 </td>
@@ -214,7 +214,8 @@
                                     <select asp-for="Seguimiento.Estatus" class="form-control">
                                         <option value="">Seleccione</option>
                                         <option value="TRAMITE">TRAMITE</option>
-                                        <option value="DILIGENCIADO">DILIGENCIADO</option>
+                                        <option value="ATENDIDO">ATENDIDO</option>
+                                        <option value="NO DILIGENCIADO">NO DILIGENCIADO</option>
                                         <option value="PARCIALMENTE ATENDIDO">PARCIALMENTE ATENDIDO</option>
                                     </select>
                                     <span asp-validation-for="Seguimiento.Estatus" class="text-danger"></span>
@@ -237,7 +238,7 @@
                                 </div>
 
                                 <div class="col-md-4">
-                                    <label class="form-label fw-bold">Fecha de Vencimiento</label>
+                                    <label class="form-label fw-bold">Fecha de Devolución</label>
                                     <input asp-for="Seguimiento.FechaDevolucion" type="date" class="form-control" />
                                     <span asp-validation-for="Seguimiento.FechaDevolucion" class="text-danger"></span>
                                 </div>

@@ -174,15 +174,45 @@
                 {
                     <div class="col-12 text-center mt-4" id="panelGuardarDiligencias">
                         <button type="submit" id="btnGuardarDili" class="btn btn-tua me-2">
-                            Guardar
+                            Guardar Diligencias
                         </button>
 
-                        <button type="reset" class="btn btn-secondary">
+                        <button type="button" id="btnCancelarDili" class="btn btn-secondary">
                             Cancelar
                         </button>
                     </div>
                 }
             </form>
+
+        </div>
+    </div>
+</div>
+
+<!-- MODAL CONFIRMAR SALIDA -->
+<div class="modal fade" id="modalConfirmarSalida" tabindex="-1" aria-labelledby="modalConfirmarSalidaLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+
+            <div class="modal-header" style="background-color:#E87A45; color:white;">
+                <h5 class="modal-title fw-bold">Confirmación</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body text-center">
+                Si sale de la pantalla, el Exhorto quedará registrado como <strong>No enviado</strong>.
+                <br /><br />
+                ¿Desea continuar?
+            </div>
+
+            <div class="modal-footer justify-content-center">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    Cancelar
+                </button>
+
+                <button type="button" id="btnConfirmarSalida" class="btn btn-danger">
+                    Salir
+                </button>
+            </div>
 
         </div>
     </div>
@@ -203,6 +233,7 @@
             const bloqueOtro = $("bloqueOtro");
             const otro = $("Otro");
             const btnAgregar = $("btnAgregarDiligencia");
+            const btnCancelarDili = $("btnCancelarDili");
             const tbody = document.querySelector("#tablaDiligencias tbody");
             const contenedorHidden = $("contenedorHiddenDiligencias");
             const mensajeDiligencias = $("mensajeDiligencias");
@@ -414,9 +445,15 @@
 
             formDiligencias?.addEventListener("submit", prepararEnvioFormulario);
 
-            formDiligencias?.addEventListener("reset", () => {
-                setTimeout(resetFormularioCompleto, 0);
-            });
+                           const modalConfirmar = new bootstrap.Modal(document.getElementById('modalConfirmarSalida'));
+
+        btnCancelarDili?.addEventListener("click", () => {
+            modalConfirmar.show();
+        });
+
+        document.getElementById("btnConfirmarSalida")?.addEventListener("click", () => {
+            window.location.href = '@Url.Action("AltaDeExhortos", "Exhortos")';
+        });
 
             window.eliminarDiligencia = eliminarDiligencia;
         })();
