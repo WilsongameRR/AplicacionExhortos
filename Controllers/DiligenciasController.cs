@@ -66,20 +66,16 @@ namespace AplicacionExhortos.Controllers
                     ? "Las diligencias se guardaron, pero no fue posible enviar el exhorto."
                     : respuestaEnviar.Mensaje;
 
-                TempData["ExitoDiligencias"] = string.IsNullOrWhiteSpace(respuestaGuardar.Mensaje)
-                    ? "Diligencias guardadas correctamente."
-                    : respuestaGuardar.Mensaje;
+                TempData["ExitoDiligencias"] = null;
+                TempData["ExitoEnvio"] = null;
+                TempData["BloquearDiligencias"] = null;
 
                 return RedirectToAction("AltaDiligencia", new { noExhorto = model.NoExhorto });
             }
 
-            TempData["ExitoDiligencias"] = string.IsNullOrWhiteSpace(respuestaGuardar.Mensaje)
-                ? "Diligencias guardadas correctamente."
-                : respuestaGuardar.Mensaje;
-
-            TempData["ExitoEnvio"] = string.IsNullOrWhiteSpace(respuestaEnviar.Mensaje)
-                ? "El exhorto fue enviado correctamente."
-                : respuestaEnviar.Mensaje;
+            TempData["ExitoDiligencias"] = null;
+            TempData["ExitoEnvio"] = "El exhorto ha sido enviado al TUA Exhortado";
+            TempData["BloquearDiligencias"] = true;
 
             return RedirectToAction("AltaDiligencia", new { noExhorto = model.NoExhorto });
         }

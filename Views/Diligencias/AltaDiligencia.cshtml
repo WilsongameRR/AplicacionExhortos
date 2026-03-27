@@ -3,6 +3,7 @@
 
 @{
     ViewData["Title"] = "Alta de Diligencia";
+    bool bloqueado = TempData["BloquearDiligencias"] != null;
 }
 
 <div class="container-fluid fondo-exhortos min-vh-100 pb-5" style="padding-top:40px;">
@@ -27,14 +28,6 @@
             {
                 <div class="alert alert-danger alert-dismissible fade show text-center mt-3" role="alert">
                     @TempData["ErrorDiligencias"]
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                </div>
-            }
-
-            @if (TempData["ExitoDiligencias"] != null)
-            {
-                <div class="alert alert-success alert-dismissible fade show text-center mt-3" role="alert">
-                    @TempData["ExitoDiligencias"]
                     <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                 </div>
             }
@@ -88,7 +81,8 @@
                                asp-for="NoExhorto"
                                class="form-control text-uppercase"
                                id="NoExhorto"
-                               maxlength="200" />
+                               maxlength="200"
+                               readonly="@bloqueado" />
                         <div class="invalid-feedback">
                             Capture el número de exhorto.
                         </div>
@@ -98,7 +92,7 @@
                         <label class="form-label">
                             <span class="required">*</span> Tipo diligencia
                         </label>
-                        <select class="form-select" id="TipoDiligenciaId">
+                        <select class="form-select" id="TipoDiligenciaId" disabled="@bloqueado">
                             <option value="">Seleccione...</option>
                             <option value="1">CITAR</option>
                             <option value="2">EMPLAZAR</option>
@@ -117,7 +111,8 @@
                         <input type="text"
                                class="form-control text-uppercase"
                                id="Destinatario"
-                               maxlength="200" />
+                               maxlength="200"
+                               readonly="@bloqueado" />
                         <div class="invalid-feedback">
                             Capture el destinatario.
                         </div>
@@ -130,17 +125,21 @@
                         <input type="text"
                                class="form-control text-uppercase"
                                id="Otro"
-                               maxlength="80" />
+                               maxlength="80"
+                               readonly="@bloqueado" />
                         <div class="invalid-feedback">
                             Especifique la diligencia.
                         </div>
                     </div>
 
-                    <div class="col-12 text-center mt-3">
-                        <button type="button" id="btnAgregarDiligencia" class="btn btn-tua">
-                            Agregar
-                        </button>
-                    </div>
+                    @if (!bloqueado)
+                    {
+                        <div class="col-12 text-center mt-3">
+                            <button type="button" id="btnAgregarDiligencia" class="btn btn-tua">
+                                Agregar
+                            </button>
+                        </div>
+                    }
 
                 </div>
 
@@ -171,15 +170,18 @@
                     Debe agregar al menos una diligencia antes de guardar.
                 </div>
 
-                <div class="col-12 text-center mt-4" id="panelGuardarDiligencias">
-                    <button type="submit" id="btnGuardarDili" class="btn btn-tua me-2">
-                        Guardar
-                    </button>
+                @if (!bloqueado)
+                {
+                    <div class="col-12 text-center mt-4" id="panelGuardarDiligencias">
+                        <button type="submit" id="btnGuardarDili" class="btn btn-tua me-2">
+                            Guardar
+                        </button>
 
-                    <button type="reset" class="btn btn-secondary">
-                        Cancelar
-                    </button>
-                </div>
+                        <button type="reset" class="btn btn-secondary">
+                            Cancelar
+                        </button>
+                    </div>
+                }
             </form>
 
         </div>
@@ -190,6 +192,8 @@
     <script>
         (() => {
             const $ = (id) => document.getElementById(id);
+
+            const bloqueado = @Html.Raw(bloqueado.ToString().ToLower());
 
             const formDiligencias = $("formDiligencias");
             const tipoDiligencia = $("TipoDiligenciaId");
@@ -227,6 +231,8 @@
             };
 
             const limpiarCaptura = () => {
+                if (bloqueado) return;
+
                 tipoDiligencia.value = "";
                 destinatario.value = "";
                 otro.value = "";
@@ -236,6 +242,8 @@
             };
 
             const resetFormularioCompleto = () => {
+                if (bloqueado) return;
+
                 diligencias = [];
                 tbody.innerHTML = "";
                 contenedorHidden.innerHTML = "";
@@ -320,9 +328,11 @@
                     <td>${escapeHtml(d.Destinatario)}</td>
                     <td>${escapeHtml(d.Otro || "")}</td>
                     <td>
-                        <button type="button" class="btn btn-danger btn-sm" onclick="eliminarDiligencia(${index})">
-                            Eliminar
-                        </button>
+                        ${bloqueado ? "" : `
+                            <button type="button" class="btn btn-danger btn-sm" onclick="eliminarDiligencia(${index})">
+                                Eliminar
+                            </button>
+                        `}
                     </td>
                 </tr>
             `;
@@ -341,6 +351,8 @@
             };
 
             const agregarDiligencia = () => {
+                if (bloqueado) return;
+
                 if (!validarCaptura()) {
                     return;
                 }
@@ -351,11 +363,18 @@
             };
 
             const eliminarDiligencia = (index) => {
+                if (bloqueado) return;
+
                 diligencias.splice(index, 1);
                 renderTabla();
             };
 
             const prepararEnvioFormulario = (event) => {
+                if (bloqueado) {
+                    event.preventDefault();
+                    return;
+                }
+
                 if (enviandoFormulario) {
                     return;
                 }
@@ -378,7 +397,9 @@
                 enviandoFormulario = true;
             };
 
-            tipoDiligencia.addEventListener("change", () => {
+            tipoDiligencia?.addEventListener("change", () => {
+                if (bloqueado) return;
+
                 const esOtra = obtenerTextoTipo() === "OTRA";
                 toggle(bloqueOtro, esOtra);
                 otro.required = esOtra;
@@ -389,11 +410,11 @@
                 }
             });
 
-            btnAgregar.addEventListener("click", agregarDiligencia);
+            btnAgregar?.addEventListener("click", agregarDiligencia);
 
-            formDiligencias.addEventListener("submit", prepararEnvioFormulario);
+            formDiligencias?.addEventListener("submit", prepararEnvioFormulario);
 
-            formDiligencias.addEventListener("reset", () => {
+            formDiligencias?.addEventListener("reset", () => {
                 setTimeout(resetFormularioCompleto, 0);
             });
 
