@@ -38,7 +38,7 @@ namespace AplicacionExhortos.Data.Repositories
 
                 foreach (var diligencia in model.Diligencias)
                 {
-                    using var cmd = new MySqlCommand("exhortos_db.sp_inserta_diligencia", conn);
+                    using var cmd = new MySqlCommand("exhortos.sp_inserta_diligencia", conn);
                     cmd.CommandType = CommandType.StoredProcedure;
 
                     cmd.Parameters.AddWithValue("pExhortoEnviado", model.NoExhorto);
@@ -123,7 +123,7 @@ namespace AplicacionExhortos.Data.Repositories
                     return respuesta;
                 }
 
-                using var cmd = new MySqlCommand("exhortos_db.sp_envia_exhorto", conn);
+                using var cmd = new MySqlCommand("exhortos.sp_envia_exhorto", conn);
                 cmd.CommandType = CommandType.StoredProcedure;
 
                 cmd.Parameters.AddWithValue("pExhortoId", exhortoId);
@@ -167,7 +167,7 @@ namespace AplicacionExhortos.Data.Repositories
 
             using var cmd = new MySqlCommand(
                 @"SELECT ExhortoId
-                  FROM exhortos_db.exhorto
+                  FROM exhortos.exhorto
                   WHERE TRIM(NoExhortoEnviado) = TRIM(@NoExhorto)
                   LIMIT 1",
                 conn);
@@ -188,7 +188,7 @@ namespace AplicacionExhortos.Data.Repositories
             using var conn = _db.GetConnection();
             conn.Open();
 
-            using var cmd = new MySqlCommand("exhortos_db.sp_consulta_diligencias", conn);
+            using var cmd = new MySqlCommand("exhortos.sp_consulta_diligencias", conn);
             cmd.CommandType = CommandType.StoredProcedure;
             cmd.Parameters.AddWithValue("pExhortoId", exhortoId);
 
@@ -197,18 +197,28 @@ namespace AplicacionExhortos.Data.Repositories
             {
                 lista.Add(new DiligenciaModel
                 {
-                    ExhortoId = reader["ExhortoId"] != DBNull.Value ? Convert.ToInt32(reader["ExhortoId"]) : 0,
-                    DiligenciaId = reader["DiligenciaId"] != DBNull.Value ? Convert.ToInt32(reader["DiligenciaId"]) : 0,
-                    TipoDiligenciaId = reader["TipoDiligenciaId"] != DBNull.Value ? Convert.ToInt32(reader["TipoDiligenciaId"]) : 0,
+                    ExhortoId = reader["ExhortoId"] != DBNull.Value
+                        ? Convert.ToInt32(reader["ExhortoId"])
+                        : 0,
+
+                    DiligenciaId = reader["DiligenciaConsec"] != DBNull.Value
+                        ? Convert.ToInt32(reader["DiligenciaConsec"])
+                        : 0,
+
+                    TipoDiligenciaId = reader["TipoDiligenciaId"] != DBNull.Value
+                        ? Convert.ToInt32(reader["TipoDiligenciaId"])
+                        : 0,
+
                     TipoDiligenciaDesc = reader["TipoDiligenciaDesc"]?.ToString(),
                     OtraEspecificar = reader["OtraEspecificar"]?.ToString(),
                     Destinatario = reader["Destinatario"]?.ToString(),
+
                     FechaDiligencia = reader["FechaDiligencia"] != DBNull.Value
                         ? Convert.ToDateTime(reader["FechaDiligencia"])
                         : (DateTime?)null,
+
                     EstatusDiligencia = reader["EstatusDiligencia"]?.ToString(),
 
-                    // COMO TU SP NO TRAE FechaAudiencia, la dejamos nula
                     FechaAudiencia = null
                 });
             }
@@ -223,7 +233,7 @@ namespace AplicacionExhortos.Data.Repositories
             using var conn = _db.GetConnection();
             conn.Open();
 
-            using var cmd = new MySqlCommand("exhortos_db.sp_consulta_diligencias", conn);
+            using var cmd = new MySqlCommand("exhortos.sp_consulta_diligencias", conn);
             cmd.CommandType = CommandType.StoredProcedure;
             cmd.Parameters.AddWithValue("pExhortoId", exhortoId);
 
@@ -231,23 +241,34 @@ namespace AplicacionExhortos.Data.Repositories
 
             while (reader.Read())
             {
-                int idActual = reader["DiligenciaId"] != DBNull.Value
-                    ? Convert.ToInt32(reader["DiligenciaId"])
+                int idActual = reader["DiligenciaConsec"] != DBNull.Value
+                    ? Convert.ToInt32(reader["DiligenciaConsec"])
                     : 0;
 
                 if (idActual == diligenciaId)
                 {
                     model = new DiligenciaModel
                     {
-                        ExhortoId = reader["ExhortoId"] != DBNull.Value ? Convert.ToInt32(reader["ExhortoId"]) : 0,
-                        DiligenciaId = reader["DiligenciaId"] != DBNull.Value ? Convert.ToInt32(reader["DiligenciaId"]) : 0,
-                        TipoDiligenciaId = reader["TipoDiligenciaId"] != DBNull.Value ? Convert.ToInt32(reader["TipoDiligenciaId"]) : 0,
+                        ExhortoId = reader["ExhortoId"] != DBNull.Value
+                            ? Convert.ToInt32(reader["ExhortoId"])
+                            : 0,
+
+                        DiligenciaId = reader["DiligenciaConsec"] != DBNull.Value
+                            ? Convert.ToInt32(reader["DiligenciaConsec"])
+                            : 0,
+
+                        TipoDiligenciaId = reader["TipoDiligenciaId"] != DBNull.Value
+                            ? Convert.ToInt32(reader["TipoDiligenciaId"])
+                            : 0,
+
                         TipoDiligenciaDesc = reader["TipoDiligenciaDesc"]?.ToString(),
                         OtraEspecificar = reader["OtraEspecificar"]?.ToString(),
                         Destinatario = reader["Destinatario"]?.ToString(),
+
                         FechaDiligencia = reader["FechaDiligencia"] != DBNull.Value
                             ? Convert.ToDateTime(reader["FechaDiligencia"])
                             : (DateTime?)null,
+
                         EstatusDiligencia = reader["EstatusDiligencia"]?.ToString(),
                         FechaAudiencia = null
                     };
@@ -258,12 +279,13 @@ namespace AplicacionExhortos.Data.Repositories
 
             return model;
         }
+
         public bool ValidaDiligencias(int exhortoId)
         {
             using var conn = _db.GetConnection();
             conn.Open();
 
-            using var cmd = new MySqlCommand("exhortos_db.sp_valida_diligencias", conn);
+            using var cmd = new MySqlCommand("exhortos.sp_valida_diligencias", conn);
             cmd.CommandType = CommandType.StoredProcedure;
 
             cmd.Parameters.AddWithValue("pExhortoId", exhortoId);
@@ -315,7 +337,7 @@ namespace AplicacionExhortos.Data.Repositories
 
             try
             {
-                using var cmd = new MySqlCommand("exhortos_db.sp_actualiza_diligencia", conn);
+                using var cmd = new MySqlCommand("exhortos.sp_actualiza_diligencia", conn);
                 cmd.CommandType = CommandType.StoredProcedure;
 
                 cmd.Parameters.AddWithValue("pExhortoId", model.ExhortoId);

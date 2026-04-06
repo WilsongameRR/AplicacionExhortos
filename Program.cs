@@ -19,6 +19,7 @@ builder.Services.AddScoped<TuaRepository>();
 builder.Services.AddScoped<TipoDiligenciaRepository>();
 builder.Services.AddScoped<DiligenciasRepository>();
 builder.Services.AddScoped<ConsultaExhortoRepository>();
+builder.Services.AddScoped<ExhortosRepository>();
 
 // Configuración de sesión
 builder.Services.AddDistributedMemoryCache();

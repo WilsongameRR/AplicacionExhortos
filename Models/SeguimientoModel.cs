@@ -21,9 +21,13 @@ namespace AplicacionExhortos.Models
         [Required(ErrorMessage = "La fecha turno actuaría es obligatoria.")]
         public DateTime? FechaTurnoActuaria { get; set; }
 
-        public string? Observaciones { get; set; }
+        // 🔥 ESTE ES EL QUE FALTABA
+        public DateTime? FechaVencimiento { get; set; }
+
+        public DateTime? FechaDevolucion { get; set; }
 
         public DateTime? FechaAudiencia { get; set; }
-        public DateTime? FechaDevolucion { get; set; }
+
+        public string? Observaciones { get; set; }
     }
 }

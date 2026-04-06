@@ -27,8 +27,10 @@
         public string? FechaAcuerdoExhortado { get; set; }
         public string? FechaTurnoActuaria { get; set; }
         public string? FechaDevolucion { get; set; }
+        public string? FechaNuevoAcuerdo { get; set; }
+        public string? FechaNuevaAudiencia { get; set; }
         public string? Observaciones { get; set; }
         public string? Estatus { get; set; }
-
+        public string? EstatusExhorto { get; set; }
     }
 }

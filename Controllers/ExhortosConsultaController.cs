@@ -67,6 +67,36 @@ namespace AplicacionExhortos.Controllers
         }
 
         [HttpGet]
+        public IActionResult ReiterarExhorto(int id)
+        {
+            string? usuarioId = ObtenerUsuarioIdSesion();
+
+            if (string.IsNullOrWhiteSpace(usuarioId))
+            {
+                TempData["Error"] = "La sesión expiró. Inicie sesión nuevamente.";
+                return RedirectToAction("Login", "Login");
+            }
+
+            TempData["Mensaje"] = $"Se seleccionó la opción Reiterar Exhorto para el exhorto con ID {id}.";
+            return RedirectToAction(nameof(DetalleExhorto), new { id });
+        }
+
+        [HttpGet]
+        public IActionResult MarcarAtendido(int id)
+        {
+            string? usuarioId = ObtenerUsuarioIdSesion();
+
+            if (string.IsNullOrWhiteSpace(usuarioId))
+            {
+                TempData["Error"] = "La sesión expiró. Inicie sesión nuevamente.";
+                return RedirectToAction("Login", "Login");
+            }
+
+            TempData["Mensaje"] = $"Se seleccionó la opción Atendido para el exhorto con ID {id}.";
+            return RedirectToAction(nameof(DetalleExhorto), new { id });
+        }
+
+        [HttpGet]
         public IActionResult ExhortoSeguimiento()
         {
             string? usuarioId = ObtenerUsuarioIdSesion();

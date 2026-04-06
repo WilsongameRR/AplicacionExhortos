@@ -1,26 +1,23 @@
 ﻿using AplicacionExhortos.Data.Repositories;
-using AplicacionExhortos.Models;
 using AplicacionExhortos.Models.Exhortos;
 using Microsoft.AspNetCore.Mvc;
-using MySql.Data.MySqlClient;
-using System.Data;
 
 namespace AplicacionExhortos.Controllers
 {
     public class ExhortosController : Controller
     {
-        private readonly IConfiguration _configuration;
         private readonly TuaRepository _tuaRepo;
         private readonly TipoDiligenciaRepository _tipoRepo;
+        private readonly ExhortosRepository _exhortosRepo;
 
         public ExhortosController(
-            IConfiguration configuration,
             TuaRepository tuaRepo,
-            TipoDiligenciaRepository tipoRepo)
+            TipoDiligenciaRepository tipoRepo,
+            ExhortosRepository exhortosRepo)
         {
-            _configuration = configuration;
             _tuaRepo = tuaRepo;
             _tipoRepo = tipoRepo;
+            _exhortosRepo = exhortosRepo;
         }
 
         [HttpGet]
@@ -35,7 +32,6 @@ namespace AplicacionExhortos.Controllers
                 }
 
                 CargarCatalogos();
-
                 return View("~/Views/AltaDeExhortos/AltaDeExhortos.cshtml");
             }
             catch (Exception ex)
@@ -46,18 +42,16 @@ namespace AplicacionExhortos.Controllers
             }
         }
 
-        
-
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Guardar(AltaExhortoModel model)
         {
             try
             {
-                var tuaOrigen = HttpContext.Session.GetInt32("TuaId");
-                var usuarioOrigen = HttpContext.Session.GetString("UsuarioId");
+                int? tuaOrigen = HttpContext.Session.GetInt32("TuaId");
+                string? usuarioOrigen = HttpContext.Session.GetString("UsuarioId");
 
-                if (tuaOrigen == null || string.IsNullOrEmpty(usuarioOrigen))
+                if (tuaOrigen == null || string.IsNullOrWhiteSpace(usuarioOrigen))
                 {
                     TempData["Error"] = "La sesión expiró. Inicie sesión nuevamente.";
                     return RedirectToAction("Login", "Login");
@@ -72,71 +66,23 @@ namespace AplicacionExhortos.Controllers
                     return View("~/Views/AltaDeExhortos/AltaDeExhortos.cshtml", model);
                 }
 
-                string conexion = _configuration.GetConnectionString("MySqlConnection");
+                var respuesta = _exhortosRepo.GuardarExhorto(model, tuaOrigen.Value, usuarioOrigen);
 
-                int exhortoIdGenerado = 0;
-                string numeroExhortoGenerado = string.Empty;
-
-                using (MySqlConnection conn = new MySqlConnection(conexion))
+                if (respuesta.NoError != 0)
                 {
-                    conn.Open();
-
-                    using (MySqlCommand cmd = new MySqlCommand("sp_inserta_exhorto", conn))
-                    {
-                        cmd.CommandType = CommandType.StoredProcedure;
-
-                        cmd.Parameters.AddWithValue("pTUAIdOrigen", tuaOrigen);
-                        cmd.Parameters.AddWithValue("pNoExpediente", model.Expediente ?? string.Empty);
-                        cmd.Parameters.AddWithValue("pNoOficio", model.NoOficio ?? string.Empty);
-                        cmd.Parameters.AddWithValue("pEstado", model.Estado ?? string.Empty);
-                        cmd.Parameters.AddWithValue("pMunicipio", model.Municipio ?? string.Empty);
-                        cmd.Parameters.AddWithValue("pPoblado", model.Poblado ?? string.Empty);
-                        cmd.Parameters.AddWithValue("pTUAIdDestino", model.TuaExhortado);
-
-                        if (model.FechaGeneral.HasValue)
-                        {
-                            cmd.Parameters.AddWithValue("pFechaAcuerdo", model.FechaGeneral.Value.Date);
-                        }
-                        else
-                        {
-                            cmd.Parameters.AddWithValue("pFechaAcuerdo", DBNull.Value);
-                        }
-
-                        if (model.FechaAudiencia.HasValue)
-                        {
-                            cmd.Parameters.AddWithValue("pFechaAudiencia", model.FechaAudiencia.Value.Date);
-                        }
-                        else
-                        {
-                            cmd.Parameters.AddWithValue("pFechaAudiencia", DBNull.Value);
-                        }
-
-                        cmd.Parameters.AddWithValue("pUsuarioIdOrigen", usuarioOrigen);
-
-                        MySqlParameter pExhortoId = new MySqlParameter("pExhortoId", MySqlDbType.Int32)
-                        {
-                            Direction = ParameterDirection.Output
-                        };
-                        cmd.Parameters.Add(pExhortoId);
-
-                        MySqlParameter pExhortoEnviado = new MySqlParameter("pExhortoEnviado", MySqlDbType.VarChar, 40)
-                        {
-                            Direction = ParameterDirection.Output
-                        };
-                        cmd.Parameters.Add(pExhortoEnviado);
-
-                        cmd.ExecuteNonQuery();
-
-                        exhortoIdGenerado = Convert.ToInt32(cmd.Parameters["pExhortoId"].Value);
-                        numeroExhortoGenerado = cmd.Parameters["pExhortoEnviado"].Value?.ToString() ?? string.Empty;
-                    }
+                    TempData["Error"] = respuesta.Mensaje ?? "No fue posible guardar el exhorto.";
+                    CargarCatalogos();
+                    return View("~/Views/AltaDeExhortos/AltaDeExhortos.cshtml", model);
                 }
 
                 TempData["MensajeExito"] = "El exhorto se guardó correctamente.";
-                TempData["NumeroExhorto"] = numeroExhortoGenerado;
-                TempData["IdExhorto"] = exhortoIdGenerado;
+                TempData["NumeroExhorto"] = respuesta.Valor ?? string.Empty;
+                TempData["IdExhorto"] = respuesta.IdGenerado;
 
-                return RedirectToAction("AltaDiligencia", "Diligencias", new { noExhorto = numeroExhortoGenerado });
+                return RedirectToAction("AltaDiligencia", "Diligencias", new
+                {
+                    noExhorto = respuesta.Valor
+                });
             }
             catch (Exception ex)
             {

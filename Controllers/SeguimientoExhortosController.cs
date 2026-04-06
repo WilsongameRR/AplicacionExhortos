@@ -180,16 +180,19 @@ namespace AplicacionExhortos.Controllers
             string? usuarioId = HttpContext.Session.GetString("UsuarioId");
 
             bool actualizado = _consultaExhortoRepository.ActualizarSeguimientoExhorto(
-                s.ExhortoId,
-                s.Estatus,
-                s.FechaRecepcion,
-                s.NoFolio,
-                s.FechaAcuerdoTuaExhortado,
-                s.FechaTurnoActuaria,
-                s.FechaDevolucion,
-                s.Observaciones,
-                usuarioId
-            );
+                 s.ExhortoId,
+                 s.Estatus,
+                 s.FechaRecepcion,
+                 s.NoFolio,
+                 s.FechaAcuerdoTuaExhortado,
+                 s.FechaTurnoActuaria,
+                 s.FechaVencimiento,
+                 s.FechaDevolucion,
+                 s.Observaciones,
+                 usuarioId
+);
+
+            
 
             if (!actualizado)
             {
