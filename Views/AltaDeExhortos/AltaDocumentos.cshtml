@@ -1,0 +1,99 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Alta de Documentos";
+}
+
+<div class="container-fluid fondo-exhortos min-vh-100 pb-5" style="padding-top:80px;">
+    <div class="row justify-content-center">
+        <div class="col-12 col-lg-10 col-xl-8">
+
+            <div class="text-center mt-4 mb-4">
+                <h2>ALTA DE DOCUMENTOS</h2>
+            </div>
+
+            <div class="card shadow-sm border-0" style="background-color: rgba(255,255,255,0.96);">
+                <div class="card-body px-4 py-4">
+
+                    <div class="text-center mb-4">
+                        <h4 class="fw-bold">Adjuntar documentos</h4>
+                    </div>
+
+                    <form>
+                        <div class="row align-items-end mb-4">
+                            <div class="col-md-4">
+                                <label for="tipoDocumento" class="form-label fw-bold">
+                                    Tipo de documento:
+                                </label>
+                                <select id="tipoDocumento" class="form-select">
+                                    <option value="">Seleccione</option>
+                                    <option value="Acuerdo">Acuerdo</option>
+                                    <option value="Exhorto">Exhorto</option>
+                                </select>
+                            </div>
+
+                            <div class="col-md-7">
+                                <label for="documentoAlfresco" class="form-label fw-bold">
+                                    Documento Alfresco:
+                                </label>
+                                <input type="text"
+                                       id="documentoAlfresco"
+                                       class="form-control"
+                                       placeholder="Ingrese la ruta o referencia del documento" />
+                            </div>
+
+                            <div class="col-md-1 text-center">
+                                <button type="button"
+                                        class="btn btn-link text-decoration-none fw-bold p-0"
+                                        title="Agregar documento"
+                                        style="font-size: 34px; color: #5fa8ff;">
+                                    +
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="table-responsive mb-4">
+                            <table class="table table-bordered table-striped align-middle">
+                                <thead class="thead-tua">
+                                    <tr>
+                                        <th style="width: 70%;">Tipo de documento</th>
+                                        <th class="text-center" style="width: 30%;">Link</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Acuerdo</td>
+                                        <td class="text-center">
+                                            <a href="#" title="Ver documento">
+                                                <img src="~/Images/Icons/file-earmark-text.svg"
+                                                     alt="Documento"
+                                                     style="width:18px; height:18px;" />
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Exhorto</td>
+                                        <td class="text-center">
+                                            <a href="#" title="Ver documento">
+                                                <img src="~/Images/Icons/file-earmark-text.svg"
+                                                     alt="Documento"
+                                                     style="width:18px; height:18px;" />
+                                            </a>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-tua px-4">
+                                Guardar
+                            </button>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
