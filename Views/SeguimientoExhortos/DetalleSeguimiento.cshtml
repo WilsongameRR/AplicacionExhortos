@@ -80,7 +80,6 @@
 
                         </div>
 
-                        <!-- RESTO -->
                         <div class="row mb-3">
 
                             <div class="col-md-3">
@@ -183,89 +182,165 @@
                         <!-- ===================== -->
                         <!-- SEGUIMIENTO -->
                         <!-- ===================== -->
+                        @{
+                            var exhorto = Model?.Exhorto;
+                        }
 
-                        <form asp-action="GuardarSeguimiento" asp-controller="SeguimientoExhortos" method="post">
-
-                            <input type="hidden" asp-for="Seguimiento.ExhortoId" />
-                            <input type="hidden" asp-for="Seguimiento.FechaAudiencia" />
-
-                            <div asp-validation-summary="ModelOnly" class="alert alert-warning"></div>
-
+                        @if (exhorto != null)
+                        {
                             <div class="text-center mt-5 mb-4">
                                 <h4 class="fw-bold">SEGUIMIENTO</h4>
                             </div>
 
+                            <!-- Datos informativos de solo lectura -->
                             <div class="row mb-3">
 
-                                <div class="col-md-4">
-                                    <label class="form-label fw-bold">Fecha de Recepción *</label>
-                                    <input asp-for="Seguimiento.FechaRecepcion" type="date" class="form-control" />
-                                    <span asp-validation-for="Seguimiento.FechaRecepcion" class="text-danger"></span>
+                                <div class="col-md-3">
+                                    <label class="form-label fw-bold">No. Exhorto Recibido:</label>
+                                    <div class="form-control bg-light">
+                                        @exhorto.NoExhortoRecibido
+                                    </div>
                                 </div>
 
-                                <div class="col-md-4">
-                                    <label class="form-label fw-bold">No. De Folio *</label>
-                                    <input asp-for="Seguimiento.NoFolio" class="form-control text-uppercase" />
-                                    <span asp-validation-for="Seguimiento.NoFolio" class="text-danger"></span>
+                                <div class="col-md-3">
+                                    <label class="form-label fw-bold">TUA Exhortado:</label>
+                                    <div class="form-control bg-light">
+                                        @exhorto.TuaDestino
+                                    </div>
                                 </div>
 
-                                <div class="col-md-4">
-                                    <label class="form-label fw-bold">Estatus *</label>
-                                    <select asp-for="Seguimiento.Estatus" class="form-control">
-                                        <option value="">Seleccione</option>
-                                        <option value="TRAMITE">TRAMITE</option>
-                                        <option value="ATENDIDO">ATENDIDO</option>
-                                        <option value="NO DILIGENCIADO">NO DILIGENCIADO</option>
-                                        <option value="PARCIALMENTE ATENDIDO">PARCIALMENTE ATENDIDO</option>
-                                    </select>
-                                    <span asp-validation-for="Seguimiento.Estatus" class="text-danger"></span>
-                                </div>
+                                @if (!string.IsNullOrWhiteSpace(exhorto.FechaNuevoAcuerdo))
+                                {
+                                    <div class="col-md-3">
+                                        <label class="form-label fw-bold">Fecha Nuevo Acuerdo:</label>
+                                        <div class="form-control bg-light">
+                                            @(DateTime.TryParse(exhorto.FechaNuevoAcuerdo, out var fechaNuevoAcuerdo)
+                                                ? fechaNuevoAcuerdo.ToString("dd/MM/yyyy")
+                                                : exhorto.FechaNuevoAcuerdo)
+                                        </div>
+                                    </div>
+                                }
+
+                                @if (!string.IsNullOrWhiteSpace(exhorto.FechaNuevaAudiencia))
+                                {
+                                    <div class="col-md-3">
+                                        <label class="form-label fw-bold">Fecha Nueva Audiencia:</label>
+                                        <div class="form-control bg-light">
+                                            @(DateTime.TryParse(exhorto.FechaNuevaAudiencia, out var fechaNuevaAudiencia)
+                                                ? fechaNuevaAudiencia.ToString("dd/MM/yyyy")
+                                                : exhorto.FechaNuevaAudiencia)
+                                        </div>
+                                    </div>
+                                }
 
                             </div>
 
-                            <div class="row mb-3">
+                            <!-- Formulario de captura -->
+                            <form asp-action="GuardarSeguimiento"
+                                  asp-controller="SeguimientoExhortos"
+                                  method="post">
 
-                                <div class="col-md-4">
-                                    <label class="form-label fw-bold">Fecha Acuerdo TUA Exhortado *</label>
-                                    <input asp-for="Seguimiento.FechaAcuerdoTuaExhortado" type="date" class="form-control" />
-                                    <span asp-validation-for="Seguimiento.FechaAcuerdoTuaExhortado" class="text-danger"></span>
+                                <input type="hidden" asp-for="Seguimiento.ExhortoId" />
+                                <input type="hidden" asp-for="Seguimiento.FechaAudiencia" />
+
+                                <div asp-validation-summary="ModelOnly" class="alert alert-warning"></div>
+
+                                <div class="row mb-3">
+
+                                    <div class="col-md-3">
+                                        <label class="form-label fw-bold">* Fecha de Recepción:</label>
+                                        <input asp-for="Seguimiento.FechaRecepcion"
+                                               type="date"
+                                               class="form-control" />
+                                        <span asp-validation-for="Seguimiento.FechaRecepcion" class="text-danger"></span>
+                                    </div>
+
+                                    <div class="col-md-3">
+                                        <label class="form-label fw-bold">* No. Folio:</label>
+                                        <input asp-for="Seguimiento.NoFolio"
+                                               class="form-control text-uppercase" />
+                                        <span asp-validation-for="Seguimiento.NoFolio" class="text-danger"></span>
+                                    </div>
+
+                                    <div class="col-md-3">
+                                        <label class="form-label fw-bold">* Estatus del Exhorto:</label>
+                                        <select asp-for="Seguimiento.Estatus" class="form-control">
+                                            <option value="">Seleccione</option>
+                                            <option value="TRAMITE">TRAMITE</option>
+                                            <option value="ATENDIDO">ATENDIDO</option>
+                                            <option value="NO DILIGENCIADO">NO DILIGENCIADO</option>
+                                            <option value="PARCIALMENTE ATENDIDO">PARCIALMENTE ATENDIDO</option>
+                                        </select>
+                                        <span asp-validation-for="Seguimiento.Estatus" class="text-danger"></span>
+                                    </div>
+
                                 </div>
 
-                                <div class="col-md-4">
-                                    <label class="form-label fw-bold">Fecha Turno Actuaría *</label>
-                                    <input asp-for="Seguimiento.FechaTurnoActuaria" type="date" class="form-control" />
-                                    <span asp-validation-for="Seguimiento.FechaTurnoActuaria" class="text-danger"></span>
+                                <div class="row mb-3">
+
+                                    <div class="col-md-3">
+                                        <label class="form-label fw-bold">* Fecha Acuerdo TUA Exhortado:</label>
+                                        <input asp-for="Seguimiento.FechaAcuerdoTuaExhortado"
+                                               type="date"
+                                               class="form-control" />
+                                        <span asp-validation-for="Seguimiento.FechaAcuerdoTuaExhortado" class="text-danger"></span>
+                                    </div>
+
+                                    <div class="col-md-3">
+                                        <label class="form-label fw-bold">* Fecha Turno Actuaría:</label>
+                                        <input asp-for="Seguimiento.FechaTurnoActuaria"
+                                               type="date"
+                                               class="form-control" />
+                                        <span asp-validation-for="Seguimiento.FechaTurnoActuaria" class="text-danger"></span>
+                                    </div>
+
+                                    <div class="col-md-3">
+                                        <label class="form-label fw-bold">Fecha de Vencimiento:</label>
+                                        <div class="form-control bg-light">
+                                            @* Pendiente de mostrar cuando venga desde el SP o el modelo *@
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-3">
+                                        <label class="form-label fw-bold">* Fecha Devolución:</label>
+                                        <input asp-for="Seguimiento.FechaDevolucion"
+                                               type="date"
+                                               class="form-control" />
+                                        <span asp-validation-for="Seguimiento.FechaDevolucion" class="text-danger"></span>
+                                    </div>
+
                                 </div>
 
-                                <div class="col-md-4">
-                                    <label class="form-label fw-bold">Fecha de Devolución</label>
-                                    <input asp-for="Seguimiento.FechaDevolucion" type="date" class="form-control" />
-                                    <span asp-validation-for="Seguimiento.FechaDevolucion" class="text-danger"></span>
+                                <div class="row mb-3">
+                                    <div class="col-md-12">
+                                        <label class="form-label fw-bold">Observaciones:</label>
+                                        <textarea asp-for="Seguimiento.Observaciones"
+                                                  class="form-control text-uppercase"
+                                                  rows="3"></textarea>
+                                        <span asp-validation-for="Seguimiento.Observaciones" class="text-danger"></span>
+                                    </div>
                                 </div>
 
+                                <div class="d-flex justify-content-end gap-2">
+                                    <a asp-controller="SeguimientoExhortos"
+                                           asp-action="SeguimientoExhortos"
+                                           class="btn btn-secondary">
+                                        Regresar
+                                    </a>
+
+                                    <button type="submit" class="btn btn-tua">
+                                        Guardar
+                                    </button>
+                                </div>
+
+                            </form>
+                        }
+                        else
+                        {
+                            <div class="alert alert-warning text-center">
+                                No se encontró información del seguimiento del exhorto.
                             </div>
-
-                            <div class="row mb-3">
-                                <div class="col-md-12">
-                                    <label class="form-label fw-bold">Observaciones</label>
-                                    <textarea asp-for="Seguimiento.Observaciones" class="form-control text-uppercase" rows="3"></textarea>
-                                    <span asp-validation-for="Seguimiento.Observaciones" class="text-danger"></span>
-                                </div>
-                            </div>
-
-                            <div class="d-flex justify-content-end gap-2">
-                                <a asp-controller="SeguimientoExhortos"
-                                       asp-action="SeguimientoExhortos"
-                                       class="btn btn-secondary">
-                                    Regresar
-                                </a>
-
-                                <button type="submit" class="btn btn-tua">
-                                    Guardar
-                                </button>
-                            </div>
-
-                        </form>
+                        }
 
                     </div>
                 </div>

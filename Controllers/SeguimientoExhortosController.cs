@@ -118,61 +118,27 @@ namespace AplicacionExhortos.Controllers
                 return RedirectToAction(nameof(SeguimientoExhortos));
             }
 
-            var s = model.Seguimiento;
+            SeguimientoModel seguimiento = model.Seguimiento;
+
+            // Fuerza la validación del objeto hijo
+            TryValidateModel(seguimiento, nameof(model.Seguimiento));
 
             if (!ModelState.IsValid)
             {
-                model.Exhorto = _consultaExhortoRepository.ObtenerDetalleExhortoRecibido(s.ExhortoId) ?? new ConsultaExhortos();
-                model.Diligencias = _diligenciasRepository.ObtenerDiligencias(s.ExhortoId);
+                CargarDatosDetalle(model, seguimiento.ExhortoId);
                 return View("DetalleSeguimiento", model);
             }
 
-            // Validaciones de fechas
-            if (s.FechaAcuerdoTuaExhortado < s.FechaRecepcion)
+            if (seguimiento.Estatus == "DILIGENCIADO" || seguimiento.Estatus == "PARCIALMENTE ATENDIDO")
             {
-                ModelState.AddModelError("", "La fecha de acuerdo TUA exhortado debe ser mayor o igual a la fecha de recepción.");
-                model.Exhorto = _consultaExhortoRepository.ObtenerDetalleExhortoRecibido(s.ExhortoId) ?? new ConsultaExhortos();
-                model.Diligencias = _diligenciasRepository.ObtenerDiligencias(s.ExhortoId);
-                return View("DetalleSeguimiento", model);
-            }
-
-            if (s.FechaTurnoActuaria < s.FechaAcuerdoTuaExhortado)
-            {
-                ModelState.AddModelError("", "La fecha turno actuaría debe ser mayor o igual a la fecha de acuerdo TUA exhortado.");
-                model.Exhorto = _consultaExhortoRepository.ObtenerDetalleExhortoRecibido(s.ExhortoId) ?? new ConsultaExhortos();
-                model.Diligencias = _diligenciasRepository.ObtenerDiligencias(s.ExhortoId);
-                return View("DetalleSeguimiento", model);
-            }
-
-            if (s.FechaAudiencia.HasValue)
-            {
-                if (s.FechaAcuerdoTuaExhortado >= s.FechaAudiencia)
-                {
-                    ModelState.AddModelError("", "La fecha de acuerdo TUA exhortado debe ser menor a la fecha de audiencia.");
-                    model.Exhorto = _consultaExhortoRepository.ObtenerDetalleExhortoRecibido(s.ExhortoId) ?? new ConsultaExhortos();
-                    model.Diligencias = _diligenciasRepository.ObtenerDiligencias(s.ExhortoId);
-                    return View("DetalleSeguimiento", model);
-                }
-
-                if (s.FechaTurnoActuaria >= s.FechaAudiencia)
-                {
-                    ModelState.AddModelError("", "La fecha turno actuaría debe ser menor a la fecha de audiencia.");
-                    model.Exhorto = _consultaExhortoRepository.ObtenerDetalleExhortoRecibido(s.ExhortoId) ?? new ConsultaExhortos();
-                    model.Diligencias = _diligenciasRepository.ObtenerDiligencias(s.ExhortoId);
-                    return View("DetalleSeguimiento", model);
-                }
-            }
-
-            // Si quieres validar diligencias al cambiar a DILIGENCIADO o PARCIALMENTE ATENDIDO
-            if (s.Estatus == "DILIGENCIADO" || s.Estatus == "PARCIALMENTE ATENDIDO")
-            {
-                bool diligenciasValidas = _diligenciasRepository.ValidaDiligencias(s.ExhortoId);
+                bool diligenciasValidas = _diligenciasRepository.ValidaDiligencias(seguimiento.ExhortoId);
 
                 if (!diligenciasValidas)
                 {
-                    ModelState.AddModelError("", "No es posible guardar porque existen diligencias pendientes o incompletas.");
-                    model.Exhorto = _consultaExhortoRepository.ObtenerDetalleExhortoRecibido(s.ExhortoId) ?? new ConsultaExhortos();
-                    model.Diligencias = _diligenciasRepository.ObtenerDiligencias(s.ExhortoId);
+                    ModelState.AddModelError(string.Empty,
+                        "No es posible guardar porque existen diligencias pendientes o incompletas.");
+
+                    CargarDatosDetalle(model, seguimiento.ExhortoId);
                     return View("DetalleSeguimiento", model);
                 }
             }
@@ -180,30 +146,35 @@ namespace AplicacionExhortos.Controllers
             string? usuarioId = HttpContext.Session.GetString("UsuarioId");
 
             bool actualizado = _consultaExhortoRepository.ActualizarSeguimientoExhorto(
-                 s.ExhortoId,
-                 s.Estatus,
-                 s.FechaRecepcion,
-                 s.NoFolio,
-                 s.FechaAcuerdoTuaExhortado,
-                 s.FechaTurnoActuaria,
-                 s.FechaVencimiento,
-                 s.FechaDevolucion,
-                 s.Observaciones,
-                 usuarioId
-);
-
-            
+                seguimiento.ExhortoId,
+                seguimiento.Estatus,
+                seguimiento.FechaRecepcion,
+                seguimiento.NoFolio,
+                seguimiento.FechaAcuerdoTuaExhortado,
+                seguimiento.FechaTurnoActuaria,
+                seguimiento.FechaVencimiento,
+                seguimiento.FechaDevolucion,
+                seguimiento.Observaciones,
+                usuarioId
+            );
 
             if (!actualizado)
             {
-                ModelState.AddModelError("", "Ocurrió un error al guardar el seguimiento.");
-                model.Exhorto = _consultaExhortoRepository.ObtenerDetalleExhortoRecibido(s.ExhortoId) ?? new ConsultaExhortos();
-                model.Diligencias = _diligenciasRepository.ObtenerDiligencias(s.ExhortoId);
+                ModelState.AddModelError(string.Empty, "Ocurrió un error al guardar el seguimiento.");
+                CargarDatosDetalle(model, seguimiento.ExhortoId);
                 return View("DetalleSeguimiento", model);
             }
 
             TempData["Exito"] = "Seguimiento guardado correctamente.";
             return RedirectToAction(nameof(SeguimientoExhortos));
+        }
+
+        private void CargarDatosDetalle(DetalleExhortoModel model, int exhortoId)
+        {
+            model.Exhorto = _consultaExhortoRepository.ObtenerDetalleExhortoRecibido(exhortoId)
+                ?? new ConsultaExhortos();
+
+            model.Diligencias = _diligenciasRepository.ObtenerDiligencias(exhortoId);
         }
     }
 }
