@@ -77,7 +77,10 @@ namespace AplicacionExhortos.Controllers
             TempData["ExitoEnvio"] = "El exhorto ha sido enviado al TUA Exhortado";
             TempData["BloquearDiligencias"] = true;
 
-            return RedirectToAction("AltaDiligencia", new { noExhorto = model.NoExhorto });
+            return RedirectToAction("AltaDocumentos", "Exhortos", new
+            {
+                noExhorto = model.NoExhorto
+            });
         }
 
         [HttpGet]

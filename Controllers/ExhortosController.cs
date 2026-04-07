@@ -92,6 +92,20 @@ namespace AplicacionExhortos.Controllers
             }
         }
 
+        [HttpGet]
+        public IActionResult AltaDocumentos(string noExhorto)
+        {
+            if (string.IsNullOrEmpty(HttpContext.Session.GetString("UsuarioId")))
+            {
+                TempData["Error"] = "La sesión expiró. Inicie sesión nuevamente.";
+                return RedirectToAction("Login", "Login");
+            }
+
+            ViewBag.NoExhorto = noExhorto ?? string.Empty;
+
+            return View("~/Views/AltaDeExhortos/AltaDocumentos.cshtml");
+        }
+
         private void ValidarFechaAcuerdo(DateTime? fechaAcuerdo)
         {
             DateTime fechaActual = DateTime.Today;
