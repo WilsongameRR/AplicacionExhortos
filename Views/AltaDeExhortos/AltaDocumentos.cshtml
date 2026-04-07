@@ -1,6 +1,8 @@
 ﻿@{
     Layout = "~/Views/Shared/_Layout.cshtml";
     ViewData["Title"] = "Alta de Documentos";
+
+    string noExhorto = ViewBag.NoExhorto?.ToString() ?? string.Empty;
 }
 
 <div class="container-fluid fondo-exhortos min-vh-100 pb-5" style="padding-top:80px;">
@@ -11,6 +13,28 @@
                 <h2>ALTA DE DOCUMENTOS</h2>
             </div>
 
+            @if (TempData["Error"] != null)
+            {
+                <div class="alert alert-danger alert-dismissible fade show text-center mt-3" role="alert">
+                    @TempData["Error"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            }
+
+            @if (TempData["Exito"] != null)
+            {
+                <div class="alert alert-success alert-dismissible fade show text-center mt-3" role="alert">
+                    @TempData["Exito"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            }
+
+            <div class="col-12 text-start mt-2">
+                <small class="text-muted">
+                    Los campos marcados con <span class="text-danger">*</span> son obligatorios.
+                </small>
+            </div>
+
             <div class="card shadow-sm border-0" style="background-color: rgba(255,255,255,0.96);">
                 <div class="card-body px-4 py-4">
 
@@ -18,73 +42,92 @@
                         <h4 class="fw-bold">Adjuntar documentos</h4>
                     </div>
 
-                    <form>
+                    <form id="formAltaDocumentos"
+                          asp-action="GuardarDocumentos"
+                          asp-controller="Exhortos"
+                          method="post"
+                          novalidate>
+                        @Html.AntiForgeryToken()
+
+                        <input type="hidden" id="NoExhorto" name="NoExhorto" value="@noExhorto" />
+                        <input type="hidden" id="DocumentosJson" name="DocumentosJson" />
+
+                        <div class="row mb-4">
+                            <div class="col-md-4">
+                                <label class="form-label fw-bold">No. Exhorto:</label>
+                                <div class="form-control bg-light">@noExhorto</div>
+                            </div>
+                        </div>
+
                         <div class="row align-items-end mb-4">
                             <div class="col-md-4">
                                 <label for="tipoDocumento" class="form-label fw-bold">
-                                    Tipo de documento:
+                                    <span class="text-danger">*</span> Tipo de documento:
                                 </label>
                                 <select id="tipoDocumento" class="form-select">
                                     <option value="">Seleccione</option>
-                                    <option value="Acuerdo">Acuerdo</option>
-                                    <option value="Exhorto">Exhorto</option>
+                                    @if (ViewBag.TiposDocumento != null)
+                                    {
+                                        foreach (var item in ViewBag.TiposDocumento)
+                                        {
+                                            <option value="@item.TipoDoctoId">@item.TipoDoctoDesc</option>
+                                        }
+                                    }
                                 </select>
+                                <div id="errorTipoDocumento" class="text-danger small d-none">
+                                    Debe seleccionar el tipo de documento.
+                                </div>
                             </div>
 
                             <div class="col-md-7">
                                 <label for="documentoAlfresco" class="form-label fw-bold">
-                                    Documento Alfresco:
+                                    <span class="text-danger">*</span> Documento Alfresco:
                                 </label>
                                 <input type="text"
                                        id="documentoAlfresco"
                                        class="form-control"
+                                       maxlength="300"
                                        placeholder="Ingrese la ruta o referencia del documento" />
+                                <div id="errorDocumentoAlfresco" class="text-danger small d-none">
+                                    Debe capturar el documento Alfresco.
+                                </div>
                             </div>
 
                             <div class="col-md-1 text-center">
                                 <button type="button"
+                                        id="btnAgregarDocumento"
                                         class="btn btn-link text-decoration-none fw-bold p-0"
                                         title="Agregar documento"
-                                        style="font-size: 34px; color: #5fa8ff;">
+                                        style="font-size:34px; color:#5fa8ff;">
                                     +
                                 </button>
                             </div>
                         </div>
 
-                        <div class="table-responsive mb-4">
-                            <table class="table table-bordered table-striped align-middle">
+                        <div class="table-responsive mb-2">
+                            <table class="table table-bordered table-striped align-middle" id="tablaDocumentos">
                                 <thead class="thead-tua">
                                     <tr>
-                                        <th style="width: 70%;">Tipo de documento</th>
-                                        <th class="text-center" style="width: 30%;">Link</th>
+                                        <th style="width:55%;">Tipo de documento</th>
+                                        <th class="text-center" style="width:25%;">Link</th>
+                                        <th class="text-center" style="width:20%;">Acción</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
-                                        <td>Acuerdo</td>
-                                        <td class="text-center">
-                                            <a href="#" title="Ver documento">
-                                                <img src="~/Images/Icons/file-earmark-text.svg"
-                                                     alt="Documento"
-                                                     style="width:18px; height:18px;" />
-                                            </a>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>Exhorto</td>
-                                        <td class="text-center">
-                                            <a href="#" title="Ver documento">
-                                                <img src="~/Images/Icons/file-earmark-text.svg"
-                                                     alt="Documento"
-                                                     style="width:18px; height:18px;" />
-                                            </a>
+                                    <tr id="filaSinDocumentos">
+                                        <td colspan="3" class="text-center text-muted">
+                                            No hay documentos agregados.
                                         </td>
                                     </tr>
                                 </tbody>
                             </table>
                         </div>
 
-                        <div class="text-center">
+                        <div id="mensajeDocumentos" class="text-danger text-center mt-2 d-none">
+                            Debe agregar al menos un documento antes de guardar.
+                        </div>
+
+                        <div class="text-center mt-4">
                             <button type="submit" class="btn btn-tua px-4">
                                 Guardar
                             </button>
@@ -97,3 +140,157 @@
         </div>
     </div>
 </div>
+
+@section Scripts {
+    <script>
+        (() => {
+            const $ = (id) => document.getElementById(id);
+
+            const formAltaDocumentos = $("formAltaDocumentos");
+            const tipoDocumento = $("tipoDocumento");
+            const documentoAlfresco = $("documentoAlfresco");
+            const btnAgregarDocumento = $("btnAgregarDocumento");
+            const tablaBody = document.querySelector("#tablaDocumentos tbody");
+            const documentosJson = $("DocumentosJson");
+            const mensajeDocumentos = $("mensajeDocumentos");
+            const errorTipoDocumento = $("errorTipoDocumento");
+            const errorDocumentoAlfresco = $("errorDocumentoAlfresco");
+
+            let documentos = [];
+
+            const escapeHtml = (texto) =>
+                (texto || "")
+                    .replaceAll("&", "&amp;")
+                    .replaceAll("<", "&lt;")
+                    .replaceAll(">", "&gt;")
+                    .replaceAll('"', "&quot;")
+                    .replaceAll("'", "&#39;");
+
+            const limpiarErroresCaptura = () => {
+                errorTipoDocumento.classList.add("d-none");
+                errorDocumentoAlfresco.classList.add("d-none");
+
+                tipoDocumento.classList.remove("is-invalid");
+                documentoAlfresco.classList.remove("is-invalid");
+            };
+
+            const limpiarCaptura = () => {
+                tipoDocumento.value = "";
+                documentoAlfresco.value = "";
+                limpiarErroresCaptura();
+            };
+
+            const validarCaptura = () => {
+                limpiarErroresCaptura();
+
+                const tipoDocumentoId = tipoDocumento.value;
+                const documento = documentoAlfresco.value.trim();
+
+                let esValido = true;
+
+                if (!tipoDocumentoId) {
+                    tipoDocumento.classList.add("is-invalid");
+                    errorTipoDocumento.classList.remove("d-none");
+                    esValido = false;
+                }
+
+                if (!documento) {
+                    documentoAlfresco.classList.add("is-invalid");
+                    errorDocumentoAlfresco.classList.remove("d-none");
+                    esValido = false;
+                }
+
+                return esValido;
+            };
+
+            const renderTabla = () => {
+                if (documentos.length === 0) {
+                    tablaBody.innerHTML = `
+                        <tr id="filaSinDocumentos">
+                            <td colspan="3" class="text-center text-muted">
+                                No hay documentos agregados.
+                            </td>
+                        </tr>
+                    `;
+                } else {
+                    tablaBody.innerHTML = documentos.map((documento, index) => `
+                        <tr>
+                            <td>${escapeHtml(documento.TipoDocumentoDesc)}</td>
+                            <td class="text-center">
+                                <a href="${escapeHtml(documento.Documento)}" target="_blank" title="Ver documento">
+                                    <img src="/Images/Icons/file-earmark-text.svg"
+                                         alt="Documento"
+                                         style="width:18px; height:18px;" />
+                                </a>
+                            </td>
+                            <td class="text-center">
+                                <button type="button"
+                                        class="btn btn-danger btn-sm"
+                                        onclick="eliminarDocumento(${index})">
+                                    Eliminar
+                                </button>
+                            </td>
+                        </tr>
+                    `).join("");
+
+                    mensajeDocumentos.classList.add("d-none");
+                }
+
+                documentosJson.value = JSON.stringify(documentos);
+            };
+
+                    const agregarDocumento = () => {
+            if (!validarCaptura()) {
+                return;
+            }
+
+            mensajeDocumentos.classList.add("d-none");
+
+            const tipoDocumentoId = tipoDocumento.value;
+            const tipoDocumentoDesc = tipoDocumento.options[tipoDocumento.selectedIndex].text.trim();
+            const documento = documentoAlfresco.value.trim();
+
+            documentos.push({
+                TipoDocumentoId: parseInt(tipoDocumentoId),
+                TipoDocumentoDesc: tipoDocumentoDesc,
+                Documento: documento
+            });
+
+            renderTabla();
+            limpiarCaptura();
+        };
+
+            const eliminarDocumento = (index) => {
+                documentos.splice(index, 1);
+                renderTabla();
+            };
+
+            const prepararEnvioFormulario = (event) => {
+                if (documentos.length === 0) {
+                    event.preventDefault();
+                    mensajeDocumentos.classList.remove("d-none");
+                    return;
+                }
+
+                documentosJson.value = JSON.stringify(documentos);
+            };
+
+            btnAgregarDocumento?.addEventListener("click", agregarDocumento);
+            formAltaDocumentos?.addEventListener("submit", prepararEnvioFormulario);
+
+            window.eliminarDocumento = eliminarDocumento;
+
+            setTimeout(() => {
+                const alerts = document.querySelectorAll(".alert");
+                alerts.forEach((alert) => {
+                    alert.style.transition = "opacity 0.5s ease, transform 0.5s ease";
+                    alert.style.opacity = "0";
+                    alert.style.transform = "translateY(-10px)";
+                    setTimeout(() => alert.remove(), 500);
+                });
+            }, 3000);
+
+            renderTabla();
+        })();
+    </script>
+}

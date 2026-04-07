@@ -36,12 +36,16 @@ namespace AplicacionExhortos.Data.Repositories
 
                 cmd.Parameters.AddWithValue(
                     "pFechaAcuerdo",
-                    model.FechaGeneral.HasValue ? model.FechaGeneral.Value.Date : DBNull.Value
+                    model.FechaGeneral.HasValue
+                        ? model.FechaGeneral.Value.Date
+                        : DBNull.Value
                 );
 
                 cmd.Parameters.AddWithValue(
                     "pFechaAudiencia",
-                    model.FechaAudiencia.HasValue ? model.FechaAudiencia.Value.Date : DBNull.Value
+                    model.FechaAudiencia.HasValue
+                        ? model.FechaAudiencia.Value.Date
+                        : DBNull.Value
                 );
 
                 cmd.Parameters.AddWithValue("pUsuarioIdOrigen", usuarioOrigen);
@@ -66,6 +70,84 @@ namespace AplicacionExhortos.Data.Repositories
                     ? Convert.ToInt32(cmd.Parameters["pExhortoId"].Value)
                     : 0;
                 respuesta.Valor = cmd.Parameters["pExhortoEnviado"].Value?.ToString();
+            }
+            catch (Exception ex)
+            {
+                respuesta.NoError = 99;
+                respuesta.Mensaje = ex.Message;
+            }
+
+            return respuesta;
+        }
+
+        public List<TipoDocumentoModel> ObtenerTiposDocumento()
+        {
+            List<TipoDocumentoModel> tiposDocumento = new();
+
+            using var conn = _db.GetConnection();
+            conn.Open();
+
+            try
+            {
+                using var cmd = new MySqlCommand("exhortos.sp_obtienetiposdoctos", conn);
+                cmd.CommandType = CommandType.StoredProcedure;
+
+                using var reader = cmd.ExecuteReader();
+
+                while (reader.Read())
+                {
+                    tiposDocumento.Add(new TipoDocumentoModel
+                    {
+                        TipoDoctoId = reader["TipoDoctoId"] != DBNull.Value
+                            ? Convert.ToInt32(reader["TipoDoctoId"])
+                            : 0,
+                        TipoDoctoDesc = reader["TipoDoctoDesc"]?.ToString() ?? string.Empty
+                    });
+                }
+            }
+            catch
+            {
+                return new List<TipoDocumentoModel>();
+            }
+
+            return tiposDocumento;
+        }
+
+        public ResponseBd InsertarDocumento(DocumentoModel model)
+        {
+            ResponseBd respuesta = new();
+
+            using var conn = _db.GetConnection();
+            conn.Open();
+
+            try
+            {
+                using var cmd = new MySqlCommand("exhortos.sp_inserta_documento", conn);
+                cmd.CommandType = CommandType.StoredProcedure;
+
+                cmd.Parameters.AddWithValue("pExhortoEnviado", model.NoExhorto ?? string.Empty);
+                cmd.Parameters.AddWithValue("pTipoDoctoId", model.TipoDocumentoId);
+                cmd.Parameters.AddWithValue("pDocumento", model.Documento ?? string.Empty);
+
+                var pErrorNum = new MySqlParameter("p_error_num", MySqlDbType.Int32)
+                {
+                    Direction = ParameterDirection.Output
+                };
+                cmd.Parameters.Add(pErrorNum);
+
+                var pMensaje = new MySqlParameter("p_mensaje", MySqlDbType.VarChar, 100)
+                {
+                    Direction = ParameterDirection.Output
+                };
+                cmd.Parameters.Add(pMensaje);
+
+                cmd.ExecuteNonQuery();
+
+                respuesta.NoError = cmd.Parameters["p_error_num"].Value != DBNull.Value
+                    ? Convert.ToInt32(cmd.Parameters["p_error_num"].Value)
+                    : 99;
+
+                respuesta.Mensaje = cmd.Parameters["p_mensaje"].Value?.ToString() ?? string.Empty;
             }
             catch (Exception ex)
             {

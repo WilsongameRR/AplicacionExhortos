@@ -1,4 +1,5 @@
 ﻿using AplicacionExhortos.Data.Repositories;
+using AplicacionExhortos.Models;
 using AplicacionExhortos.Models.Exhortos;
 using Microsoft.AspNetCore.Mvc;
 
@@ -95,15 +96,117 @@ namespace AplicacionExhortos.Controllers
         [HttpGet]
         public IActionResult AltaDocumentos(string noExhorto)
         {
-            if (string.IsNullOrEmpty(HttpContext.Session.GetString("UsuarioId")))
+            try
             {
-                TempData["Error"] = "La sesión expiró. Inicie sesión nuevamente.";
-                return RedirectToAction("Login", "Login");
+                if (string.IsNullOrEmpty(HttpContext.Session.GetString("UsuarioId")))
+                {
+                    TempData["Error"] = "La sesión expiró. Inicie sesión nuevamente.";
+                    return RedirectToAction("Login", "Login");
+                }
+
+                if (string.IsNullOrWhiteSpace(noExhorto))
+                {
+                    TempData["Error"] = "No se recibió el número de exhorto.";
+                    return RedirectToAction("AltaDeExhortos");
+                }
+
+                ViewBag.NoExhorto = noExhorto;
+                ViewBag.TiposDocumento = _exhortosRepo.ObtenerTiposDocumento();
+
+                return View("~/Views/AltaDeExhortos/AltaDocumentos.cshtml");
             }
+            catch (Exception ex)
+            {
+                TempData["Error"] = "Error al cargar la pantalla de documentos: " + ex.Message;
+                ViewBag.NoExhorto = noExhorto ?? string.Empty;
+                ViewBag.TiposDocumento = _exhortosRepo.ObtenerTiposDocumento();
 
-            ViewBag.NoExhorto = noExhorto ?? string.Empty;
+                return View("~/Views/AltaDeExhortos/AltaDocumentos.cshtml");
+            }
+        }
 
-            return View("~/Views/AltaDeExhortos/AltaDocumentos.cshtml");
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult GuardarDocumentos(AltaDocumentosModel model)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(HttpContext.Session.GetString("UsuarioId")))
+                {
+                    TempData["Error"] = "La sesión expiró. Inicie sesión nuevamente.";
+                    return RedirectToAction("Login", "Login");
+                }
+
+                if (model == null || string.IsNullOrWhiteSpace(model.NoExhorto))
+                {
+                    TempData["Error"] = "No se identificó el número de exhorto.";
+                    return RedirectToAction("AltaDeExhortos");
+                }
+
+                List<DocumentoModel> documentos = model.ObtenerDocumentos();
+
+                if (documentos == null || !documentos.Any())
+                {
+                    TempData["Error"] = "Debe agregar al menos un documento.";
+                    return RedirectToAction("AltaDocumentos", new
+                    {
+                        noExhorto = model.NoExhorto
+                    });
+                }
+
+                foreach (DocumentoModel documento in documentos)
+                {
+                    documento.NoExhorto = model.NoExhorto;
+
+                    if (documento.TipoDocumentoId <= 0)
+                    {
+                        TempData["Error"] = "Debe seleccionar el tipo de documento.";
+                        return RedirectToAction("AltaDocumentos", new
+                        {
+                            noExhorto = model.NoExhorto
+                        });
+                    }
+
+                    if (string.IsNullOrWhiteSpace(documento.Documento))
+                    {
+                        TempData["Error"] = "Debe capturar el documento Alfresco.";
+                        return RedirectToAction("AltaDocumentos", new
+                        {
+                            noExhorto = model.NoExhorto
+                        });
+                    }
+
+                    ResponseBd respuesta = _exhortosRepo.InsertarDocumento(documento);
+
+                    if (respuesta.NoError != 0)
+                    {
+                        TempData["Error"] = string.IsNullOrWhiteSpace(respuesta.Mensaje)
+                            ? "No fue posible guardar el documento."
+                            : respuesta.Mensaje;
+
+                        return RedirectToAction("AltaDocumentos", new
+                        {
+                            noExhorto = model.NoExhorto
+                        });
+                    }
+                }
+
+                TempData["Exito"] = "Los documentos se guardaron correctamente.";
+
+                return RedirectToAction("AltaDiligencia", "Diligencias", new
+                {
+                    noExhorto = model.NoExhorto
+                });
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = "Error al guardar documentos: " + ex.Message;
+
+                return RedirectToAction("AltaDocumentos", new
+                {
+                    noExhorto = model?.NoExhorto ?? string.Empty
+                });
+            }
         }
 
         private void ValidarFechaAcuerdo(DateTime? fechaAcuerdo)
