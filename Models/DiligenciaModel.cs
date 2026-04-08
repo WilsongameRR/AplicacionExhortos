@@ -2,6 +2,7 @@
 {
     public class DiligenciaModel
     {
+        public int DiligenciaNoEnvio { get; set; }
         public int ExhortoId { get; set; }
         public int DiligenciaId { get; set; }
         public int TipoDiligenciaId { get; set; }

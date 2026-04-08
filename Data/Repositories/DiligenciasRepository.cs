@@ -163,7 +163,9 @@ namespace AplicacionExhortos.Data.Repositories
         private int ObtenerExhortoIdPorNumero(MySqlConnection conn, string? noExhorto)
         {
             if (string.IsNullOrWhiteSpace(noExhorto))
+            {
                 return 0;
+            }
 
             using var cmd = new MySqlCommand(
                 @"SELECT ExhortoId
@@ -197,6 +199,10 @@ namespace AplicacionExhortos.Data.Repositories
             {
                 lista.Add(new DiligenciaModel
                 {
+                    DiligenciaNoEnvio = reader["DiligenciaNoEnvio"] != DBNull.Value
+                        ? Convert.ToInt32(reader["DiligenciaNoEnvio"])
+                        : 0,
+
                     ExhortoId = reader["ExhortoId"] != DBNull.Value
                         ? Convert.ToInt32(reader["ExhortoId"])
                         : 0,
@@ -218,7 +224,6 @@ namespace AplicacionExhortos.Data.Repositories
                         : (DateTime?)null,
 
                     EstatusDiligencia = reader["EstatusDiligencia"]?.ToString(),
-
                     FechaAudiencia = null
                 });
             }
@@ -249,6 +254,10 @@ namespace AplicacionExhortos.Data.Repositories
                 {
                     model = new DiligenciaModel
                     {
+                        DiligenciaNoEnvio = reader["DiligenciaNoEnvio"] != DBNull.Value
+                            ? Convert.ToInt32(reader["DiligenciaNoEnvio"])
+                            : 0,
+
                         ExhortoId = reader["ExhortoId"] != DBNull.Value
                             ? Convert.ToInt32(reader["ExhortoId"])
                             : 0,
@@ -340,14 +349,17 @@ namespace AplicacionExhortos.Data.Repositories
                 using var cmd = new MySqlCommand("exhortos.sp_actualiza_diligencia", conn);
                 cmd.CommandType = CommandType.StoredProcedure;
 
+                cmd.Parameters.AddWithValue("pDiligenciaNoEnvio", model.DiligenciaNoEnvio);
                 cmd.Parameters.AddWithValue("pExhortoId", model.ExhortoId);
-                cmd.Parameters.AddWithValue("pDiligenciaId", model.DiligenciaId);
-                cmd.Parameters.AddWithValue("pFechaDiligencia", model.FechaDiligencia.HasValue
-                    ? model.FechaDiligencia.Value
-                    : DBNull.Value);
-                cmd.Parameters.AddWithValue("pEstatus", string.IsNullOrWhiteSpace(model.EstatusDiligencia)
-                    ? DBNull.Value
-                    : model.EstatusDiligencia);
+                cmd.Parameters.AddWithValue("pDiligenciaConsec", model.DiligenciaId);
+                cmd.Parameters.AddWithValue("pFechaDiligencia",
+                    model.FechaDiligencia.HasValue
+                        ? model.FechaDiligencia.Value
+                        : DBNull.Value);
+                cmd.Parameters.AddWithValue("pEstatus",
+                    string.IsNullOrWhiteSpace(model.EstatusDiligencia)
+                        ? DBNull.Value
+                        : model.EstatusDiligencia);
 
                 var pErrorNum = new MySqlParameter("p_error_num", MySqlDbType.Int32)
                 {
@@ -355,7 +367,7 @@ namespace AplicacionExhortos.Data.Repositories
                 };
                 cmd.Parameters.Add(pErrorNum);
 
-                var pMensaje = new MySqlParameter("p_mensaje", MySqlDbType.VarChar, 100)
+                var pMensaje = new MySqlParameter("p_mensaje", MySqlDbType.VarChar, 255)
                 {
                     Direction = ParameterDirection.Output
                 };

@@ -31,6 +31,7 @@
                     <form asp-action="GuardarSeguimientoDiligencia" asp-controller="Diligencias" method="post">
                         @Html.AntiForgeryToken()
 
+                        <input type="hidden" asp-for="DiligenciaNoEnvio" />
                         <input type="hidden" asp-for="ExhortoId" />
                         <input type="hidden" asp-for="DiligenciaId" />
                         <input type="hidden" asp-for="TipoDiligenciaId" />

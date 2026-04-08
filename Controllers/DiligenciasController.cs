@@ -24,7 +24,6 @@ namespace AplicacionExhortos.Controllers
             ViewBag.ExitoEnvio = TempData["ExitoEnvio"]?.ToString();
             ViewBag.ErrorDiligencias = TempData["ErrorDiligencias"]?.ToString();
             ViewBag.ExitoDiligencias = TempData["ExitoDiligencias"]?.ToString();
-
             ViewBag.MensajeExito = TempData["MensajeExito"]?.ToString();
             ViewBag.NumeroExhorto = TempData["NumeroExhorto"]?.ToString();
 
@@ -98,7 +97,7 @@ namespace AplicacionExhortos.Controllers
                 return RedirectToAction("DetalleSeguimiento", "SeguimientoExhortos", new { exhortoId });
             }
 
-            var model = _diligenciasRepository.ObtenerDiligenciaPorId(exhortoId, diligenciaId);
+            DiligenciaModel? model = _diligenciasRepository.ObtenerDiligenciaPorId(exhortoId, diligenciaId);
 
             if (model == null)
             {
@@ -113,10 +112,14 @@ namespace AplicacionExhortos.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult GuardarSeguimientoDiligencia(DiligenciaModel model)
         {
-            if (model.ExhortoId <= 0 || model.DiligenciaId <= 0)
+            if (model.ExhortoId <= 0 || model.DiligenciaId <= 0 || model.DiligenciaNoEnvio <= 0)
             {
                 TempData["Error"] = "No se identificó correctamente la diligencia.";
-                return RedirectToAction("SeguimientoExhortos", "SeguimientoExhortos");
+                return RedirectToAction("SeguimientoDiligencia", new
+                {
+                    exhortoId = model.ExhortoId,
+                    diligenciaId = model.DiligenciaId
+                });
             }
 
             if (!model.FechaDiligencia.HasValue)
