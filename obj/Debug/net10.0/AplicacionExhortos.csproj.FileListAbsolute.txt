@@ -294,16 +294,6 @@ C:\Users\aisalgadop\Desktop\AplicacionExhortos\obj\Debug\net10.0\compressed\odw9
 \\10.10.0.160\utic2026\Braulio\AplicacionExhortos\obj\Debug\net10.0\AplicacionExhortos.pdb
 \\10.10.0.160\utic2026\Braulio\AplicacionExhortos\obj\Debug\net10.0\AplicacionExhortos.genruntimeconfig.cache
 \\10.10.0.160\utic2026\Braulio\AplicacionExhortos\obj\Debug\net10.0\ref\AplicacionExhortos.dll
-C:\Users\rperezr_ss\Documents\AplicacionExhortos\obj\Debug\net10.0\AplicacionExhortos.csproj.AssemblyReference.cache
-C:\Users\rperezr_ss\Documents\AplicacionExhortos\obj\Debug\net10.0\rpswa.dswa.cache.json
-C:\Users\rperezr_ss\Documents\AplicacionExhortos\obj\Debug\net10.0\AplicacionExhortos.GeneratedMSBuildEditorConfig.editorconfig
-C:\Users\rperezr_ss\Documents\AplicacionExhortos\obj\Debug\net10.0\AplicacionExhortos.AssemblyInfoInputs.cache
-C:\Users\rperezr_ss\Documents\AplicacionExhortos\obj\Debug\net10.0\AplicacionExhortos.AssemblyInfo.cs
-C:\Users\rperezr_ss\Documents\AplicacionExhortos\obj\Debug\net10.0\AplicacionExhortos.csproj.CoreCompileInputs.cache
-C:\Users\rperezr_ss\Documents\AplicacionExhortos\obj\Debug\net10.0\AplicacionExhortos.MvcApplicationPartsAssemblyInfo.cache
-C:\Users\rperezr_ss\Documents\AplicacionExhortos\obj\Debug\net10.0\AplicacionExhortos.RazorAssemblyInfo.cache
-C:\Users\rperezr_ss\Documents\AplicacionExhortos\obj\Debug\net10.0\AplicacionExhortos.RazorAssemblyInfo.cs
-C:\Users\rperezr_ss\Documents\AplicacionExhortos\obj\Debug\net10.0\AplicacionExhortos.sourcelink.json
 C:\Users\rperezr_ss\Documents\AplicacionExhortos\bin\Debug\net10.0\appsettings.Development.json
 C:\Users\rperezr_ss\Documents\AplicacionExhortos\bin\Debug\net10.0\appsettings.json
 C:\Users\rperezr_ss\Documents\AplicacionExhortos\bin\Debug\net10.0\AplicacionExhortos.staticwebassets.runtime.json
@@ -331,6 +321,16 @@ C:\Users\rperezr_ss\Documents\AplicacionExhortos\bin\Debug\net10.0\runtimes\win-
 C:\Users\rperezr_ss\Documents\AplicacionExhortos\bin\Debug\net10.0\runtimes\win-x64\native\krb5_64.dll
 C:\Users\rperezr_ss\Documents\AplicacionExhortos\bin\Debug\net10.0\runtimes\win-x64\native\krbcc64.dll
 C:\Users\rperezr_ss\Documents\AplicacionExhortos\bin\Debug\net10.0\runtimes\win\lib\net8.0\System.Windows.Extensions.dll
+C:\Users\rperezr_ss\Documents\AplicacionExhortos\obj\Debug\net10.0\AplicacionExhortos.csproj.AssemblyReference.cache
+C:\Users\rperezr_ss\Documents\AplicacionExhortos\obj\Debug\net10.0\rpswa.dswa.cache.json
+C:\Users\rperezr_ss\Documents\AplicacionExhortos\obj\Debug\net10.0\AplicacionExhortos.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\rperezr_ss\Documents\AplicacionExhortos\obj\Debug\net10.0\AplicacionExhortos.AssemblyInfoInputs.cache
+C:\Users\rperezr_ss\Documents\AplicacionExhortos\obj\Debug\net10.0\AplicacionExhortos.AssemblyInfo.cs
+C:\Users\rperezr_ss\Documents\AplicacionExhortos\obj\Debug\net10.0\AplicacionExhortos.csproj.CoreCompileInputs.cache
+C:\Users\rperezr_ss\Documents\AplicacionExhortos\obj\Debug\net10.0\AplicacionExhortos.MvcApplicationPartsAssemblyInfo.cache
+C:\Users\rperezr_ss\Documents\AplicacionExhortos\obj\Debug\net10.0\AplicacionExhortos.RazorAssemblyInfo.cache
+C:\Users\rperezr_ss\Documents\AplicacionExhortos\obj\Debug\net10.0\AplicacionExhortos.RazorAssemblyInfo.cs
+C:\Users\rperezr_ss\Documents\AplicacionExhortos\obj\Debug\net10.0\AplicacionExhortos.sourcelink.json
 C:\Users\rperezr_ss\Documents\AplicacionExhortos\obj\Debug\net10.0\rjimswa.dswa.cache.json
 C:\Users\rperezr_ss\Documents\AplicacionExhortos\obj\Debug\net10.0\rjsmrazor.dswa.cache.json
 C:\Users\rperezr_ss\Documents\AplicacionExhortos\obj\Debug\net10.0\rjsmcshtml.dswa.cache.json
@@ -342,6 +342,7 @@ C:\Users\rperezr_ss\Documents\AplicacionExhortos\obj\Debug\net10.0\compressed\9x
 C:\Users\rperezr_ss\Documents\AplicacionExhortos\obj\Debug\net10.0\compressed\a9zh7qhsjc-{0}-61n19gt1b8-61n19gt1b8.gz
 C:\Users\rperezr_ss\Documents\AplicacionExhortos\obj\Debug\net10.0\compressed\osx70hx6vj-{0}-jnfexbelvr-jnfexbelvr.gz
 C:\Users\rperezr_ss\Documents\AplicacionExhortos\obj\Debug\net10.0\compressed\809fwmbpd8-{0}-89k72fa4wm-89k72fa4wm.gz
+C:\Users\rperezr_ss\Documents\AplicacionExhortos\obj\Debug\net10.0\compressed\kkpirbfwgw-{0}-n9zluo3eri-n9zluo3eri.gz
 C:\Users\rperezr_ss\Documents\AplicacionExhortos\obj\Debug\net10.0\compressed\svkav0tjoj-{0}-3hx8jh4ybi-3hx8jh4ybi.gz
 C:\Users\rperezr_ss\Documents\AplicacionExhortos\obj\Debug\net10.0\compressed\0n3a3p7evl-{0}-co8p5dmaof-co8p5dmaof.gz
 C:\Users\rperezr_ss\Documents\AplicacionExhortos\obj\Debug\net10.0\compressed\69xg78i012-{0}-r1s5igavsv-r1s5igavsv.gz
@@ -419,4 +420,3 @@ C:\Users\rperezr_ss\Documents\AplicacionExhortos\obj\Debug\net10.0\refint\Aplica
 C:\Users\rperezr_ss\Documents\AplicacionExhortos\obj\Debug\net10.0\AplicacionExhortos.pdb
 C:\Users\rperezr_ss\Documents\AplicacionExhortos\obj\Debug\net10.0\AplicacionExhortos.genruntimeconfig.cache
 C:\Users\rperezr_ss\Documents\AplicacionExhortos\obj\Debug\net10.0\ref\AplicacionExhortos.dll
-C:\Users\rperezr_ss\Documents\AplicacionExhortos\obj\Debug\net10.0\compressed\kkpirbfwgw-{0}-n9zluo3eri-n9zluo3eri.gz

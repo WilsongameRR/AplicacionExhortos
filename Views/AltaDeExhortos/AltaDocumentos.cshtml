@@ -1,8 +1,10 @@
-﻿@{
+﻿@model AplicacionExhortos.Models.Exhortos.AltaDocumentosViewModel
+
+@{
     Layout = "~/Views/Shared/_Layout.cshtml";
     ViewData["Title"] = "Alta de Documentos";
 
-    string noExhorto = ViewBag.NoExhorto?.ToString() ?? string.Empty;
+    string noExhorto = Model?.NoExhorto ?? string.Empty;
 }
 
 <div class="container-fluid fondo-exhortos min-vh-100 pb-5" style="padding-top:80px;">
@@ -49,8 +51,7 @@
                           novalidate>
                         @Html.AntiForgeryToken()
 
-                        <input type="hidden" id="NoExhorto" name="NoExhorto" value="@noExhorto" />
-                        <input type="hidden" id="DocumentosJson" name="DocumentosJson" />
+                        <input type="hidden" asp-for="NoExhorto" id="NoExhortoHidden" />
 
                         <div class="row mb-4">
                             <div class="col-md-4">
@@ -97,7 +98,7 @@
                                 <button type="button"
                                         id="btnAgregarDocumento"
                                         class="btn btn-link text-decoration-none p-0"
-                                        title="Subir documento">
+                                        title="Agregar documento">
                                     <i class="bi bi-file-earmark-arrow-up-fill text-primary" style="font-size:32px;"></i>
                                 </button>
                             </div>
@@ -122,15 +123,18 @@
                             </table>
                         </div>
 
+                        <div id="contenedorHiddenDocumentos"></div>
+
                         <div id="mensajeDocumentos" class="text-danger text-center mt-2 d-none">
                             Debe agregar al menos un documento antes de guardar.
                         </div>
 
                         <div class="text-center mt-4">
-                            <button type="submit" class="btn btn-tua px-4">
+                            <button type="button" id="btnGuardarDocumentos" class="btn btn-tua px-4">
                                 Guardar
                             </button>
                         </div>
+
                     </form>
 
                 </div>
@@ -143,17 +147,17 @@
 @section Scripts {
     <script>
         (() => {
-            const $ = (id) => document.getElementById(id);
-
-            const formAltaDocumentos = $("formAltaDocumentos");
-            const tipoDocumento = $("tipoDocumento");
-            const documentoAlfresco = $("documentoAlfresco");
-            const btnAgregarDocumento = $("btnAgregarDocumento");
-            const tablaBody = document.querySelector("#tablaDocumentos tbody");
-            const documentosJson = $("DocumentosJson");
-            const mensajeDocumentos = $("mensajeDocumentos");
-            const errorTipoDocumento = $("errorTipoDocumento");
-            const errorDocumentoAlfresco = $("errorDocumentoAlfresco");
+            const tipoDocumento = document.getElementById("tipoDocumento");
+            const documentoAlfresco = document.getElementById("documentoAlfresco");
+            const btnAgregar = document.getElementById("btnAgregarDocumento");
+            const btnGuardar = document.getElementById("btnGuardarDocumentos");
+            const tabla = document.querySelector("#tablaDocumentos tbody");
+            const contenedor = document.getElementById("contenedorHiddenDocumentos");
+            const form = document.getElementById("formAltaDocumentos");
+            const noExhorto = document.getElementById("NoExhortoHidden").value;
+            const mensajeDocumentos = document.getElementById("mensajeDocumentos");
+            const errorTipoDocumento = document.getElementById("errorTipoDocumento");
+            const errorDocumentoAlfresco = document.getElementById("errorDocumentoAlfresco");
 
             let documentos = [];
 
@@ -165,35 +169,25 @@
                     .replaceAll('"', "&quot;")
                     .replaceAll("'", "&#39;");
 
-            const limpiarErroresCaptura = () => {
+            const limpiarErrores = () => {
                 errorTipoDocumento.classList.add("d-none");
                 errorDocumentoAlfresco.classList.add("d-none");
-
                 tipoDocumento.classList.remove("is-invalid");
                 documentoAlfresco.classList.remove("is-invalid");
             };
 
-            const limpiarCaptura = () => {
-                tipoDocumento.value = "";
-                documentoAlfresco.value = "";
-                limpiarErroresCaptura();
-            };
-
             const validarCaptura = () => {
-                limpiarErroresCaptura();
-
-                const tipoDocumentoId = tipoDocumento.value;
-                const documento = documentoAlfresco.value.trim();
+                limpiarErrores();
 
                 let esValido = true;
 
-                if (!tipoDocumentoId) {
+                if (!tipoDocumento.value) {
                     tipoDocumento.classList.add("is-invalid");
                     errorTipoDocumento.classList.remove("d-none");
                     esValido = false;
                 }
 
-                if (!documento) {
+                if (!documentoAlfresco.value.trim()) {
                     documentoAlfresco.classList.add("is-invalid");
                     errorDocumentoAlfresco.classList.remove("d-none");
                     esValido = false;
@@ -202,82 +196,84 @@
                 return esValido;
             };
 
-            const renderTabla = () => {
+            const render = () => {
+                tabla.innerHTML = "";
+                contenedor.innerHTML = "";
+
                 if (documentos.length === 0) {
-                    tablaBody.innerHTML = `
+                    tabla.innerHTML = `
                         <tr id="filaSinDocumentos">
                             <td colspan="3" class="text-center text-muted">
                                 No hay documentos agregados.
                             </td>
                         </tr>
                     `;
-                } else {
-                    tablaBody.innerHTML = documentos.map((documento, index) => `
+                    mensajeDocumentos.classList.add("d-none");
+                    return;
+                }
+
+                documentos.forEach((d, i) => {
+                    tabla.innerHTML += `
                         <tr>
-                            <td>${escapeHtml(documento.TipoDocumentoDesc)}</td>
+                            <td>${escapeHtml(d.desc)}</td>
                             <td class="text-center">
-                                <a href="${escapeHtml(documento.Documento)}" target="_blank" title="Ver documento">
+                                <a href="${escapeHtml(d.url)}" target="_blank" title="Ver documento">
                                     <img src="/Images/Icons/file-earmark-text.svg"
                                          alt="Documento"
                                          style="width:18px; height:18px;" />
                                 </a>
                             </td>
                             <td class="text-center">
-                                <button type="button"
-                                        class="btn btn-danger btn-sm"
-                                        onclick="eliminarDocumento(${index})">
+                                <button type="button" class="btn btn-danger btn-sm" onclick="eliminar(${i})">
                                     Eliminar
                                 </button>
                             </td>
                         </tr>
-                    `).join("");
+                    `;
 
-                    mensajeDocumentos.classList.add("d-none");
+                    contenedor.innerHTML += `
+                        <input type="hidden" name="Documentos.Index" value="${i}" />
+                        <input type="hidden" name="Documentos[${i}].NoExhorto" value="${escapeHtml(noExhorto)}" />
+                        <input type="hidden" name="Documentos[${i}].TipoDocumentoId" value="${escapeHtml(d.id)}" />
+                        <input type="hidden" name="Documentos[${i}].Documento" value="${escapeHtml(d.url)}" />
+                    `;
+                });
+
+                mensajeDocumentos.classList.add("d-none");
+            };
+
+            btnAgregar.onclick = () => {
+                if (!validarCaptura()) {
+                    return;
                 }
 
-                documentosJson.value = JSON.stringify(documentos);
+                documentos.push({
+                    id: tipoDocumento.value,
+                    desc: tipoDocumento.options[tipoDocumento.selectedIndex].text.trim(),
+                    url: documentoAlfresco.value.trim()
+                });
+
+                render();
+
+                tipoDocumento.value = "";
+                documentoAlfresco.value = "";
+                limpiarErrores();
             };
 
-                    const agregarDocumento = () => {
-            if (!validarCaptura()) {
-                return;
-            }
-
-            mensajeDocumentos.classList.add("d-none");
-
-            const tipoDocumentoId = tipoDocumento.value;
-            const tipoDocumentoDesc = tipoDocumento.options[tipoDocumento.selectedIndex].text.trim();
-            const documento = documentoAlfresco.value.trim();
-
-            documentos.push({
-                TipoDocumentoId: parseInt(tipoDocumentoId),
-                TipoDocumentoDesc: tipoDocumentoDesc,
-                Documento: documento
-            });
-
-            renderTabla();
-            limpiarCaptura();
-        };
-
-            const eliminarDocumento = (index) => {
-                documentos.splice(index, 1);
-                renderTabla();
-            };
-
-            const prepararEnvioFormulario = (event) => {
+            btnGuardar.onclick = () => {
                 if (documentos.length === 0) {
-                    event.preventDefault();
                     mensajeDocumentos.classList.remove("d-none");
                     return;
                 }
 
-                documentosJson.value = JSON.stringify(documentos);
+                render();
+                form.submit();
             };
 
-            btnAgregarDocumento?.addEventListener("click", agregarDocumento);
-            formAltaDocumentos?.addEventListener("submit", prepararEnvioFormulario);
-
-            window.eliminarDocumento = eliminarDocumento;
+            window.eliminar = (i) => {
+                documentos.splice(i, 1);
+                render();
+            };
 
             setTimeout(() => {
                 const alerts = document.querySelectorAll(".alert");
@@ -289,7 +285,7 @@
                 });
             }, 3000);
 
-            renderTabla();
+            render();
         })();
     </script>
 }

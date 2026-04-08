@@ -67,7 +67,7 @@ namespace AplicacionExhortos.Controllers
                     return View("~/Views/AltaDeExhortos/AltaDeExhortos.cshtml", model);
                 }
 
-                var respuesta = _exhortosRepo.GuardarExhorto(model, tuaOrigen.Value, usuarioOrigen);
+                ResponseBd respuesta = _exhortosRepo.GuardarExhorto(model, tuaOrigen.Value, usuarioOrigen);
 
                 if (respuesta.NoError != 0)
                 {
@@ -110,24 +110,33 @@ namespace AplicacionExhortos.Controllers
                     return RedirectToAction("AltaDeExhortos");
                 }
 
-                ViewBag.NoExhorto = noExhorto;
+                AltaDocumentosViewModel model = new AltaDocumentosViewModel
+                {
+                    NoExhorto = noExhorto
+                };
+
                 ViewBag.TiposDocumento = _exhortosRepo.ObtenerTiposDocumento();
 
-                return View("~/Views/AltaDeExhortos/AltaDocumentos.cshtml");
+                return View("~/Views/AltaDeExhortos/AltaDocumentos.cshtml", model);
             }
             catch (Exception ex)
             {
                 TempData["Error"] = "Error al cargar la pantalla de documentos: " + ex.Message;
-                ViewBag.NoExhorto = noExhorto ?? string.Empty;
+
+                AltaDocumentosViewModel model = new AltaDocumentosViewModel
+                {
+                    NoExhorto = noExhorto ?? string.Empty
+                };
+
                 ViewBag.TiposDocumento = _exhortosRepo.ObtenerTiposDocumento();
 
-                return View("~/Views/AltaDeExhortos/AltaDocumentos.cshtml");
+                return View("~/Views/AltaDeExhortos/AltaDocumentos.cshtml", model);
             }
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult GuardarDocumentos(AltaDocumentosModel model)
+        public IActionResult GuardarDocumentos(AltaDocumentosViewModel model)
         {
             try
             {
@@ -143,9 +152,7 @@ namespace AplicacionExhortos.Controllers
                     return RedirectToAction("AltaDeExhortos");
                 }
 
-                List<DocumentoModel> documentos = model.ObtenerDocumentos();
-
-                if (documentos == null || !documentos.Any())
+                if (model.Documentos == null || !model.Documentos.Any())
                 {
                     TempData["Error"] = "Debe agregar al menos un documento.";
                     return RedirectToAction("AltaDocumentos", new
@@ -154,7 +161,7 @@ namespace AplicacionExhortos.Controllers
                     });
                 }
 
-                foreach (DocumentoModel documento in documentos)
+                foreach (DocumentoModel documento in model.Documentos)
                 {
                     documento.NoExhorto = model.NoExhorto;
 
