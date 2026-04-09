@@ -26,6 +26,7 @@
         public string? FechaRecibido { get; set; }
         public string? FechaAcuerdoExhortado { get; set; }
         public string? FechaTurnoActuaria { get; set; }
+        public string? FechaVencimiento { get; set; }
         public string? FechaDevolucion { get; set; }
         public string? FechaNuevoAcuerdo { get; set; }
         public string? FechaNuevaAudiencia { get; set; }

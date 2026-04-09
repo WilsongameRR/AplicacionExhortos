@@ -8,13 +8,16 @@ namespace AplicacionExhortos.Controllers
     {
         private readonly ConsultaExhortoRepository _consultaExhortoRepository;
         private readonly DiligenciasRepository _diligenciasRepository;
+        private readonly DocumentosRepository _documentosRepository;
 
         public SeguimientoExhortosController(
             ConsultaExhortoRepository consultaExhortoRepository,
-            DiligenciasRepository diligenciasRepository)
+            DiligenciasRepository diligenciasRepository,
+            DocumentosRepository documentosRepository)
         {
             _consultaExhortoRepository = consultaExhortoRepository;
             _diligenciasRepository = diligenciasRepository;
+            _documentosRepository = documentosRepository;
         }
 
         [HttpGet]
@@ -77,7 +80,8 @@ namespace AplicacionExhortos.Controllers
             DetalleExhortoModel model = new()
             {
                 Exhorto = exhorto,
-                Diligencias = _diligenciasRepository.ObtenerDiligencias(exhortoId)
+                Diligencias = _diligenciasRepository.ObtenerDiligencias(exhortoId),
+                DocumentosAdjuntos = _documentosRepository.ObtenerDocumentosAdjuntos(exhorto.ExhortoId)
             };
 
             model.Seguimiento.ExhortoId = exhorto.ExhortoId;
@@ -105,6 +109,16 @@ namespace AplicacionExhortos.Controllers
                 model.Seguimiento.FechaAudiencia = fechaAudiencia;
             }
 
+            if (DateTime.TryParse(exhorto.FechaVencimiento, out DateTime fechaVencimiento))
+            {
+                model.Seguimiento.FechaVencimiento = fechaVencimiento;
+            }
+
+            if (DateTime.TryParse(exhorto.FechaDevolucion, out DateTime fechaDevolucion))
+            {
+                model.Seguimiento.FechaDevolucion = fechaDevolucion;
+            }
+
             return View(model);
         }
 
@@ -120,7 +134,9 @@ namespace AplicacionExhortos.Controllers
 
             SeguimientoModel seguimiento = model.Seguimiento;
 
-            // Fuerza la validación del objeto hijo
+            // 🔥 AGREGADO (clave para la validación)
+            seguimiento.FechaActualizacion = DateTime.Today;
+
             TryValidateModel(seguimiento, nameof(model.Seguimiento));
 
             if (!ModelState.IsValid)
@@ -175,6 +191,42 @@ namespace AplicacionExhortos.Controllers
                 ?? new ConsultaExhortos();
 
             model.Diligencias = _diligenciasRepository.ObtenerDiligencias(exhortoId);
+            model.DocumentosAdjuntos = _documentosRepository.ObtenerDocumentosAdjuntos(exhortoId);
+
+            if (DateTime.TryParse(model.Exhorto.FechaRecibido, out DateTime fechaRecepcion))
+            {
+                model.Seguimiento.FechaRecepcion = fechaRecepcion;
+            }
+
+            if (DateTime.TryParse(model.Exhorto.FechaAcuerdoExhortado, out DateTime fechaAcuerdoExhortado))
+            {
+                model.Seguimiento.FechaAcuerdoTuaExhortado = fechaAcuerdoExhortado;
+            }
+
+            if (DateTime.TryParse(model.Exhorto.FechaTurnoActuaria, out DateTime fechaTurnoActuaria))
+            {
+                model.Seguimiento.FechaTurnoActuaria = fechaTurnoActuaria;
+            }
+
+            if (DateTime.TryParse(model.Exhorto.FechaAudiencia, out DateTime fechaAudiencia))
+            {
+                model.Seguimiento.FechaAudiencia = fechaAudiencia;
+            }
+
+            if (DateTime.TryParse(model.Exhorto.FechaVencimiento, out DateTime fechaVencimiento))
+            {
+                model.Seguimiento.FechaVencimiento = fechaVencimiento;
+            }
+
+            if (DateTime.TryParse(model.Exhorto.FechaDevolucion, out DateTime fechaDevolucion))
+            {
+                model.Seguimiento.FechaDevolucion = fechaDevolucion;
+            }
+
+            model.Seguimiento.ExhortoId = model.Exhorto.ExhortoId;
+            model.Seguimiento.NoFolio = model.Exhorto.Folio;
+            model.Seguimiento.Estatus = model.Exhorto.Estatus;
+            model.Seguimiento.Observaciones = model.Exhorto.Observaciones;
         }
     }
 }

@@ -359,7 +359,10 @@
                             <div class="col-md-3">
                                 <label class="form-label fw-bold">Fecha de Vencimiento:</label>
                                 <div class="form-control bg-light">
-                                    @* Pendiente si luego lo agregan en SP *@
+                                    @(Model.Exhorto.FechaVencimiento != null &&
+                                      DateTime.TryParse(Model.Exhorto.FechaVencimiento, out var fv)
+                                        ? fv.ToString("dd/MM/yyyy")
+                                        : "")
                                 </div>
                             </div>
 
@@ -379,6 +382,10 @@
                                     @Model.Exhorto.Observaciones
                                 </div>
                             </div>
+
+                        </div>
+
+                            
 
                         </div>
 
@@ -408,7 +415,6 @@
                         </div>
 
                     </div>
-                </div>
             }
         </div>
     </div>

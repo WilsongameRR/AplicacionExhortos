@@ -29,9 +29,12 @@ namespace AplicacionExhortos.Models
 
         public string? Observaciones { get; set; }
 
+        // Fecha de referencia para validar cuando NO exista fecha de audiencia
+        public DateTime? FechaActualizacion { get; set; }
+
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
-            var fechaActual = DateTime.Today;
+            DateTime fechaReferencia = (FechaActualizacion ?? DateTime.Today).Date;
 
             // Fecha Acuerdo TUA Exhortado
             if (FechaAcuerdoTuaExhortado.HasValue && FechaRecepcion.HasValue)
@@ -54,10 +57,10 @@ namespace AplicacionExhortos.Models
                 }
                 else
                 {
-                    if (FechaAcuerdoTuaExhortado.Value.Date > fechaActual)
+                    if (FechaAcuerdoTuaExhortado.Value.Date > fechaReferencia)
                     {
                         yield return new ValidationResult(
-                            "La fecha de acuerdo TUA exhortado debe ser menor o igual a la fecha de actualización.",
+                            "La fecha de acuerdo TUA exhortado debe ser menor o igual a la fecha de actualización del exhorto.",
                             new[] { nameof(FechaAcuerdoTuaExhortado) });
                     }
                 }
@@ -84,10 +87,10 @@ namespace AplicacionExhortos.Models
                 }
                 else
                 {
-                    if (FechaTurnoActuaria.Value.Date > fechaActual)
+                    if (FechaTurnoActuaria.Value.Date > fechaReferencia)
                     {
                         yield return new ValidationResult(
-                            "La fecha turno actuaría debe ser menor o igual a la fecha de actualización.",
+                            "La fecha turno actuaría debe ser menor o igual a la fecha de actualización del exhorto.",
                             new[] { nameof(FechaTurnoActuaria) });
                     }
                 }

@@ -34,7 +34,6 @@
     <div class="row justify-content-center">
         <div class="col-12 col-lg-10">
 
-
             @if (Model?.Exhorto == null)
             {
                 <div class="alert alert-warning text-center">
@@ -46,9 +45,6 @@
                 <div class="card shadow-sm">
                     <div class="card-body">
 
-                        <!-- ===================== -->
-                        <!-- DATOS DEL EXHORTO -->
-                        <!-- ===================== -->
                         <div class="text-center mb-4">
                             <h4 class="fw-bold">DATOS DEL EXHORTO</h4>
                         </div>
@@ -119,10 +115,32 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <tr>
-                                                <td style="font-size:12px;">Exhorto</td>
-                                                <td class="text-center" style="font-size:12px;">📄</td>
-                                            </tr>
+                                            @if (Model.DocumentosAdjuntos != null && Model.DocumentosAdjuntos.Any())
+                                            {
+                                                @foreach (var doc in Model.DocumentosAdjuntos)
+                                                {
+                                                    <tr>
+                                                        <td style="font-size:12px;">
+                                                            @doc.TipoDocumentoDesc
+                                                        </td>
+                                                        <td class="text-center" style="font-size:12px;">
+                                                            <a href="@doc.DocumentoAlfresco" target="_blank" title="Ver documento">
+                                                                <img src="/Images/Icons/file-earmark-text.svg"
+                                                                     alt="Documento"
+                                                                     style="width:18px; height:18px;" />
+                                                            </a>
+                                                        </td>
+                                                    </tr>
+                                                }
+                                            }
+                                            else
+                                            {
+                                                <tr>
+                                                    <td colspan="2" class="text-center text-muted" style="font-size:12px;">
+                                                        No hay documentos adjuntos.
+                                                    </td>
+                                                </tr>
+                                            }
                                         </tbody>
                                     </table>
                                 </div>
@@ -161,9 +179,6 @@
 
                         </div>
 
-                        <!-- ===================== -->
-                        <!-- DILIGENCIAS -->
-                        <!-- ===================== -->
                         <div class="text-center mb-3">
                             <h4 class="fw-bold">DILIGENCIAS</h4>
                         </div>
@@ -176,7 +191,7 @@
                                         <th>Destinatario</th>
                                         <th>Fecha Diligencia</th>
                                         <th>Estatus</th>
-                                        <th class="text-center">Ver</th> <!-- NUEVA -->
+                                        <th class="text-center">Ver</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -189,8 +204,6 @@
                                                 <td>@d.Destinatario</td>
                                                 <td>@(d.FechaDiligencia.HasValue? d.FechaDiligencia.Value.ToString("dd/MM/yyyy") : "")</td>
                                                 <td>@d.EstatusDiligencia</td>
-
-                                                <!-- 👁️ ICONO SVG -->
                                                 <td class="text-center">
                                                     <a asp-controller="Diligencias"
                                                            asp-action="SeguimientoDiligencia"
@@ -217,9 +230,6 @@
                             </table>
                         </div>
 
-                        <!-- ===================== -->
-                        <!-- SEGUIMIENTO -->
-                        <!-- ===================== -->
                         @{
                             var exhorto = Model?.Exhorto;
                         }
@@ -230,7 +240,6 @@
                                 <h4 class="fw-bold">SEGUIMIENTO</h4>
                             </div>
 
-                            <!-- Datos informativos de solo lectura -->
                             <div class="row mb-3">
 
                                 <div class="col-md-3">
@@ -273,7 +282,6 @@
 
                             </div>
 
-                            <!-- Formulario de captura -->
                             <form asp-action="GuardarSeguimiento"
                                   asp-controller="SeguimientoExhortos"
                                   method="post">
@@ -334,9 +342,10 @@
 
                                     <div class="col-md-3">
                                         <label class="form-label fw-bold">Fecha de Vencimiento:</label>
-                                        <div class="form-control bg-light">
-                                            @* Pendiente de mostrar cuando venga desde el SP o el modelo *@
-                                        </div>
+                                        <input asp-for="Seguimiento.FechaVencimiento"
+                                               type="date"
+                                               class="form-control" />
+                                        <span asp-validation-for="Seguimiento.FechaVencimiento" class="text-danger"></span>
                                     </div>
 
                                     <div class="col-md-3">

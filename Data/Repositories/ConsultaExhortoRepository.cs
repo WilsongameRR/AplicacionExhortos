@@ -193,6 +193,7 @@ namespace AplicacionExhortos.Data.Repositories
                     FechaRecibido = ObtenerFechaSegura(reader, "FechaRecibido"),
                     FechaAcuerdoExhortado = ObtenerFechaSegura(reader, "FechaAcuerdoExhortado"),
                     FechaTurnoActuaria = ObtenerFechaSegura(reader, "FechaTurnoActuaria"),
+                    FechaVencimiento = ObtenerFechaSegura(reader, "FechaVencimiento"),
                     FechaDevolucion = ObtenerFechaSegura(reader, "FechaDevolucion"),
                     FechaNuevoAcuerdo = ObtenerFechaSegura(reader, "FechaNuevoAcuerdo"),
                     FechaNuevaAudiencia = ObtenerFechaSegura(reader, "FechaNuevaAudiencia"),
