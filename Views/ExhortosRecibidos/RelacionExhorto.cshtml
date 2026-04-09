@@ -105,10 +105,32 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <tr>
-                                                <td style="font-size:12px;">Exhorto</td>
-                                                <td class="text-center" style="font-size:12px;">📄</td>
-                                            </tr>
+                                            @if (Model.DocumentosAdjuntos != null && Model.DocumentosAdjuntos.Any())
+                                            {
+                                                @foreach (var doc in Model.DocumentosAdjuntos)
+                                                {
+                                                    <tr>
+                                                        <td style="font-size:12px;">
+                                                            @doc.TipoDocumentoDesc
+                                                        </td>
+                                                        <td class="text-center" style="font-size:12px;">
+                                                            <a href="@doc.DocumentoAlfresco" target="_blank" title="Ver documento">
+                                                                <img src="/Images/Icons/file-earmark-text.svg"
+                                                                     alt="Documento"
+                                                                     style="width:18px; height:18px;" />
+                                                            </a>
+                                                        </td>
+                                                    </tr>
+                                                }
+                                            }
+                                            else
+                                            {
+                                                <tr>
+                                                    <td colspan="2" class="text-center text-muted" style="font-size:12px;">
+                                                        No hay documentos adjuntos.
+                                                    </td>
+                                                </tr>
+                                            }
                                         </tbody>
                                     </table>
                                 </div>

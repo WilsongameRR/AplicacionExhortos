@@ -9,15 +9,18 @@ namespace AplicacionExhortos.Controllers
         private readonly ConsultaExhortoRepository _consultaExhortoRepository;
         private readonly DiligenciasRepository _diligenciasRepository;
         private readonly ExhortosRepository _exhortosRepository;
+        private readonly DocumentosRepository _documentosRepository;
 
         public ExhortosRecibidosController(
             ConsultaExhortoRepository consultaExhortoRepository,
             DiligenciasRepository diligenciasRepository,
-            ExhortosRepository exhortosRepository)
+            ExhortosRepository exhortosRepository,
+            DocumentosRepository documentosRepository)
         {
             _consultaExhortoRepository = consultaExhortoRepository;
             _diligenciasRepository = diligenciasRepository;
             _exhortosRepository = exhortosRepository;
+            _documentosRepository = documentosRepository;
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
@@ -137,7 +140,7 @@ namespace AplicacionExhortos.Controllers
             {
                 Exhorto = exhorto,
                 Diligencias = _diligenciasRepository.ObtenerDiligencias(id),
-                DocumentosAdjuntos = _exhortosRepository.ObtenerDocumentosAdjuntos(exhorto.ExhortoId)
+                DocumentosAdjuntos = _documentosRepository.ObtenerDocumentosAdjuntos(exhorto.ExhortoId)
             };
 
             return View("RelacionExhorto", model);
@@ -174,7 +177,7 @@ namespace AplicacionExhortos.Controllers
             {
                 Exhorto = exhorto,
                 Diligencias = _diligenciasRepository.ObtenerDiligencias(exhortoId),
-                DocumentosAdjuntos = _exhortosRepository.ObtenerDocumentosAdjuntos(exhorto.ExhortoId)
+                DocumentosAdjuntos = _documentosRepository.ObtenerDocumentosAdjuntos(exhorto.ExhortoId)
             };
 
             return View("RelacionExhorto", model);

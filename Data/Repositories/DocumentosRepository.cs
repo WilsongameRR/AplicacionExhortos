@@ -15,10 +15,10 @@ namespace AplicacionExhortos.Data.Repositories
 
         public List<DocumentoAdjuntoModel> ObtenerDocumentosAdjuntos(int exhortoId)
         {
-            List<DocumentoAdjuntoModel> lista = new List<DocumentoAdjuntoModel>();
+            List<DocumentoAdjuntoModel> lista = new();
 
-            using MySqlConnection conexion = new MySqlConnection(_connectionString);
-            using MySqlCommand comando = new MySqlCommand("sp_consulta_documentos", conexion);
+            using MySqlConnection conexion = new(_connectionString);
+            using MySqlCommand comando = new("sp_consulta_documentos", conexion);
 
             comando.CommandType = CommandType.StoredProcedure;
             comando.Parameters.AddWithValue("pExhortoId", exhortoId);
@@ -29,7 +29,7 @@ namespace AplicacionExhortos.Data.Repositories
 
             while (reader.Read())
             {
-                DocumentoAdjuntoModel documento = new DocumentoAdjuntoModel
+                DocumentoAdjuntoModel documento = new()
                 {
                     ExhortoId = reader["ExhortoId"] != DBNull.Value
                         ? Convert.ToInt32(reader["ExhortoId"])
