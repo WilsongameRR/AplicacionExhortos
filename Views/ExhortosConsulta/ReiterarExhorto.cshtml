@@ -1,0 +1,127 @@
+﻿@model AplicacionExhortos.Models.ReiterarExhortoModel
+
+@{
+    ViewData["Title"] = "Reiterar Exhorto";
+}
+
+<div class="container mt-4">
+
+    <h3 class="text-center mb-4">Reiterar Exhorto</h3>
+
+    <!-- MENSAJES -->
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger text-center">
+            @TempData["Error"]
+        </div>
+    }
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success text-center">
+            @TempData["Success"]
+        </div>
+    }
+
+    <!-- FORM -->
+    <form asp-action="ReiterarExhorto" method="post">
+        @Html.AntiForgeryToken()
+
+        <input type="hidden" asp-for="ExhortoId" />
+        <input type="hidden" asp-for="NumeroEnvios" />
+
+        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+        <!-- DATOS SOLO LECTURA -->
+        <div class="row mb-3">
+            <div class="col-md-3">
+                <label class="form-label">No. Exhorto</label>
+                <input class="form-control" value="@Model.NoExhortoEnviado" readonly />
+            </div>
+
+            <div class="col-md-3">
+                <label class="form-label">TUA</label>
+                <input class="form-control" value="@Model.TuaOrigen" readonly />
+            </div>
+
+            <div class="col-md-3">
+                <label class="form-label">Expediente</label>
+                <input class="form-control" value="@Model.NoExpediente" readonly />
+            </div>
+
+            <div class="col-md-3">
+                <label class="form-label">Oficio</label>
+                <input class="form-control" value="@Model.NoOficio" readonly />
+            </div>
+        </div>
+
+        <!-- CAMPOS CAPTURA -->
+        <div class="row mb-4">
+            <div class="col-md-4">
+                <label asp-for="FechaNuevoAcuerdo" class="form-label"></label>
+                <input asp-for="FechaNuevoAcuerdo" class="form-control" type="date" />
+                <span asp-validation-for="FechaNuevoAcuerdo" class="text-danger"></span>
+            </div>
+
+            <div class="col-md-4">
+                <label asp-for="FechaNuevaAudiencia" class="form-label"></label>
+                <input asp-for="FechaNuevaAudiencia" class="form-control" type="date" />
+                <span asp-validation-for="FechaNuevaAudiencia" class="text-danger"></span>
+            </div>
+
+           
+        </div>
+
+        <!-- DILIGENCIAS (SOLO LECTURA) -->
+        <h5>Diligencias</h5>
+
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Diligencia</th>
+                    <th>Destinatario</th>
+                    <th>Fecha</th>
+                    <th>Estatus</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.Diligencias != null && Model.Diligencias.Any())
+                {
+                    foreach (var d in Model.Diligencias)
+                    {
+                        <tr>
+                            <td>@d.TipoDiligenciaDesc</td>
+                            <td>@d.Destinatario</td>
+                            <td>@(d.FechaDiligencia?.ToString("dd/MM/yyyy"))</td>
+                            <td>@d.EstatusDiligencia</td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="4" class="text-center">Sin diligencias</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+        <!-- BOTONES -->
+        <div class="text-center mt-4">
+            <button type="submit" class="btn btn-primary">
+                Guardar
+            </button>
+
+            <a asp-action="DetalleExhorto"
+                   asp-route-id="@Model.ExhortoId"
+                   class="btn btn-secondary">
+                Cancelar
+            </a>
+        </div>
+
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

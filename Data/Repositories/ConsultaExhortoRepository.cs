@@ -20,7 +20,7 @@ namespace AplicacionExhortos.Data.Repositories
             using MySqlConnection conn = _db.GetConnection();
             conn.Open();
 
-            using MySqlCommand cmd = new("exhortos.sp_consulta_exhortos_enviados", conn);
+            using MySqlCommand cmd = new("sp_consulta_exhortos_enviados", conn);
             cmd.CommandType = CommandType.StoredProcedure;
             cmd.Parameters.Add("pUsuarioid", MySqlDbType.VarChar, 40).Value = usuarioId;
 
@@ -60,7 +60,7 @@ namespace AplicacionExhortos.Data.Repositories
             using MySqlConnection conn = _db.GetConnection();
             conn.Open();
 
-            using MySqlCommand cmd = new("exhortos.sp_seguimiento_exhortos", conn);
+            using MySqlCommand cmd = new("sp_seguimiento_exhortos", conn);
             cmd.CommandType = CommandType.StoredProcedure;
             cmd.Parameters.Add("pDestino", MySqlDbType.Int32).Value = tuaIdDestino;
 
@@ -98,7 +98,7 @@ namespace AplicacionExhortos.Data.Repositories
             using MySqlConnection conn = _db.GetConnection();
             conn.Open();
 
-            using MySqlCommand cmd = new("exhortos.sp_consulta_exhortos_recibidos", conn);
+            using MySqlCommand cmd = new("sp_consulta_exhortos_recibidos", conn);
             cmd.CommandType = CommandType.StoredProcedure;
             cmd.Parameters.Add("pDestino", MySqlDbType.Int32).Value = tuaIdDestino;
 
@@ -142,7 +142,7 @@ namespace AplicacionExhortos.Data.Repositories
             using MySqlConnection conn = _db.GetConnection();
             conn.Open();
 
-            using MySqlCommand cmd = new("exhortos.sp_asigna_exhorto_recibido", conn);
+            using MySqlCommand cmd = new("sp_asigna_exhorto_recibido", conn);
             cmd.CommandType = CommandType.StoredProcedure;
 
             cmd.Parameters.Add("pExhortoId", MySqlDbType.Int32).Value = exhortoId;
@@ -164,7 +164,7 @@ namespace AplicacionExhortos.Data.Repositories
             using MySqlConnection conn = _db.GetConnection();
             conn.Open();
 
-            using MySqlCommand cmd = new("exhortos.sp_datos_exhorto", conn);
+            using MySqlCommand cmd = new("sp_datos_exhorto", conn);
             cmd.CommandType = CommandType.StoredProcedure;
             cmd.Parameters.Add("pExhortoId", MySqlDbType.Int32).Value = exhortoId;
 
@@ -206,21 +206,21 @@ namespace AplicacionExhortos.Data.Repositories
         }
 
         public bool ActualizarSeguimientoExhorto(
-     int exhortoId,
-     string? estatus,
-     DateTime? fechaRecibido,
-     string? noFolio,
-     DateTime? fechaAcuerdoExhortado,
-     DateTime? fechaTurnoActuaria,
-     DateTime? fechaVencimiento, // 🔥 NUEVO
-     DateTime? fechaDevolucion,
-     string? observaciones,
-     string? usuarioId)
+            int exhortoId,
+            string? estatus,
+            DateTime? fechaRecibido,
+            string? noFolio,
+            DateTime? fechaAcuerdoExhortado,
+            DateTime? fechaTurnoActuaria,
+            DateTime? fechaVencimiento,
+            DateTime? fechaDevolucion,
+            string? observaciones,
+            string? usuarioId)
         {
             using MySqlConnection conn = _db.GetConnection();
             conn.Open();
 
-            using MySqlCommand cmd = new("exhortos.sp_actualiza_exhorto", conn);
+            using MySqlCommand cmd = new("sp_actualiza_exhorto", conn);
             cmd.CommandType = CommandType.StoredProcedure;
 
             cmd.Parameters.AddWithValue("pExhortoId", exhortoId);
@@ -229,21 +229,140 @@ namespace AplicacionExhortos.Data.Repositories
             cmd.Parameters.AddWithValue("pNoFolio", (object?)noFolio ?? DBNull.Value);
             cmd.Parameters.AddWithValue("pFechaAcuerdoExhortado", (object?)fechaAcuerdoExhortado ?? DBNull.Value);
             cmd.Parameters.AddWithValue("pFechaTurnoActuaria", (object?)fechaTurnoActuaria ?? DBNull.Value);
-
-            // 🔥 ESTE FALTABA
             cmd.Parameters.AddWithValue("pFechaVencimiento", (object?)fechaVencimiento ?? DBNull.Value);
-
             cmd.Parameters.AddWithValue("pFechaDevolucion", (object?)fechaDevolucion ?? DBNull.Value);
             cmd.Parameters.AddWithValue("pObservaciones", (object?)observaciones ?? DBNull.Value);
             cmd.Parameters.AddWithValue("pUsuarioId", (object?)usuarioId ?? DBNull.Value);
 
-            var pErrorNum = new MySqlParameter("p_error_num", MySqlDbType.Int32)
+            MySqlParameter pErrorNum = new("p_error_num", MySqlDbType.Int32)
             {
                 Direction = ParameterDirection.Output
             };
             cmd.Parameters.Add(pErrorNum);
 
-            var pMensaje = new MySqlParameter("p_mensaje", MySqlDbType.VarChar, 100)
+            MySqlParameter pMensaje = new("p_mensaje", MySqlDbType.VarChar, 100)
+            {
+                Direction = ParameterDirection.Output
+            };
+            cmd.Parameters.Add(pMensaje);
+
+            cmd.ExecuteNonQuery();
+
+            int noError = cmd.Parameters["p_error_num"].Value != DBNull.Value
+                ? Convert.ToInt32(cmd.Parameters["p_error_num"].Value)
+                : 99;
+
+            string mensaje = cmd.Parameters["p_mensaje"].Value?.ToString() ?? "Error no identificado.";
+
+            if (noError != 0)
+            {
+                throw new Exception(mensaje);
+            }
+
+            return true;
+        }
+
+        public bool ReiterarExhorto(ReiterarExhortoModel model, string usuarioId)
+        {
+            using MySqlConnection conn = _db.GetConnection();
+            conn.Open();
+
+            using MySqlTransaction tx = conn.BeginTransaction();
+
+            try
+            {
+                using (MySqlCommand cmdReiterar = new("sp_reiterar_exhorto", conn, tx))
+                {
+                    cmdReiterar.CommandType = CommandType.StoredProcedure;
+                    cmdReiterar.Parameters.Add("pExhortoId", MySqlDbType.Int32).Value = model.ExhortoId;
+                    cmdReiterar.Parameters.Add("pUsuarioId", MySqlDbType.VarChar, 40).Value = usuarioId;
+
+                    MySqlParameter pErrorNum = new("p_error_num", MySqlDbType.Int32)
+                    {
+                        Direction = ParameterDirection.Output
+                    };
+                    cmdReiterar.Parameters.Add(pErrorNum);
+
+                    MySqlParameter pMensaje = new("p_mensaje", MySqlDbType.VarChar, 100)
+                    {
+                        Direction = ParameterDirection.Output
+                    };
+                    cmdReiterar.Parameters.Add(pMensaje);
+
+                    cmdReiterar.ExecuteNonQuery();
+
+                    int noError = cmdReiterar.Parameters["p_error_num"].Value != DBNull.Value
+                        ? Convert.ToInt32(cmdReiterar.Parameters["p_error_num"].Value)
+                        : 99;
+
+                    string mensaje = cmdReiterar.Parameters["p_mensaje"].Value?.ToString() ?? "Error no identificado.";
+
+                    if (noError != 0)
+                    {
+                        throw new Exception(mensaje);
+                    }
+                }
+
+                using (MySqlCommand cmdGuardar = new("sp_guarda_exhorto", conn, tx))
+                {
+                    cmdGuardar.CommandType = CommandType.StoredProcedure;
+                    cmdGuardar.Parameters.Add("pExhortoId", MySqlDbType.Int32).Value = model.ExhortoId;
+                    cmdGuardar.Parameters.Add("pFechaAcuerdo", MySqlDbType.Date).Value = (object?)model.FechaNuevoAcuerdo ?? DBNull.Value;
+                    cmdGuardar.Parameters.Add("pFechaAudiencia", MySqlDbType.Date).Value = (object?)model.FechaNuevaAudiencia ?? DBNull.Value;
+
+                    MySqlParameter pErrorNum = new("p_error_num", MySqlDbType.Int32)
+                    {
+                        Direction = ParameterDirection.Output
+                    };
+                    cmdGuardar.Parameters.Add(pErrorNum);
+
+                    MySqlParameter pMensaje = new("p_mensaje", MySqlDbType.VarChar, 100)
+                    {
+                        Direction = ParameterDirection.Output
+                    };
+                    cmdGuardar.Parameters.Add(pMensaje);
+
+                    cmdGuardar.ExecuteNonQuery();
+
+                    int noError = cmdGuardar.Parameters["p_error_num"].Value != DBNull.Value
+                        ? Convert.ToInt32(cmdGuardar.Parameters["p_error_num"].Value)
+                        : 99;
+
+                    string mensaje = cmdGuardar.Parameters["p_mensaje"].Value?.ToString() ?? "Error no identificado.";
+
+                    if (noError != 0)
+                    {
+                        throw new Exception(mensaje);
+                    }
+                }
+
+                tx.Commit();
+                return true;
+            }
+            catch
+            {
+                tx.Rollback();
+                return false;
+            }
+        }
+
+        public bool MarcarExhortoAtendido(int exhortoId, string usuarioId)
+        {
+            using MySqlConnection conn = _db.GetConnection();
+            conn.Open();
+
+            using MySqlCommand cmd = new("sp_atiende_exhorto", conn);
+            cmd.CommandType = CommandType.StoredProcedure;
+
+            cmd.Parameters.Add("pExhortoId", MySqlDbType.Int32).Value = exhortoId;
+
+            MySqlParameter pErrorNum = new("p_error_num", MySqlDbType.Int32)
+            {
+                Direction = ParameterDirection.Output
+            };
+            cmd.Parameters.Add(pErrorNum);
+
+            MySqlParameter pMensaje = new("p_mensaje", MySqlDbType.VarChar, 100)
             {
                 Direction = ParameterDirection.Output
             };

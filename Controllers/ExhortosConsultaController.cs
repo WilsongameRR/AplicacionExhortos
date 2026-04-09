@@ -62,7 +62,7 @@ namespace AplicacionExhortos.Controllers
             List<DiligenciaModel> diligencias = _diligenciasRepository.ObtenerDiligencias(id);
             List<DocumentoAdjuntoModel> documentosAdjuntos = _documentosRepository.ObtenerDocumentosAdjuntos(id);
 
-            var model = new DetalleExhortoModel
+            DetalleExhortoModel model = new()
             {
                 Exhorto = exhorto,
                 Diligencias = diligencias,
@@ -83,11 +83,104 @@ namespace AplicacionExhortos.Controllers
                 return RedirectToAction("Login", "Login");
             }
 
-            TempData["Mensaje"] = $"Se seleccionó la opción Reiterar Exhorto para el exhorto con ID {id}.";
-            return RedirectToAction(nameof(DetalleExhorto), new { id });
+            ConsultaExhortos? exhorto = _consultaExhortoRepository.ObtenerDetalleExhortoRecibido(id);
+
+            if (exhorto == null)
+            {
+                TempData["Error"] = "No se encontró el exhorto seleccionado.";
+                return RedirectToAction(nameof(ExhortosConsulta));
+            }
+
+            List<DiligenciaModel> diligencias = _diligenciasRepository.ObtenerDiligencias(id);
+            List<DocumentoAdjuntoModel> documentosAdjuntos = _documentosRepository.ObtenerDocumentosAdjuntos(id);
+
+            ReiterarExhortoModel model = new()
+            {
+                ExhortoId = exhorto.ExhortoId,
+                NoExhortoEnviado = exhorto.NoExhortoEnviado,
+                TuaOrigen = exhorto.TuaOrigen,
+                NoExpediente = exhorto.NoExpediente,
+                NoOficio = exhorto.NoOficio,
+                Estado = exhorto.Estado,
+                Municipio = exhorto.Municipio,
+                Poblado = exhorto.Poblado,
+                Estatus = exhorto.Estatus,
+                NumeroEnvios = 0,
+                Diligencias = diligencias,
+                DocumentosAdjuntos = documentosAdjuntos
+            };
+
+            return View(model);
         }
 
-        [HttpGet]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult ReiterarExhorto(ReiterarExhortoModel model)
+        {
+            string? usuarioId = ObtenerUsuarioIdSesion();
+
+            if (string.IsNullOrWhiteSpace(usuarioId))
+            {
+                TempData["Error"] = "La sesión expiró. Inicie sesión nuevamente.";
+                return RedirectToAction("Login", "Login");
+            }
+
+            if (!ModelState.IsValid)
+            {
+                ConsultaExhortos? exhorto = _consultaExhortoRepository.ObtenerDetalleExhortoRecibido(model.ExhortoId);
+
+                if (exhorto != null)
+                {
+                    model.NoExhortoEnviado = exhorto.NoExhortoEnviado;
+                    model.TuaOrigen = exhorto.TuaOrigen;
+                    model.NoExpediente = exhorto.NoExpediente;
+                    model.NoOficio = exhorto.NoOficio;
+                    model.Estado = exhorto.Estado;
+                    model.Municipio = exhorto.Municipio;
+                    model.Poblado = exhorto.Poblado;
+                    model.Estatus = exhorto.Estatus;
+                }
+
+                model.NumeroEnvios = 0;
+                model.Diligencias = _diligenciasRepository.ObtenerDiligencias(model.ExhortoId);
+                model.DocumentosAdjuntos = _documentosRepository.ObtenerDocumentosAdjuntos(model.ExhortoId);
+
+                return View(model);
+            }
+
+            bool reiterado = _consultaExhortoRepository.ReiterarExhorto(model, usuarioId);
+
+            if (!reiterado)
+            {
+                ModelState.AddModelError(string.Empty, "No fue posible reiterar el exhorto.");
+
+                ConsultaExhortos? exhorto = _consultaExhortoRepository.ObtenerDetalleExhortoRecibido(model.ExhortoId);
+
+                if (exhorto != null)
+                {
+                    model.NoExhortoEnviado = exhorto.NoExhortoEnviado;
+                    model.TuaOrigen = exhorto.TuaOrigen;
+                    model.NoExpediente = exhorto.NoExpediente;
+                    model.NoOficio = exhorto.NoOficio;
+                    model.Estado = exhorto.Estado;
+                    model.Municipio = exhorto.Municipio;
+                    model.Poblado = exhorto.Poblado;
+                    model.Estatus = exhorto.Estatus;
+                }
+
+                model.NumeroEnvios = 0;
+                model.Diligencias = _diligenciasRepository.ObtenerDiligencias(model.ExhortoId);
+                model.DocumentosAdjuntos = _documentosRepository.ObtenerDocumentosAdjuntos(model.ExhortoId);
+
+                return View(model);
+            }
+
+            TempData["Success"] = "Exhorto reiterado correctamente.";
+            return RedirectToAction(nameof(DetalleExhorto), new { id = model.ExhortoId });
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult MarcarAtendido(int id)
         {
             string? usuarioId = ObtenerUsuarioIdSesion();
@@ -98,7 +191,15 @@ namespace AplicacionExhortos.Controllers
                 return RedirectToAction("Login", "Login");
             }
 
-            TempData["Mensaje"] = $"Se seleccionó la opción Atendido para el exhorto con ID {id}.";
+            bool actualizado = _consultaExhortoRepository.MarcarExhortoAtendido(id, usuarioId);
+
+            if (!actualizado)
+            {
+                TempData["Error"] = "No fue posible actualizar el exhorto.";
+                return RedirectToAction(nameof(DetalleExhorto), new { id });
+            }
+
+            TempData["Success"] = "Exhorto actualizado correctamente.";
             return RedirectToAction(nameof(DetalleExhorto), new { id });
         }
 

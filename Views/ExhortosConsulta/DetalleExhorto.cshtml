@@ -389,30 +389,34 @@
 
                         </div>
 
-                        <div class="d-flex justify-content-center gap-3 mt-4 flex-wrap">
-                            @if (mostrarBotonesAccion)
-                            {
-                                <a asp-controller="ExhortosConsulta"
-                                       asp-action="ReiterarExhorto"
-                                       asp-route-id="@Model.Exhorto.ExhortoId"
-                                       class="btn btn-outline-primary">
-                                    Reiterar Exhorto
-                                </a>
-
-                                <a asp-controller="ExhortosConsulta"
-                                       asp-action="MarcarAtendido"
-                                       asp-route-id="@Model.Exhorto.ExhortoId"
-                                       class="btn btn-success">
-                                    Atendido
-                                </a>
-                            }
-
+                    <div class="d-flex justify-content-center gap-3 mt-4 flex-wrap">
+                        @if (mostrarBotonesAccion)
+                        {
                             <a asp-controller="ExhortosConsulta"
-                                   asp-action="ExhortosConsulta"
-                                   class="btn btn-secondary">
-                                Regresar
+                                   asp-action="ReiterarExhorto"
+                                   asp-route-id="@Model.Exhorto.ExhortoId"
+                                   class="btn btn-outline-primary">
+                                Reiterar Exhorto
                             </a>
-                        </div>
+
+                            <form asp-controller="ExhortosConsulta"
+                                  asp-action="MarcarAtendido"
+                                  asp-route-id="@Model.Exhorto.ExhortoId"
+                                  method="post"
+                                  class="d-inline">
+                                @Html.AntiForgeryToken()
+                                <button type="submit" class="btn btn-success">
+                                    Atendido
+                                </button>
+                            </form>
+                        }
+
+                        <a asp-controller="ExhortosConsulta"
+                               asp-action="ExhortosConsulta"
+                               class="btn btn-secondary">
+                            Regresar
+                        </a>
+                    </div>
 
                     </div>
             }
