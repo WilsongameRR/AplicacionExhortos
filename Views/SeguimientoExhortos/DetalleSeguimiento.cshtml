@@ -105,7 +105,17 @@
                             </div>
 
                             <div class="col-md-3">
-                                <label class="form-label fw-bold">Documentos adjuntados:</label>
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <label class="form-label fw-bold mb-0">Documentos adjuntados:</label>
+
+                                    <button type="button"
+                                            id="btnAgregarDocumento"
+                                            class="btn btn-link text-decoration-none p-0"
+                                            title="Agregar documento">
+                                        <i class="bi bi-file-earmark-plus-fill text-primary" style="font-size:26px;"></i>
+                                    </button>
+                                </div>
+
                                 <div class="border rounded p-2 bg-light" style="min-height: 80px;">
                                     <table class="table table-sm table-bordered mb-0">
                                         <thead>
@@ -295,9 +305,14 @@
 
                                     <div class="col-md-3">
                                         <label class="form-label fw-bold">* Fecha de Recepción:</label>
-                                        <input asp-for="Seguimiento.FechaRecepcion"
-                                               type="date"
-                                               class="form-control" />
+                                        <div class="input-group">
+                                            <span class="input-group-text" id="iconoFechaRecepcion" style="cursor:pointer;">
+                                                <i class="bi bi-calendar-date"></i>
+                                            </span>
+                                            <input asp-for="Seguimiento.FechaRecepcion"
+                                                   type="date"
+                                                   class="form-control sin-icono" />
+                                        </div>
                                         <span asp-validation-for="Seguimiento.FechaRecepcion" class="text-danger"></span>
                                     </div>
 
@@ -326,33 +341,53 @@
 
                                     <div class="col-md-3">
                                         <label class="form-label fw-bold">* Fecha Acuerdo TUA Exhortado:</label>
-                                        <input asp-for="Seguimiento.FechaAcuerdoTuaExhortado"
-                                               type="date"
-                                               class="form-control" />
+                                        <div class="input-group">
+                                            <span class="input-group-text" id="iconoFechaAcuerdoTuaExhortado" style="cursor:pointer;">
+                                                <i class="bi bi-calendar-date"></i>
+                                            </span>
+                                            <input asp-for="Seguimiento.FechaAcuerdoTuaExhortado"
+                                                   type="date"
+                                                   class="form-control sin-icono" />
+                                        </div>
                                         <span asp-validation-for="Seguimiento.FechaAcuerdoTuaExhortado" class="text-danger"></span>
                                     </div>
 
                                     <div class="col-md-3">
                                         <label class="form-label fw-bold">* Fecha Turno Actuaría:</label>
-                                        <input asp-for="Seguimiento.FechaTurnoActuaria"
-                                               type="date"
-                                               class="form-control" />
+                                        <div class="input-group">
+                                            <span class="input-group-text" id="iconoFechaTurnoActuaria" style="cursor:pointer;">
+                                                <i class="bi bi-calendar-date"></i>
+                                            </span>
+                                            <input asp-for="Seguimiento.FechaTurnoActuaria"
+                                                   type="date"
+                                                   class="form-control sin-icono" />
+                                        </div>
                                         <span asp-validation-for="Seguimiento.FechaTurnoActuaria" class="text-danger"></span>
                                     </div>
 
                                     <div class="col-md-3">
                                         <label class="form-label fw-bold">Fecha de Vencimiento:</label>
-                                        <input asp-for="Seguimiento.FechaVencimiento"
-                                               type="date"
-                                               class="form-control" />
+                                        <div class="input-group">
+                                            <span class="input-group-text" id="iconoFechaVencimiento" style="cursor:pointer;">
+                                                <i class="bi bi-calendar-date"></i>
+                                            </span>
+                                            <input asp-for="Seguimiento.FechaVencimiento"
+                                                   type="date"
+                                                   class="form-control sin-icono" />
+                                        </div>
                                         <span asp-validation-for="Seguimiento.FechaVencimiento" class="text-danger"></span>
                                     </div>
 
                                     <div class="col-md-3">
                                         <label class="form-label fw-bold">* Fecha Devolución:</label>
-                                        <input asp-for="Seguimiento.FechaDevolucion"
-                                               type="date"
-                                               class="form-control" />
+                                        <div class="input-group">
+                                            <span class="input-group-text" id="iconoFechaDevolucion" style="cursor:pointer;">
+                                                <i class="bi bi-calendar-date"></i>
+                                            </span>
+                                            <input asp-for="Seguimiento.FechaDevolucion"
+                                                   type="date"
+                                                   class="form-control sin-icono" />
+                                        </div>
                                         <span asp-validation-for="Seguimiento.FechaDevolucion" class="text-danger"></span>
                                     </div>
 
@@ -395,3 +430,31 @@
         </div>
     </div>
 </div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        function activarCalendario(iconoId, inputId) {
+            const icono = document.getElementById(iconoId);
+            const input = document.getElementById(inputId);
+
+            if (icono && input) {
+                icono.addEventListener("click", function () {
+                    if (input.showPicker) {
+                        input.showPicker();
+                    } else {
+                        input.focus();
+                        input.click();
+                    }
+                });
+            }
+        }
+
+        activarCalendario("iconoFechaRecepcion", "Seguimiento_FechaRecepcion");
+        activarCalendario("iconoFechaAcuerdoTuaExhortado", "Seguimiento_FechaAcuerdoTuaExhortado");
+        activarCalendario("iconoFechaTurnoActuaria", "Seguimiento_FechaTurnoActuaria");
+        activarCalendario("iconoFechaVencimiento", "Seguimiento_FechaVencimiento");
+        activarCalendario("iconoFechaDevolucion", "Seguimiento_FechaDevolucion");
+    </script>
+}

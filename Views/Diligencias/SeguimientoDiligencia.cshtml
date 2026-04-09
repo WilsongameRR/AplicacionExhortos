@@ -64,7 +64,14 @@
                         <div class="row mb-4">
                             <div class="col-md-6">
                                 <label class="form-label fw-bold">* Fecha Diligencia:</label>
-                                <input asp-for="FechaDiligencia" type="date" class="form-control" />
+                                <div class="input-group">
+                                    <span class="input-group-text" id="iconoFechaDiligencia" style="cursor:pointer;">
+                                        <i class="bi bi-calendar-date"></i>
+                                    </span>
+                                    <input asp-for="FechaDiligencia"
+                                           type="date"
+                                           class="form-control sin-icono" />
+                                </div>
                             </div>
 
                             <div class="col-md-6">
@@ -97,3 +104,21 @@
         </div>
     </div>
 </div>
+
+@section Scripts {
+    <script>
+        const iconoFechaDiligencia = document.getElementById("iconoFechaDiligencia");
+        const fechaDiligencia = document.getElementById("FechaDiligencia");
+
+        if (iconoFechaDiligencia && fechaDiligencia) {
+            iconoFechaDiligencia.addEventListener("click", function () {
+                if (fechaDiligencia.showPicker) {
+                    fechaDiligencia.showPicker();
+                } else {
+                    fechaDiligencia.focus();
+                    fechaDiligencia.click();
+                }
+            });
+        }
+    </script>
+}

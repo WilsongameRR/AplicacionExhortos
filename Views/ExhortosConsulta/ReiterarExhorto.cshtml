@@ -77,22 +77,54 @@
                                 <div class="form-control bg-light">@Model.TuaDestino</div>
                             </div>
 
+                            <!-- FECHA NUEVO ACUERDO -->
                             <div class="col-md-4">
                                 <label asp-for="FechaNuevoAcuerdo" class="form-label fw-bold">* Fecha Nuevo Acuerdo:</label>
-                                <input asp-for="FechaNuevoAcuerdo" type="date" class="form-control" />
+
+                                <div class="input-group">
+                                    <span class="input-group-text" id="iconoFechaNuevoAcuerdo" style="cursor:pointer;">
+                                        <i class="bi bi-calendar-date"></i>
+                                    </span>
+
+                                    <input asp-for="FechaNuevoAcuerdo"
+                                           type="date"
+                                           class="form-control sin-icono" />
+                                </div>
+
                                 <span asp-validation-for="FechaNuevoAcuerdo" class="text-danger"></span>
                             </div>
 
+                            <!-- FECHA NUEVA AUDIENCIA -->
                             <div class="col-md-4">
                                 <label asp-for="FechaNuevaAudiencia" class="form-label fw-bold">* Fecha Nueva Audiencia:</label>
-                                <input asp-for="FechaNuevaAudiencia" type="date" class="form-control" />
+
+                                <div class="input-group">
+                                    <span class="input-group-text" id="iconoFechaNuevaAudiencia" style="cursor:pointer;">
+                                        <i class="bi bi-calendar-date"></i>
+                                    </span>
+
+                                    <input asp-for="FechaNuevaAudiencia"
+                                           type="date"
+                                           class="form-control sin-icono" />
+                                </div>
+
                                 <span asp-validation-for="FechaNuevaAudiencia" class="text-danger"></span>
                             </div>
                         </div>
 
-                        <div class="mb-4">
-                            <label class="form-label fw-bold">Adjuntar documentos</label>
-                            <a href="javascript:void(0);" class="ms-2 text-decoration-none fw-bold fs-4">+</a>
+                        <div class="row mb-4 align-items-center">
+                            <div class="col-md-3">
+                                <label class="form-label fw-bold mb-0">Adjuntar documentos:</label>
+                            </div>
+
+                            <div class="col-md-1 text-center">
+                                <button type="button"
+                                        id="btnAgregarDocumento"
+                                        class="btn btn-link text-decoration-none p-0"
+                                        title="Agregar documento">
+                                    <i class="bi bi-file-earmark-plus-fill text-primary" style="font-size:28px;"></i>
+                                </button>
+                            </div>
                         </div>
 
                         <div class="text-center mb-3">
@@ -153,4 +185,25 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        function activarCalendario(iconoId, inputId) {
+            const icono = document.getElementById(iconoId);
+            const input = document.getElementById(inputId);
+
+            if (icono && input) {
+                icono.addEventListener("click", function () {
+                    if (input.showPicker) {
+                        input.showPicker();
+                    } else {
+                        input.focus();
+                        input.click();
+                    }
+                });
+            }
+        }
+
+        activarCalendario("iconoFechaNuevoAcuerdo", "FechaNuevoAcuerdo");
+        activarCalendario("iconoFechaNuevaAudiencia", "FechaNuevaAudiencia");
+    </script>
 }
