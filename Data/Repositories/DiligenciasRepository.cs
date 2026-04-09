@@ -38,7 +38,7 @@ namespace AplicacionExhortos.Data.Repositories
 
                 foreach (var diligencia in model.Diligencias)
                 {
-                    using var cmd = new MySqlCommand("exhortos.sp_inserta_diligencia", conn);
+                    using var cmd = new MySqlCommand("sp_inserta_diligencia", conn);
                     cmd.CommandType = CommandType.StoredProcedure;
 
                     cmd.Parameters.AddWithValue("pExhortoEnviado", model.NoExhorto);
@@ -123,7 +123,7 @@ namespace AplicacionExhortos.Data.Repositories
                     return respuesta;
                 }
 
-                using var cmd = new MySqlCommand("exhortos.sp_envia_exhorto", conn);
+                using var cmd = new MySqlCommand("sp_envia_exhorto", conn);
                 cmd.CommandType = CommandType.StoredProcedure;
 
                 cmd.Parameters.AddWithValue("pExhortoId", exhortoId);
@@ -190,7 +190,7 @@ namespace AplicacionExhortos.Data.Repositories
             using var conn = _db.GetConnection();
             conn.Open();
 
-            using var cmd = new MySqlCommand("exhortos.sp_consulta_diligencias", conn);
+            using var cmd = new MySqlCommand("sp_consulta_diligencias", conn);
             cmd.CommandType = CommandType.StoredProcedure;
             cmd.Parameters.AddWithValue("pExhortoId", exhortoId);
 
@@ -238,7 +238,7 @@ namespace AplicacionExhortos.Data.Repositories
             using var conn = _db.GetConnection();
             conn.Open();
 
-            using var cmd = new MySqlCommand("exhortos.sp_consulta_diligencias", conn);
+            using var cmd = new MySqlCommand("sp_consulta_diligencias", conn);
             cmd.CommandType = CommandType.StoredProcedure;
             cmd.Parameters.AddWithValue("pExhortoId", exhortoId);
 
@@ -294,7 +294,7 @@ namespace AplicacionExhortos.Data.Repositories
             using var conn = _db.GetConnection();
             conn.Open();
 
-            using var cmd = new MySqlCommand("exhortos.sp_valida_diligencias", conn);
+            using var cmd = new MySqlCommand("sp_valida_diligencias", conn);
             cmd.CommandType = CommandType.StoredProcedure;
 
             cmd.Parameters.AddWithValue("pExhortoId", exhortoId);
@@ -346,7 +346,7 @@ namespace AplicacionExhortos.Data.Repositories
 
             try
             {
-                using var cmd = new MySqlCommand("exhortos.sp_actualiza_diligencia", conn);
+                using var cmd = new MySqlCommand("sp_actualiza_diligencia", conn);
                 cmd.CommandType = CommandType.StoredProcedure;
 
                 cmd.Parameters.AddWithValue("pDiligenciaNoEnvio", model.DiligenciaNoEnvio);

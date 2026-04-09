@@ -23,7 +23,7 @@ namespace AplicacionExhortos.Data.Repositories
 
             try
             {
-                using var cmd = new MySqlCommand("exhortos.sp_inserta_exhorto", conn);
+                using var cmd = new MySqlCommand("sp_inserta_exhorto", conn);
                 cmd.CommandType = CommandType.StoredProcedure;
 
                 cmd.Parameters.AddWithValue("pOrigen", tuaOrigen);
@@ -89,7 +89,7 @@ namespace AplicacionExhortos.Data.Repositories
 
             try
             {
-                using var cmd = new MySqlCommand("exhortos.sp_obtienetiposdoctos", conn);
+                using var cmd = new MySqlCommand("sp_obtienetiposdoctos", conn);
                 cmd.CommandType = CommandType.StoredProcedure;
 
                 using var reader = cmd.ExecuteReader();
@@ -122,7 +122,7 @@ namespace AplicacionExhortos.Data.Repositories
 
             try
             {
-                using var cmd = new MySqlCommand("exhortos.sp_inserta_documento", conn);
+                using var cmd = new MySqlCommand("sp_inserta_documento", conn);
                 cmd.CommandType = CommandType.StoredProcedure;
 
                 cmd.Parameters.AddWithValue("pExhortoEnviado", model.NoExhorto ?? string.Empty);
@@ -167,7 +167,7 @@ namespace AplicacionExhortos.Data.Repositories
 
             try
             {
-                using var cmd = new MySqlCommand("exhortos.sp_consulta_documentos", conn);
+                using var cmd = new MySqlCommand("sp_consulta_documentos", conn);
                 cmd.CommandType = CommandType.StoredProcedure;
 
                 cmd.Parameters.AddWithValue("pExhortoId", exhortoId);
