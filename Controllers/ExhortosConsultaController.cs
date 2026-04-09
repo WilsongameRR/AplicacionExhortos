@@ -99,6 +99,7 @@ namespace AplicacionExhortos.Controllers
                 ExhortoId = exhorto.ExhortoId,
                 NoExhortoEnviado = exhorto.NoExhortoEnviado,
                 TuaOrigen = exhorto.TuaOrigen,
+                TuaDestino = exhorto.TuaDestino,
                 NoExpediente = exhorto.NoExpediente,
                 NoOficio = exhorto.NoOficio,
                 Estado = exhorto.Estado,
@@ -139,6 +140,7 @@ namespace AplicacionExhortos.Controllers
                     model.Municipio = exhorto.Municipio;
                     model.Poblado = exhorto.Poblado;
                     model.Estatus = exhorto.Estatus;
+                    model.TuaDestino = exhorto.TuaDestino;
                 }
 
                 model.NumeroEnvios = 0;
