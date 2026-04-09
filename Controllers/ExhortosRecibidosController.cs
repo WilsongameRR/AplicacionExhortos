@@ -8,13 +8,16 @@ namespace AplicacionExhortos.Controllers
     {
         private readonly ConsultaExhortoRepository _consultaExhortoRepository;
         private readonly DiligenciasRepository _diligenciasRepository;
+        private readonly ExhortosRepository _exhortosRepository;
 
         public ExhortosRecibidosController(
             ConsultaExhortoRepository consultaExhortoRepository,
-            DiligenciasRepository diligenciasRepository)
+            DiligenciasRepository diligenciasRepository,
+            ExhortosRepository exhortosRepository)
         {
             _consultaExhortoRepository = consultaExhortoRepository;
             _diligenciasRepository = diligenciasRepository;
+            _exhortosRepository = exhortosRepository;
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
@@ -103,7 +106,6 @@ namespace AplicacionExhortos.Controllers
             return RedirectToAction(nameof(DetalleExhorto), new { id });
         }
 
-
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         [HttpGet]
         public IActionResult DetalleExhorto(int id)
@@ -134,11 +136,11 @@ namespace AplicacionExhortos.Controllers
             DetalleExhortoModel model = new()
             {
                 Exhorto = exhorto,
-                Diligencias = _diligenciasRepository.ObtenerDiligencias(id)
+                Diligencias = _diligenciasRepository.ObtenerDiligencias(id),
+                DocumentosAdjuntos = _exhortosRepository.ObtenerDocumentosAdjuntos(exhorto.ExhortoId)
             };
 
             return View("RelacionExhorto", model);
-
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
@@ -171,7 +173,8 @@ namespace AplicacionExhortos.Controllers
             DetalleExhortoModel model = new()
             {
                 Exhorto = exhorto,
-                Diligencias = _diligenciasRepository.ObtenerDiligencias(exhortoId)
+                Diligencias = _diligenciasRepository.ObtenerDiligencias(exhortoId),
+                DocumentosAdjuntos = _exhortosRepository.ObtenerDocumentosAdjuntos(exhorto.ExhortoId)
             };
 
             return View("RelacionExhorto", model);

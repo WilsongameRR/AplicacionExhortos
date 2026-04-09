@@ -157,5 +157,51 @@ namespace AplicacionExhortos.Data.Repositories
 
             return respuesta;
         }
+
+        public List<DocumentoAdjuntoModel> ObtenerDocumentosAdjuntos(int exhortoId)
+        {
+            List<DocumentoAdjuntoModel> lista = new();
+
+            using var conn = _db.GetConnection();
+            conn.Open();
+
+            try
+            {
+                using var cmd = new MySqlCommand("exhortos.sp_consulta_documentos", conn);
+                cmd.CommandType = CommandType.StoredProcedure;
+
+                cmd.Parameters.AddWithValue("pExhortoId", exhortoId);
+
+                using var reader = cmd.ExecuteReader();
+
+                while (reader.Read())
+                {
+                    lista.Add(new DocumentoAdjuntoModel
+                    {
+                        ExhortoId = reader["ExhortoId"] != DBNull.Value
+                            ? Convert.ToInt32(reader["ExhortoId"])
+                            : 0,
+
+                        DocumentoId = reader["DocumentoId"] != DBNull.Value
+                            ? Convert.ToInt32(reader["DocumentoId"])
+                            : 0,
+
+                        TipoDocumentoId = reader["TipoDoctoId"] != DBNull.Value
+                            ? Convert.ToInt32(reader["TipoDoctoId"])
+                            : 0,
+
+                        TipoDocumentoDesc = reader["TipoDoctoDesc"]?.ToString() ?? string.Empty,
+
+                        DocumentoAlfresco = reader["DocumentoAlfresco"]?.ToString() ?? string.Empty
+                    });
+                }
+            }
+            catch
+            {
+                return new List<DocumentoAdjuntoModel>();
+            }
+
+            return lista;
+        }
     }
 }

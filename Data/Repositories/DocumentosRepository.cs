@@ -10,7 +10,7 @@ namespace AplicacionExhortos.Data.Repositories
 
         public DocumentosRepository(IConfiguration configuration)
         {
-            _connectionString = configuration.GetConnectionString("DefaultConnection")!;
+            _connectionString = configuration.GetConnectionString("MySqlConnection")!;
         }
 
         public List<DocumentoAdjuntoModel> ObtenerDocumentosAdjuntos(int exhortoId)

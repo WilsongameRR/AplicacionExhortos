@@ -1,5 +1,6 @@
 ﻿using AplicacionExhortos.Data.Repositories;
 using AplicacionExhortos.Models;
+using AplicacionExhortos.Models.Exhortos;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AplicacionExhortos.Controllers
@@ -8,13 +9,16 @@ namespace AplicacionExhortos.Controllers
     {
         private readonly ConsultaExhortoRepository _consultaExhortoRepository;
         private readonly DiligenciasRepository _diligenciasRepository;
+        private readonly DocumentosRepository _documentosRepository;
 
         public ExhortosConsultaController(
             ConsultaExhortoRepository consultaExhortoRepository,
-            DiligenciasRepository diligenciasRepository)
+            DiligenciasRepository diligenciasRepository,
+            DocumentosRepository documentosRepository)
         {
             _consultaExhortoRepository = consultaExhortoRepository;
             _diligenciasRepository = diligenciasRepository;
+            _documentosRepository = documentosRepository;
         }
 
         [HttpGet]
@@ -55,12 +59,14 @@ namespace AplicacionExhortos.Controllers
                 return RedirectToAction(nameof(ExhortosConsulta));
             }
 
-            var diligencias = _diligenciasRepository.ObtenerDiligencias(id);
+            List<DiligenciaModel> diligencias = _diligenciasRepository.ObtenerDiligencias(id);
+            List<DocumentoAdjuntoModel> documentosAdjuntos = _documentosRepository.ObtenerDocumentosAdjuntos(id);
 
             var model = new DetalleExhortoModel
             {
                 Exhorto = exhorto,
-                Diligencias = diligencias
+                Diligencias = diligencias,
+                DocumentosAdjuntos = documentosAdjuntos
             };
 
             return View(model);
