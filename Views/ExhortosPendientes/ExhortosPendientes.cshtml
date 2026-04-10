@@ -1,0 +1,88 @@
+﻿@model List<AplicacionExhortos.Models.ConsultaExhortos>
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid fondo-exhortos min-vh-100 pb-5" style="padding-top:80px;">
+    <div class="row justify-content-center">
+        <div class="col-12 col-lg-10">
+
+            <div class="text-center mt-4 mb-4">
+                <h2>EXHORTOS PENDIENTES DE ENVÍO</h2>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-4">
+                    <input class="form-control"
+                           id="txtBuscar"
+                           type="text"
+                           placeholder="Buscar..."
+                           aria-label="Buscar exhortos pendientes" />
+                </div>
+            </div>
+
+            <div class="table-responsive">
+                <table id="tablaPendientes" class="table table-striped table-hover align-middle">
+                    <thead>
+                        <tr>
+                            <th class="text-center">Enviar</th>
+                            <th style="display:none;">ID</th>
+                            <th>No. Exhorto</th>
+                            <th>Expediente</th>
+                            <th>TUA Exhortado</th>
+                            <th>Estatus del Exhorto</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model != null && Model.Any())
+                        {
+                            foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td class="text-center">
+                                        <a asp-controller="ExhortosPendientes"
+                                               asp-action="EnviarExhorto"
+                                               asp-route-id="@item.ExhortoId"
+                                               title="Enviar exhorto"
+                                               class="text-decoration-none">
+                                            <i class="bi bi-send-fill text-success fs-5"></i>
+                                        </a>
+                                    </td>
+
+                                    <td style="display:none;">@item.ExhortoId</td>
+                                    <td>@item.NoExhortoEnviado</td>
+                                    <td>@item.NoExpediente</td>
+                                    <td>@item.TuaDestino</td>
+                                    <td>@item.Estatus</td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            const tabla = $('#tablaPendientes').DataTable({
+                pageLength: 10,
+                lengthChange: false,
+                dom: 'rtip',
+                language: {
+                    url: '/js/datatables/spanish.json',
+                    emptyTable: 'Sin exhortos pendientes.',
+                    zeroRecords: 'Sin exhortos pendientes.'
+                }
+            });
+
+            $('#txtBuscar').on('keyup', function () {
+                tabla.search($(this).val()).draw();
+            });
+        });
+    </script>
+}
