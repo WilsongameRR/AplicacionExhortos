@@ -203,5 +203,36 @@ namespace AplicacionExhortos.Data.Repositories
 
             return lista;
         }
+
+        public List<ConsultaExhortos> ObtenerExhortosPendientes(string usuarioId)
+        {
+            List<ConsultaExhortos> lista = new();
+
+            using var conn = _db.GetConnection();
+            conn.Open();
+
+            using var cmd = new MySqlCommand("sp_consulta_exhortos_pendientes", conn);
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.Parameters.AddWithValue("pUsuarioid", usuarioId);
+
+            using var reader = cmd.ExecuteReader();
+
+            while (reader.Read())
+            {
+                lista.Add(new ConsultaExhortos
+                {
+                    ExhortoId = reader["ExhortoId"] != DBNull.Value
+                        ? Convert.ToInt32(reader["ExhortoId"])
+                        : 0,
+
+                    NoExhortoEnviado = reader["NoExhortoEnviado"]?.ToString() ?? string.Empty,
+                    NoExpediente = reader["NoExpediente"]?.ToString() ?? string.Empty,
+                    TuaDestino = reader["tuaDestino"]?.ToString() ?? string.Empty,
+                    Estatus = reader["Estatus"]?.ToString() ?? string.Empty
+                });
+            }
+
+            return lista;
+        }
     }
 }
