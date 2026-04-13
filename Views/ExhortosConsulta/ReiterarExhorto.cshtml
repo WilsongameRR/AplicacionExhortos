@@ -34,6 +34,7 @@
 
                         <input type="hidden" asp-for="ExhortoId" />
                         <input type="hidden" asp-for="NumeroEnvios" />
+                        <input type="hidden" id="noExhortoModal" value="@Model.NoExhortoEnviado" />
 
                         <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
 
@@ -77,9 +78,10 @@
                                 <div class="form-control bg-light">@Model.TuaDestino</div>
                             </div>
 
-                            <!-- FECHA NUEVO ACUERDO -->
                             <div class="col-md-4">
-                                <label asp-for="FechaNuevoAcuerdo" class="form-label fw-bold">* Fecha Nuevo Acuerdo:</label>
+                                <label asp-for="FechaNuevoAcuerdo" class="form-label fw-bold">
+                                    * Fecha Nuevo Acuerdo:
+                                </label>
 
                                 <div class="input-group">
                                     <span class="input-group-text" id="iconoFechaNuevoAcuerdo" style="cursor:pointer;">
@@ -94,9 +96,10 @@
                                 <span asp-validation-for="FechaNuevoAcuerdo" class="text-danger"></span>
                             </div>
 
-                            <!-- FECHA NUEVA AUDIENCIA -->
                             <div class="col-md-4">
-                                <label asp-for="FechaNuevaAudiencia" class="form-label fw-bold">* Fecha Nueva Audiencia:</label>
+                                <label asp-for="FechaNuevaAudiencia" class="form-label fw-bold">
+                                    * Fecha Nueva Audiencia:
+                                </label>
 
                                 <div class="input-group">
                                     <span class="input-group-text" id="iconoFechaNuevaAudiencia" style="cursor:pointer;">
@@ -166,7 +169,7 @@
                             <a asp-action="DetalleExhorto"
                                    asp-route-id="@Model.ExhortoId"
                                    class="btn btn-secondary">
-                                Cancelar
+                                Regresar
                             </a>
 
                             <button type="submit" class="btn btn-primary">
@@ -176,6 +179,36 @@
 
                     </form>
 
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div class="modal fade"
+     id="modalDocumentos"
+     tabindex="-1"
+     aria-labelledby="modalDocumentosLabel"
+     aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalDocumentosLabel">
+                    Adjuntar documentos
+                </h5>
+
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"
+                        aria-label="Cerrar">
+                </button>
+            </div>
+
+            <div class="modal-body" id="contenedorModalDocumentos">
+                <div class="text-center py-4">
+                    Cargando...
                 </div>
             </div>
 
@@ -203,7 +236,197 @@
             }
         }
 
+        function inicializarModalDocumentos() {
+            const tipoDocumento = document.getElementById("tipoDocumentoModal");
+            const documentoAlfresco = document.getElementById("documentoAlfrescoModal");
+            const btnAgregar = document.getElementById("btnAgregarDocumentoModal");
+            const btnGuardar = document.getElementById("btnGuardarDocumentosModal");
+            const tabla = document.querySelector("#tablaDocumentosModal tbody");
+            const contenedor = document.getElementById("contenedorHiddenDocumentosModal");
+            const form = document.getElementById("formAltaDocumentosModal");
+            const noExhorto = document.getElementById("NoExhortoHiddenModal").value;
+            const mensajeDocumentos = document.getElementById("mensajeDocumentosModal");
+            const errorTipoDocumento = document.getElementById("errorTipoDocumentoModal");
+            const errorDocumentoAlfresco = document.getElementById("errorDocumentoAlfrescoModal");
+
+            if (!btnAgregar || !btnGuardar) {
+                return;
+            }
+
+            let documentos = [];
+
+            const escapeHtml = (texto) =>
+                (texto || "")
+                    .replaceAll("&", "&amp;")
+                    .replaceAll("<", "&lt;")
+                    .replaceAll(">", "&gt;")
+                    .replaceAll('"', "&quot;")
+                    .replaceAll("'", "&#39;");
+
+            const limpiarErrores = () => {
+                errorTipoDocumento.classList.add("d-none");
+                errorDocumentoAlfresco.classList.add("d-none");
+                tipoDocumento.classList.remove("is-invalid");
+                documentoAlfresco.classList.remove("is-invalid");
+            };
+
+            const validarCaptura = () => {
+                limpiarErrores();
+
+                let esValido = true;
+
+                if (!tipoDocumento.value) {
+                    tipoDocumento.classList.add("is-invalid");
+                    errorTipoDocumento.classList.remove("d-none");
+                    esValido = false;
+                }
+
+                if (!documentoAlfresco.value.trim()) {
+                    documentoAlfresco.classList.add("is-invalid");
+                    errorDocumentoAlfresco.classList.remove("d-none");
+                    esValido = false;
+                }
+
+                return esValido;
+            };
+
+            const render = () => {
+                tabla.innerHTML = "";
+                contenedor.innerHTML = "";
+
+                if (documentos.length === 0) {
+                    tabla.innerHTML = `
+                        <tr>
+                            <td colspan="3" class="text-center text-muted">
+                                No hay documentos agregados.
+                            </td>
+                        </tr>
+                    `;
+                    mensajeDocumentos.classList.add("d-none");
+                    return;
+                }
+
+                documentos.forEach((d, i) => {
+                    tabla.innerHTML += `
+                        <tr>
+                            <td>${escapeHtml(d.desc)}</td>
+                            <td class="text-center">
+                                <a href="${escapeHtml(d.url)}" target="_blank">
+                                    <i class="bi bi-file-earmark-text text-primary fs-5"></i>
+                                </a>
+                            </td>
+                            <td class="text-center">
+                                <button type="button"
+                                        class="btn btn-danger btn-sm"
+                                        onclick="eliminarDocumentoModal(${i})">
+                                    Eliminar
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+
+                    contenedor.innerHTML += `
+                        <input type="hidden" name="Documentos.Index" value="${i}" />
+                        <input type="hidden" name="Documentos[${i}].NoExhorto" value="${escapeHtml(noExhorto)}" />
+                        <input type="hidden" name="Documentos[${i}].TipoDocumentoId" value="${escapeHtml(d.id)}" />
+                        <input type="hidden" name="Documentos[${i}].Documento" value="${escapeHtml(d.url)}" />
+                    `;
+                });
+
+                mensajeDocumentos.classList.add("d-none");
+            };
+
+            btnAgregar.onclick = () => {
+                if (!validarCaptura()) return;
+
+                documentos.push({
+                    id: tipoDocumento.value,
+                    desc: tipoDocumento.options[tipoDocumento.selectedIndex].text.trim(),
+                    url: documentoAlfresco.value.trim()
+                });
+
+                render();
+
+                tipoDocumento.value = "";
+                documentoAlfresco.value = "";
+                limpiarErrores();
+            };
+
+                   btnGuardar.onclick = async () => {
+            if (documentos.length === 0) {
+                mensajeDocumentos.classList.remove("d-none");
+                return;
+            }
+
+            render();
+
+            const formData = new FormData(form);
+
+            try {
+                const response = await fetch(form.action, {
+                    method: "POST",
+                    body: formData
+                });
+
+                const resultado = await response.json();
+
+                if (!resultado.ok) {
+                    alert(resultado.mensaje);
+                    return;
+                }
+
+                alert(resultado.mensaje);
+
+                const modalElement = document.getElementById("modalDocumentos");
+                const modalInstance = bootstrap.Modal.getInstance(modalElement);
+
+                if (modalInstance) {
+                    modalInstance.hide();
+                }
+            }
+            catch (error) {
+                alert("Ocurrió un error al guardar los documentos.");
+            }
+        };
+
+            window.eliminarDocumentoModal = (i) => {
+                documentos.splice(i, 1);
+                render();
+            };
+
+            render();
+        }
+
         activarCalendario("iconoFechaNuevoAcuerdo", "FechaNuevoAcuerdo");
         activarCalendario("iconoFechaNuevaAudiencia", "FechaNuevaAudiencia");
+
+        document.getElementById("btnAgregarDocumento").addEventListener("click", function () {
+            const noExhorto = document.getElementById("noExhortoModal").value;
+            const url = '/Exhortos/CargarModalDocumentos?noExhorto=' + encodeURIComponent(noExhorto);
+
+            fetch(url)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error("No fue posible cargar el formulario de documentos.");
+                    }
+
+                    return response.text();
+                })
+                .then(html => {
+                    document.getElementById("contenedorModalDocumentos").innerHTML = html;
+
+                    inicializarModalDocumentos();
+
+                    const modal = new bootstrap.Modal(document.getElementById("modalDocumentos"));
+                    modal.show();
+                })
+                .catch(error => {
+                    document.getElementById("contenedorModalDocumentos").innerHTML =
+                        '<div class="alert alert-danger text-center">' + error.message + '</div>';
+
+                    const modal = new bootstrap.Modal(document.getElementById("modalDocumentos"));
+                    modal.show();
+                });
+        });
     </script>
 }

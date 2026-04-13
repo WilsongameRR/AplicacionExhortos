@@ -134,6 +134,121 @@ namespace AplicacionExhortos.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        public IActionResult GuardarDocumentosModal(AltaDocumentosViewModel model)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(HttpContext.Session.GetString("UsuarioId")))
+                {
+                    return Json(new
+                    {
+                        ok = false,
+                        mensaje = "La sesión expiró. Inicie sesión nuevamente."
+                    });
+                }
+
+                if (model == null || string.IsNullOrWhiteSpace(model.NoExhorto))
+                {
+                    return Json(new
+                    {
+                        ok = false,
+                        mensaje = "No se identificó el número de exhorto."
+                    });
+                }
+
+                if (model.Documentos == null || !model.Documentos.Any())
+                {
+                    return Json(new
+                    {
+                        ok = false,
+                        mensaje = "Debe agregar al menos un documento."
+                    });
+                }
+
+                foreach (DocumentoModel documento in model.Documentos)
+                {
+                    documento.NoExhorto = model.NoExhorto;
+
+                    if (documento.TipoDocumentoId <= 0)
+                    {
+                        return Json(new
+                        {
+                            ok = false,
+                            mensaje = "Debe seleccionar el tipo de documento."
+                        });
+                    }
+
+                    if (string.IsNullOrWhiteSpace(documento.Documento))
+                    {
+                        return Json(new
+                        {
+                            ok = false,
+                            mensaje = "Debe capturar el documento Alfresco."
+                        });
+                    }
+
+                    ResponseBd respuesta = _exhortosRepo.InsertarDocumento(documento);
+
+                    if (respuesta.NoError != 0)
+                    {
+                        return Json(new
+                        {
+                            ok = false,
+                            mensaje = string.IsNullOrWhiteSpace(respuesta.Mensaje)
+                                ? "No fue posible guardar el documento."
+                                : respuesta.Mensaje
+                        });
+                    }
+                }
+
+                return Json(new
+                {
+                    ok = true,
+                    mensaje = "Los documentos se guardaron correctamente."
+                });
+            }
+            catch (Exception ex)
+            {
+                return Json(new
+                {
+                    ok = false,
+                    mensaje = "Error al guardar documentos: " + ex.Message
+                });
+            }
+        }
+
+        [HttpGet]
+        public IActionResult CargarModalDocumentos(string noExhorto)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(HttpContext.Session.GetString("UsuarioId")))
+                {
+                    return BadRequest("La sesión expiró. Inicie sesión nuevamente.");
+                }
+
+                if (string.IsNullOrWhiteSpace(noExhorto))
+                {
+                    return BadRequest("No se recibió el número de exhorto.");
+                }
+
+                AltaDocumentosViewModel model = new()
+                {
+                    NoExhorto = noExhorto
+                };
+
+                ViewBag.TiposDocumento = _exhortosRepo.ObtenerTiposDocumento();
+
+                return PartialView("~/Views/Exhortos/_AltaDocumentosModal.cshtml", model);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest("Error al cargar documentos: " + ex.Message);
+            }
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult GuardarDocumentos(AltaDocumentosViewModel model)
         {
             try

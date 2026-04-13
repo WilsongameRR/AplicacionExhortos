@@ -1,0 +1,101 @@
+﻿@model AplicacionExhortos.Models.Exhortos.AltaDocumentosViewModel
+
+@{
+    string noExhorto = Model?.NoExhorto ?? string.Empty;
+}
+
+<form id="formAltaDocumentosModal"
+      asp-action="GuardarDocumentosModal"
+      asp-controller="Exhortos"
+      method="post"
+      novalidate>
+    @Html.AntiForgeryToken()
+
+    <input type="hidden" asp-for="NoExhorto" id="NoExhortoHiddenModal" />
+
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <label class="form-label fw-bold">No. Exhorto:</label>
+            <div class="form-control bg-light">@noExhorto</div>
+        </div>
+    </div>
+
+    <div class="row align-items-end mb-4">
+        <div class="col-md-4">
+            <label for="tipoDocumentoModal" class="form-label fw-bold">
+                <span class="text-danger">*</span> Tipo de documento:
+            </label>
+            <select id="tipoDocumentoModal" class="form-select">
+                <option value="">Seleccione</option>
+                @if (ViewBag.TiposDocumento != null)
+                {
+                    foreach (var item in ViewBag.TiposDocumento)
+                    {
+                        <option value="@item.TipoDoctoId">@item.TipoDoctoDesc</option>
+                    }
+                }
+            </select>
+            <div id="errorTipoDocumentoModal" class="text-danger small d-none">
+                Debe seleccionar el tipo de documento.
+            </div>
+        </div>
+
+        <div class="col-md-7">
+            <label for="documentoAlfrescoModal" class="form-label fw-bold">
+                <span class="text-danger">*</span> Documento Alfresco:
+            </label>
+            <input type="text"
+                   id="documentoAlfrescoModal"
+                   class="form-control"
+                   maxlength="300"
+                   placeholder="Ingrese la ruta o referencia del documento" />
+            <div id="errorDocumentoAlfrescoModal" class="text-danger small d-none">
+                Debe capturar el documento Alfresco.
+            </div>
+        </div>
+
+        <div class="col-md-1 text-center">
+            <button type="button"
+                    id="btnAgregarDocumentoModal"
+                    class="btn btn-link text-decoration-none p-0"
+                    title="Agregar documento">
+                <i class="bi bi-file-earmark-arrow-up-fill text-primary" style="font-size:32px;"></i>
+            </button>
+        </div>
+    </div>
+
+    <div class="table-responsive mb-2">
+        <table class="table table-bordered table-striped align-middle" id="tablaDocumentosModal">
+            <thead class="thead-tua">
+                <tr>
+                    <th style="width:55%;">Tipo de documento</th>
+                    <th class="text-center" style="width:25%;">Link</th>
+                    <th class="text-center" style="width:20%;">Acción</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr id="filaSinDocumentosModal">
+                    <td colspan="3" class="text-center text-muted">
+                        No hay documentos agregados.
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div id="contenedorHiddenDocumentosModal"></div>
+
+    <div id="mensajeDocumentosModal" class="text-danger text-center mt-2 d-none">
+        Debe agregar al menos un documento antes de guardar.
+    </div>
+
+    <div class="text-center mt-4">
+        <button type="button" id="btnGuardarDocumentosModal" class="btn btn-tua px-4 me-2">
+            Guardar
+        </button>
+
+        <button type="button" class="btn btn-secondary px-4" data-bs-dismiss="modal">
+            Cerrar
+        </button>
+    </div>
+</form>

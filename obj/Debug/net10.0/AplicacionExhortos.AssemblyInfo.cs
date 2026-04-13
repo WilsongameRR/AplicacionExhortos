@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("AplicacionExhortos")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+21aed5043dc04a7e5747bdd1fdf4b8e040db3fca")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+8cfd06017ea7522dcd012127fe00d6446154d961")]
 [assembly: System.Reflection.AssemblyProductAttribute("AplicacionExhortos")]
 [assembly: System.Reflection.AssemblyTitleAttribute("AplicacionExhortos")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
