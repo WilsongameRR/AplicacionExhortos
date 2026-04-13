@@ -79,11 +79,9 @@ namespace AplicacionExhortos.Controllers
                 TempData["MensajeExito"] = "El exhorto se guardó correctamente.";
                 TempData["NumeroExhorto"] = respuesta.Valor ?? string.Empty;
                 TempData["IdExhorto"] = respuesta.IdGenerado;
+                TempData["MostrarModalDocumentos"] = true;
 
-                return RedirectToAction("AltaDiligencia", "Diligencias", new
-                {
-                    noExhorto = respuesta.Valor
-                });
+                return RedirectToAction("AltaDeExhortos");
             }
             catch (Exception ex)
             {
@@ -215,7 +213,6 @@ namespace AplicacionExhortos.Controllers
                 });
             }
         }
-
         private void ValidarFechaAcuerdo(DateTime? fechaAcuerdo)
         {
             DateTime fechaActual = DateTime.Today;

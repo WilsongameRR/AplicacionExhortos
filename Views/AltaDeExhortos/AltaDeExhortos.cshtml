@@ -146,7 +146,7 @@
                                required />
 
                         <div class="invalid-feedback">
-                            Ingrese una Fecha de Audiencia 
+                            Ingrese una Fecha de Audiencia
                         </div>
                     </div>
                 </div>
@@ -162,6 +162,35 @@
                 </div>
 
             </form>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL DOCUMENTOS -->
+<div class="modal fade" id="modalDocumentos" tabindex="-1" aria-labelledby="modalDocumentosLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+
+            <div class="modal-header" style="background-color:#E87A45; color:white;">
+                <h5 class="modal-title fw-bold" id="modalDocumentosLabel">Confirmación</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+
+            <div class="modal-body text-center">
+                ¿Desea adjuntar documentos?
+            </div>
+
+            <div class="modal-footer justify-content-center">
+                <a id="btnIrDocumentos" class="btn btn-tua">
+                    Sí
+                </a>
+
+                <a id="btnIrDiligencias"
+                       class="btn btn-secondary">
+                    No
+                </a>
+            </div>
+
         </div>
     </div>
 </div>
@@ -246,5 +275,33 @@
 
             });
         }
+    </script>
+
+    <script>
+                document.addEventListener("DOMContentLoaded", function () {
+            const mostrarModal = '@(TempData["MostrarModalDocumentos"] != null ? "true" : "false")';
+            const numeroExhorto = '@(TempData["NumeroExhorto"] ?? "")';
+
+            if (mostrarModal === "true" && numeroExhorto) {
+
+                const btnIrDocumentos = document.getElementById("btnIrDocumentos");
+                const btnIrDiligencias = document.getElementById("btnIrDiligencias");
+
+                if (btnIrDocumentos) {
+                    btnIrDocumentos.href = '/Exhortos/AltaDocumentos?noExhorto=' + encodeURIComponent(numeroExhorto);
+                }
+
+                if (btnIrDiligencias) {
+                    btnIrDiligencias.href = '/Diligencias/AltaDiligencia?noExhorto=' + encodeURIComponent(numeroExhorto);
+                }
+
+                const modalElement = document.getElementById("modalDocumentos");
+
+                if (modalElement) {
+                    const modal = new bootstrap.Modal(modalElement);
+                    modal.show();
+                }
+            }
+        });
     </script>
 }

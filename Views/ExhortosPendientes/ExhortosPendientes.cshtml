@@ -41,12 +41,12 @@
                             {
                                 <tr>
                                     <td class="text-center">
-                                        <a asp-controller="ExhortosPendientes"
-                                               asp-action="EnviarExhorto"
-                                               asp-route-id="@item.ExhortoId"
-                                               title="Enviar exhorto"
+                                        <a asp-controller="Exhortos"
+                                               asp-action="AltaDocumentos"
+                                               asp-route-noExhorto="@item.NoExhortoEnviado"
+                                               title="Agregar documentos"
                                                class="text-decoration-none">
-                                            <i class="bi bi-send-fill text-success fs-5"></i>
+                                            <i class="bi bi-file-earmark-text text-primary fs-5"></i>
                                         </a>
                                     </td>
 
