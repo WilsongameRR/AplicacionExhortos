@@ -41,13 +41,12 @@
                             {
                                 <tr>
                                     <td class="text-center">
-                                        <a asp-controller="Exhortos"
-                                               asp-action="AltaDocumentos"
-                                               asp-route-noExhorto="@item.NoExhortoEnviado"
-                                               title="Agregar documentos"
-                                               class="text-decoration-none">
+                                        <button type="button"
+                                                class="btn btn-link text-decoration-none p-0 btnConfirmarDocumento"
+                                                title="Agregar documentos"
+                                                data-noexhorto="@item.NoExhortoEnviado">
                                             <i class="bi bi-file-earmark-text text-primary fs-5"></i>
-                                        </a>
+                                        </button>
                                     </td>
 
                                     <td style="display:none;">@item.ExhortoId</td>
@@ -60,6 +59,51 @@
                         }
                     </tbody>
                 </table>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div class="modal fade"
+     id="modalConfirmarDocumentos"
+     tabindex="-1"
+     aria-labelledby="modalConfirmarDocumentosLabel"
+     aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+
+            <div class="modal-header"
+                 style="background-color:#E87A45; color:white;">
+                <h5 class="modal-title fw-bold"
+                    id="modalConfirmarDocumentosLabel">
+                    Confirmación
+                </h5>
+
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"
+                        aria-label="Cerrar">
+                </button>
+            </div>
+
+            <div class="modal-body text-center fs-6 py-4">
+                ¿Continuará con el registro del exhorto,<br />
+                desea adjuntar documentos?
+            </div>
+
+            <div class="modal-footer justify-content-center">
+                <button type="button"
+                        id="btnSiAdjuntarDocumento"
+                        class="btn btn-tua px-4">
+                    Sí
+                </button>
+
+                <button type="button"
+                        id="btnNoAdjuntarDocumento"
+                        class="btn btn-secondary px-4">
+                    No
+                </button>
             </div>
 
         </div>
@@ -82,6 +126,38 @@
 
             $('#txtBuscar').on('keyup', function () {
                 tabla.search($(this).val()).draw();
+            });
+
+            let noExhortoSeleccionado = '';
+
+            $(document).on('click', '.btnConfirmarDocumento', function () {
+                noExhortoSeleccionado = $(this).data('noexhorto');
+
+                const modal = new bootstrap.Modal(
+                    document.getElementById('modalConfirmarDocumentos')
+                );
+
+                modal.show();
+            });
+
+            $('#btnSiAdjuntarDocumento').on('click', function () {
+                if (!noExhortoSeleccionado) {
+                    return;
+                }
+
+                window.location.href =
+                    '/Exhortos/AltaDocumentos?noExhorto=' +
+                    encodeURIComponent(noExhortoSeleccionado);
+            });
+
+            $('#btnNoAdjuntarDocumento').on('click', function () {
+                if (!noExhortoSeleccionado) {
+                    return;
+                }
+
+                window.location.href =
+                    '/Diligencias/AltaDiligencia?noExhorto=' +
+                    encodeURIComponent(noExhortoSeleccionado);
             });
         });
     </script>
