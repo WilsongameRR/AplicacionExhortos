@@ -32,7 +32,7 @@
 
 <div class="container-fluid fondo-exhortos min-vh-100 pb-5" style="padding-top:80px;">
     <div class="row justify-content-center">
-        <div class="col-12 col-lg-10">
+        <div class="col-12 col-xl-10">
 
             @if (Model?.Exhorto == null)
             {
@@ -44,202 +44,204 @@
             {
                 <input type="hidden" id="noExhortoModal" value="@Model.Exhorto.NoExhortoEnviado" />
 
-                <div class="card shadow-sm">
-                    <div class="card-body">
+                <div class="card shadow-sm border-0 rounded-4">
+                    <div class="card-body p-4">
 
-                        <div class="text-center mb-4">
-                            <h4 class="fw-bold">DATOS DEL EXHORTO</h4>
-                        </div>
+                        <!-- DATOS DEL EXHORTO -->
+                        <div class="mb-5">
+                            <div class="text-center mb-4">
+                                <h4 class="fw-bold">DATOS DEL EXHORTO</h4>
+                                <hr class="mt-2" />
+                            </div>
 
-                        <div class="row mb-3">
+                            <div class="row g-3 mb-3">
+                                <div class="col-md-6 col-lg-3">
+                                    <label class="form-label fw-bold">No. Exhorto Exhortante:</label>
+                                    <div class="form-control bg-light">
+                                        @Model.Exhorto.NoExhortoEnviado
+                                    </div>
+                                </div>
 
-                            <div class="col-md-3">
-                                <label class="form-label fw-bold">No. Exhorto Exhortante:</label>
-                                <div class="form-control bg-light">
-                                    @Model.Exhorto.NoExhortoEnviado
+                                <div class="col-md-6 col-lg-3">
+                                    <label class="form-label fw-bold">TUA Exhortante:</label>
+                                    <div class="form-control bg-light">
+                                        @Model.Exhorto.TuaOrigen
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6 col-lg-3">
+                                    <label class="form-label fw-bold">Expediente:</label>
+                                    <div class="form-control bg-light">
+                                        @Model.Exhorto.NoExpediente
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6 col-lg-3">
+                                    <label class="form-label fw-bold">Oficio:</label>
+                                    <div class="form-control bg-light">
+                                        @Model.Exhorto.NoOficio
+                                    </div>
                                 </div>
                             </div>
 
-                            <div class="col-md-3">
-                                <label class="form-label fw-bold">TUA Exhortante:</label>
-                                <div class="form-control bg-light">
-                                    @Model.Exhorto.TuaOrigen
+                            <div class="row g-3 mb-3">
+                                <div class="col-md-6 col-lg-4">
+                                    <label class="form-label fw-bold">Estado:</label>
+                                    <div class="form-control bg-light">
+                                        @Model.Exhorto.Estado
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6 col-lg-4">
+                                    <label class="form-label fw-bold">Municipio:</label>
+                                    <div class="form-control bg-light">
+                                        @Model.Exhorto.Municipio
+                                    </div>
+                                </div>
+
+                                <div class="col-md-12 col-lg-4">
+                                    <label class="form-label fw-bold">Poblado:</label>
+                                    <div class="form-control bg-light">
+                                        @Model.Exhorto.Poblado
+                                    </div>
                                 </div>
                             </div>
 
-                            <div class="col-md-3">
-                                <label class="form-label fw-bold">Expediente:</label>
-                                <div class="form-control bg-light">
-                                    @Model.Exhorto.NoExpediente
+                            <div class="row g-3 mb-4">
+                                <div class="col-md-4">
+                                    <label class="form-label fw-bold">Fecha de Acuerdo:</label>
+                                    <div class="form-control bg-light">
+                                        @(Model.Exhorto.FechaAcuerdo != null
+                                            ? Convert.ToDateTime(Model.Exhorto.FechaAcuerdo).ToString("dd/MM/yyyy")
+                                            : "")
+                                    </div>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <label class="form-label fw-bold">Fecha de Audiencia:</label>
+                                    <div class="form-control bg-light">
+                                        @(Model.Exhorto.FechaAudiencia != null
+                                            ? Convert.ToDateTime(Model.Exhorto.FechaAudiencia).ToString("dd/MM/yyyy")
+                                            : "")
+                                    </div>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <label class="form-label fw-bold">Fecha de Envío:</label>
+                                    <div class="form-control bg-light">
+                                        @(Model.Exhorto.FechaEnvio != null
+                                            ? Convert.ToDateTime(Model.Exhorto.FechaEnvio).ToString("dd/MM/yyyy")
+                                            : "")
+                                    </div>
                                 </div>
                             </div>
 
-                            <div class="col-md-3">
-                                <label class="form-label fw-bold">Oficio:</label>
-                                <div class="form-control bg-light">
-                                    @Model.Exhorto.NoOficio
-                                </div>
-                            </div>
-
-                        </div>
-
-                        <div class="row mb-3">
-
-                            <div class="col-md-3">
-                                <label class="form-label fw-bold">Estado:</label>
-                                <div class="form-control bg-light">
-                                    @Model.Exhorto.Estado
-                                </div>
-                            </div>
-
-                            <div class="col-md-3">
-                                <label class="form-label fw-bold">Municipio:</label>
-                                <div class="form-control bg-light">
-                                    @Model.Exhorto.Municipio
-                                </div>
-                            </div>
-
-                            <div class="col-md-3">
-                                <label class="form-label fw-bold">Poblado:</label>
-                                <div class="form-control bg-light">
-                                    @Model.Exhorto.Poblado
-                                </div>
-                            </div>
-
-                            <div class="col-md-3">
-                                <div class="d-flex justify-content-between align-items-center mb-1">
+                            <div class="mt-4">
+                                <div class="d-flex justify-content-between align-items-center mb-2 flex-wrap gap-2">
                                     <label class="form-label fw-bold mb-0">Documentos adjuntados:</label>
 
                                     <button type="button"
                                             id="btnAgregarDocumento"
                                             class="btn btn-link text-decoration-none p-0"
                                             title="Agregar documento">
-                                        <i class="bi bi-file-earmark-plus-fill text-primary" style="font-size:26px;"></i>
+                                        <i class="bi bi-file-earmark-plus-fill text-primary" style="font-size:28px;"></i>
                                     </button>
                                 </div>
 
-                                <div class="border rounded p-2 bg-light" style="min-height: 80px;">
-                                    <table class="table table-sm table-bordered mb-0">
-                                        <thead>
-                                            <tr>
-                                                <th style="font-size:12px;">Tipo Documento</th>
-                                                <th style="font-size:12px;">Link</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @if (Model.DocumentosAdjuntos != null && Model.DocumentosAdjuntos.Any())
-                                            {
-                                                @foreach (var doc in Model.DocumentosAdjuntos)
+                                <div class="border rounded-3 p-3 bg-light">
+                                    <div class="table-responsive">
+                                        <table class="table table-sm table-bordered table-hover mb-0 align-middle">
+                                            <thead class="table-secondary">
+                                                <tr>
+                                                    <th>Tipo Documento</th>
+                                                    <th class="text-center" style="width:120px;">Link</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @if (Model.DocumentosAdjuntos != null && Model.DocumentosAdjuntos.Any())
+                                                {
+                                                    @foreach (var doc in Model.DocumentosAdjuntos)
+                                                    {
+                                                        <tr>
+                                                            <td>@doc.TipoDocumentoDesc</td>
+                                                            <td class="text-center">
+                                                                <a href="@doc.DocumentoAlfresco" target="_blank" title="Ver documento">
+                                                                    <img src="/Images/Icons/file-earmark-text.svg"
+                                                                         alt="Documento"
+                                                                         style="width:20px; height:20px;" />
+                                                                </a>
+                                                            </td>
+                                                        </tr>
+                                                    }
+                                                }
+                                                else
                                                 {
                                                     <tr>
-                                                        <td style="font-size:12px;">
-                                                            @doc.TipoDocumentoDesc
-                                                        </td>
-                                                        <td class="text-center" style="font-size:12px;">
-                                                            <a href="@doc.DocumentoAlfresco" target="_blank" title="Ver documento">
-                                                                <img src="/Images/Icons/file-earmark-text.svg"
-                                                                     alt="Documento"
-                                                                     style="width:18px; height:18px;" />
-                                                            </a>
+                                                        <td colspan="2" class="text-center text-muted">
+                                                            No hay documentos adjuntos.
                                                         </td>
                                                     </tr>
                                                 }
-                                            }
-                                            else
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- DILIGENCIAS -->
+                        <div class="mb-5">
+                            <div class="text-center mb-4">
+                                <h4 class="fw-bold">DILIGENCIAS</h4>
+                                <hr class="mt-2" />
+                            </div>
+
+                            <div class="table-responsive mt-2">
+                                <table class="table table-bordered table-striped table-hover align-middle">
+                                    <thead class="thead-tua">
+                                        <tr>
+                                            <th>Diligencia</th>
+                                            <th>Destinatario</th>
+                                            <th>Fecha Diligencia</th>
+                                            <th>Estatus</th>
+                                            <th class="text-center">Ver</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @if (diligenciasPaginadas.Any())
+                                        {
+                                            foreach (var d in diligenciasPaginadas)
                                             {
                                                 <tr>
-                                                    <td colspan="2" class="text-center text-muted" style="font-size:12px;">
-                                                        No hay documentos adjuntos.
+                                                    <td>@d.TipoDiligenciaDesc</td>
+                                                    <td>@d.Destinatario</td>
+                                                    <td>@(d.FechaDiligencia.HasValue? d.FechaDiligencia.Value.ToString("dd/MM/yyyy") : "")</td>
+                                                    <td>@d.EstatusDiligencia</td>
+                                                    <td class="text-center">
+                                                        <a asp-controller="Diligencias"
+                                                               asp-action="SeguimientoDiligencia"
+                                                               asp-route-diligenciaId="@d.DiligenciaId"
+                                                               asp-route-exhortoId="@d.ExhortoId"
+                                                               title="Ver seguimiento">
+                                                            <img src="@Url.Content("~/images/Icons/pencil.svg")"
+                                                                 alt="Editar"
+                                                                 style="width:20px; height:20px; cursor:pointer;" />
+                                                        </a>
                                                     </td>
                                                 </tr>
                                             }
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-
-                        </div>
-
-                        <div class="row mb-4">
-
-                            <div class="col-md-4">
-                                <label class="form-label fw-bold">Fecha de Acuerdo:</label>
-                                <div class="form-control bg-light">
-                                    @(Model.Exhorto.FechaAcuerdo != null
-                                        ? Convert.ToDateTime(Model.Exhorto.FechaAcuerdo).ToString("dd/MM/yyyy")
-                                        : "")
-                                </div>
-                            </div>
-
-                            <div class="col-md-4">
-                                <label class="form-label fw-bold">Fecha de Audiencia:</label>
-                                <div class="form-control bg-light">
-                                    @(Model.Exhorto.FechaAudiencia != null
-                                        ? Convert.ToDateTime(Model.Exhorto.FechaAudiencia).ToString("dd/MM/yyyy")
-                                        : "")
-                                </div>
-                            </div>
-
-                            <div class="col-md-4">
-                                <label class="form-label fw-bold">Fecha de Envío:</label>
-                                <div class="form-control bg-light">
-                                    @(Model.Exhorto.FechaEnvio != null
-                                        ? Convert.ToDateTime(Model.Exhorto.FechaEnvio).ToString("dd/MM/yyyy")
-                                        : "")
-                                </div>
-                            </div>
-
-                        </div>
-
-                        <div class="text-center mb-3">
-                            <h4 class="fw-bold">DILIGENCIAS</h4>
-                        </div>
-
-                        <div class="table-responsive mt-2">
-                            <table class="table table-bordered table-striped">
-                                <thead class="thead-tua">
-                                    <tr>
-                                        <th>Diligencia</th>
-                                        <th>Destinatario</th>
-                                        <th>Fecha Diligencia</th>
-                                        <th>Estatus</th>
-                                        <th class="text-center">Ver</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @if (diligenciasPaginadas.Any())
-                                    {
-                                        foreach (var d in diligenciasPaginadas)
+                                        }
+                                        else
                                         {
                                             <tr>
-                                                <td>@d.TipoDiligenciaDesc</td>
-                                                <td>@d.Destinatario</td>
-                                                <td>@(d.FechaDiligencia.HasValue? d.FechaDiligencia.Value.ToString("dd/MM/yyyy") : "")</td>
-                                                <td>@d.EstatusDiligencia</td>
-                                                <td class="text-center">
-                                                    <a asp-controller="Diligencias"
-                                                           asp-action="SeguimientoDiligencia"
-                                                           asp-route-diligenciaId="@d.DiligenciaId"
-                                                           asp-route-exhortoId="@d.ExhortoId"
-                                                           title="Ver seguimiento">
-                                                        <img src="@Url.Content("~/images/Icons/pencil.svg")"
-                                                             alt="Editar"
-                                                             style="width:20px; height:20px; cursor:pointer;" />
-                                                    </a>
+                                                <td colspan="5" class="text-center text-muted">
+                                                    No hay diligencias registradas.
                                                 </td>
                                             </tr>
                                         }
-                                    }
-                                    else
-                                    {
-                                        <tr>
-                                            <td colspan="5" class="text-center text-muted">
-                                                No hay diligencias registradas.
-                                            </td>
-                                        </tr>
-                                    }
-                                </tbody>
-                            </table>
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
 
                         @{
@@ -248,176 +250,174 @@
 
                         @if (exhorto != null)
                         {
-                            <div class="text-center mt-5 mb-4">
-                                <h4 class="fw-bold">SEGUIMIENTO</h4>
-                            </div>
-
-                            <div class="row mb-3">
-
-                                <div class="col-md-3">
-                                    <label class="form-label fw-bold">No. Exhorto Recibido:</label>
-                                    <div class="form-control bg-light">
-                                        @exhorto.NoExhortoRecibido
-                                    </div>
+                            <!-- SEGUIMIENTO -->
+                            <div class="mb-4">
+                                <div class="text-center mb-4">
+                                    <h4 class="fw-bold">SEGUIMIENTO</h4>
+                                    <hr class="mt-2" />
                                 </div>
 
-                                <div class="col-md-3">
-                                    <label class="form-label fw-bold">TUA Exhortado:</label>
-                                    <div class="form-control bg-light">
-                                        @exhorto.TuaDestino
-                                    </div>
-                                </div>
-
-                                @if (!string.IsNullOrWhiteSpace(exhorto.FechaNuevoAcuerdo))
-                                {
-                                    <div class="col-md-3">
-                                        <label class="form-label fw-bold">Fecha Nuevo Acuerdo:</label>
+                                <div class="row g-3 mb-4">
+                                    <div class="col-md-6 col-lg-3">
+                                        <label class="form-label fw-bold">No. Exhorto Recibido:</label>
                                         <div class="form-control bg-light">
-                                            @(DateTime.TryParse(exhorto.FechaNuevoAcuerdo, out var fechaNuevoAcuerdo)
-                                                ? fechaNuevoAcuerdo.ToString("dd/MM/yyyy")
-                                                : exhorto.FechaNuevoAcuerdo)
+                                            @exhorto.NoExhortoRecibido
                                         </div>
                                     </div>
-                                }
 
-                                @if (!string.IsNullOrWhiteSpace(exhorto.FechaNuevaAudiencia))
-                                {
-                                    <div class="col-md-3">
-                                        <label class="form-label fw-bold">Fecha Nueva Audiencia:</label>
+                                    <div class="col-md-6 col-lg-3">
+                                        <label class="form-label fw-bold">TUA Exhortado:</label>
                                         <div class="form-control bg-light">
-                                            @(DateTime.TryParse(exhorto.FechaNuevaAudiencia, out var fechaNuevaAudiencia)
-                                                ? fechaNuevaAudiencia.ToString("dd/MM/yyyy")
-                                                : exhorto.FechaNuevaAudiencia)
+                                            @exhorto.TuaDestino
                                         </div>
                                     </div>
-                                }
 
+                                    @if (!string.IsNullOrWhiteSpace(exhorto.FechaNuevoAcuerdo))
+                                    {
+                                        <div class="col-md-6 col-lg-3">
+                                            <label class="form-label fw-bold">Fecha Nuevo Acuerdo:</label>
+                                            <div class="form-control bg-light">
+                                                @(DateTime.TryParse(exhorto.FechaNuevoAcuerdo, out var fechaNuevoAcuerdo)
+                                                    ? fechaNuevoAcuerdo.ToString("dd/MM/yyyy")
+                                                    : exhorto.FechaNuevoAcuerdo)
+                                            </div>
+                                        </div>
+                                    }
+
+                                    @if (!string.IsNullOrWhiteSpace(exhorto.FechaNuevaAudiencia))
+                                    {
+                                        <div class="col-md-6 col-lg-3">
+                                            <label class="form-label fw-bold">Fecha Nueva Audiencia:</label>
+                                            <div class="form-control bg-light">
+                                                @(DateTime.TryParse(exhorto.FechaNuevaAudiencia, out var fechaNuevaAudiencia)
+                                                    ? fechaNuevaAudiencia.ToString("dd/MM/yyyy")
+                                                    : exhorto.FechaNuevaAudiencia)
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
+
+                                <form asp-action="GuardarSeguimiento"
+                                      asp-controller="SeguimientoExhortos"
+                                      method="post">
+
+                                    <input type="hidden" asp-for="Seguimiento.ExhortoId" />
+                                    <input type="hidden" asp-for="Seguimiento.FechaAudiencia" />
+
+                                    <div asp-validation-summary="ModelOnly" class="alert alert-warning"></div>
+
+                                    <div class="row g-3 mb-3">
+                                        <div class="col-md-6 col-lg-4">
+                                            <label class="form-label fw-bold">* Fecha de Recepción:</label>
+                                            <div class="input-group">
+                                                <span class="input-group-text" id="iconoFechaRecepcion" style="cursor:pointer;">
+                                                    <i class="bi bi-calendar-date"></i>
+                                                </span>
+                                                <input asp-for="Seguimiento.FechaRecepcion"
+                                                       type="date"
+                                                       class="form-control sin-icono" />
+                                            </div>
+                                            <span asp-validation-for="Seguimiento.FechaRecepcion" class="text-danger"></span>
+                                        </div>
+
+                                        <div class="col-md-6 col-lg-4">
+                                            <label class="form-label fw-bold">* No. Folio:</label>
+                                            <input asp-for="Seguimiento.NoFolio"
+                                                   class="form-control text-uppercase" />
+                                            <span asp-validation-for="Seguimiento.NoFolio" class="text-danger"></span>
+                                        </div>
+
+                                        <div class="col-md-12 col-lg-4">
+                                            <label class="form-label fw-bold">* Estatus del Exhorto:</label>
+                                            <select asp-for="Seguimiento.Estatus" class="form-control">
+                                                <option value="">Seleccione</option>
+                                                <option value="TRAMITE">TRAMITE</option>
+                                                <option value="ATENDIDO">ATENDIDO</option>
+                                                <option value="NO DILIGENCIADO">NO DILIGENCIADO</option>
+                                                <option value="PARCIALMENTE ATENDIDO">PARCIALMENTE ATENDIDO</option>
+                                            </select>
+                                            <span asp-validation-for="Seguimiento.Estatus" class="text-danger"></span>
+                                        </div>
+                                    </div>
+
+                                    <div class="row g-3 mb-3">
+                                        <div class="col-md-6 col-lg-3">
+                                            <label class="form-label fw-bold">* Fecha Acuerdo TUA Exhortado:</label>
+                                            <div class="input-group">
+                                                <span class="input-group-text" id="iconoFechaAcuerdoTuaExhortado" style="cursor:pointer;">
+                                                    <i class="bi bi-calendar-date"></i>
+                                                </span>
+                                                <input asp-for="Seguimiento.FechaAcuerdoTuaExhortado"
+                                                       type="date"
+                                                       class="form-control sin-icono" />
+                                            </div>
+                                            <span asp-validation-for="Seguimiento.FechaAcuerdoTuaExhortado" class="text-danger"></span>
+                                        </div>
+
+                                        <div class="col-md-6 col-lg-3">
+                                            <label class="form-label fw-bold">* Fecha Turno Actuaría:</label>
+                                            <div class="input-group">
+                                                <span class="input-group-text" id="iconoFechaTurnoActuaria" style="cursor:pointer;">
+                                                    <i class="bi bi-calendar-date"></i>
+                                                </span>
+                                                <input asp-for="Seguimiento.FechaTurnoActuaria"
+                                                       type="date"
+                                                       class="form-control sin-icono" />
+                                            </div>
+                                            <span asp-validation-for="Seguimiento.FechaTurnoActuaria" class="text-danger"></span>
+                                        </div>
+
+                                        <div class="col-md-6 col-lg-3">
+                                            <label class="form-label fw-bold">Fecha de Vencimiento:</label>
+                                            <div class="input-group">
+                                                <span class="input-group-text" id="iconoFechaVencimiento" style="cursor:pointer;">
+                                                    <i class="bi bi-calendar-date"></i>
+                                                </span>
+                                                <input asp-for="Seguimiento.FechaVencimiento"
+                                                       type="date"
+                                                       class="form-control sin-icono" />
+                                            </div>
+                                            <span asp-validation-for="Seguimiento.FechaVencimiento" class="text-danger"></span>
+                                        </div>
+
+                                        <div class="col-md-6 col-lg-3">
+                                            <label class="form-label fw-bold">* Fecha Devolución:</label>
+                                            <div class="input-group">
+                                                <span class="input-group-text" id="iconoFechaDevolucion" style="cursor:pointer;">
+                                                    <i class="bi bi-calendar-date"></i>
+                                                </span>
+                                                <input asp-for="Seguimiento.FechaDevolucion"
+                                                       type="date"
+                                                       class="form-control sin-icono" />
+                                            </div>
+                                            <span asp-validation-for="Seguimiento.FechaDevolucion" class="text-danger"></span>
+                                        </div>
+                                    </div>
+
+                                    <div class="row g-3 mb-3">
+                                        <div class="col-12">
+                                            <label class="form-label fw-bold">Observaciones:</label>
+                                            <textarea asp-for="Seguimiento.Observaciones"
+                                                      class="form-control text-uppercase"
+                                                      rows="4"
+                                                      oninput="this.value = this.value.toUpperCase()"></textarea>
+                                            <span asp-validation-for="Seguimiento.Observaciones" class="text-danger"></span>
+                                        </div>
+                                    </div>
+
+                                    <div class="d-flex justify-content-end gap-2 flex-wrap">
+                                        <a asp-controller="SeguimientoExhortos"
+                                               asp-action="SeguimientoExhortos"
+                                               class="btn btn-secondary">
+                                            Regresar
+                                        </a>
+
+                                        <button type="submit" class="btn btn-tua">
+                                            Guardar
+                                        </button>
+                                    </div>
+                                </form>
                             </div>
-
-                            <form asp-action="GuardarSeguimiento"
-                                  asp-controller="SeguimientoExhortos"
-                                  method="post">
-
-                                <input type="hidden" asp-for="Seguimiento.ExhortoId" />
-                                <input type="hidden" asp-for="Seguimiento.FechaAudiencia" />
-
-                                <div asp-validation-summary="ModelOnly" class="alert alert-warning"></div>
-
-                                <div class="row mb-3">
-
-                                    <div class="col-md-3">
-                                        <label class="form-label fw-bold">* Fecha de Recepción:</label>
-                                        <div class="input-group">
-                                            <span class="input-group-text" id="iconoFechaRecepcion" style="cursor:pointer;">
-                                                <i class="bi bi-calendar-date"></i>
-                                            </span>
-                                            <input asp-for="Seguimiento.FechaRecepcion"
-                                                   type="date"
-                                                   class="form-control sin-icono" />
-                                        </div>
-                                        <span asp-validation-for="Seguimiento.FechaRecepcion" class="text-danger"></span>
-                                    </div>
-
-                                    <div class="col-md-3">
-                                        <label class="form-label fw-bold">* No. Folio:</label>
-                                        <input asp-for="Seguimiento.NoFolio"
-                                               class="form-control text-uppercase" />
-                                        <span asp-validation-for="Seguimiento.NoFolio" class="text-danger"></span>
-                                    </div>
-
-                                    <div class="col-md-3">
-                                        <label class="form-label fw-bold">* Estatus del Exhorto:</label>
-                                        <select asp-for="Seguimiento.Estatus" class="form-control">
-                                            <option value="">Seleccione</option>
-                                            <option value="TRAMITE">TRAMITE</option>
-                                            <option value="ATENDIDO">ATENDIDO</option>
-                                            <option value="NO DILIGENCIADO">NO DILIGENCIADO</option>
-                                            <option value="PARCIALMENTE ATENDIDO">PARCIALMENTE ATENDIDO</option>
-                                        </select>
-                                        <span asp-validation-for="Seguimiento.Estatus" class="text-danger"></span>
-                                    </div>
-
-                                </div>
-
-                                <div class="row mb-3">
-
-                                    <div class="col-md-3">
-                                        <label class="form-label fw-bold">* Fecha Acuerdo TUA Exhortado:</label>
-                                        <div class="input-group">
-                                            <span class="input-group-text" id="iconoFechaAcuerdoTuaExhortado" style="cursor:pointer;">
-                                                <i class="bi bi-calendar-date"></i>
-                                            </span>
-                                            <input asp-for="Seguimiento.FechaAcuerdoTuaExhortado"
-                                                   type="date"
-                                                   class="form-control sin-icono" />
-                                        </div>
-                                        <span asp-validation-for="Seguimiento.FechaAcuerdoTuaExhortado" class="text-danger"></span>
-                                    </div>
-
-                                    <div class="col-md-3">
-                                        <label class="form-label fw-bold">* Fecha Turno Actuaría:</label>
-                                        <div class="input-group">
-                                            <span class="input-group-text" id="iconoFechaTurnoActuaria" style="cursor:pointer;">
-                                                <i class="bi bi-calendar-date"></i>
-                                            </span>
-                                            <input asp-for="Seguimiento.FechaTurnoActuaria"
-                                                   type="date"
-                                                   class="form-control sin-icono" />
-                                        </div>
-                                        <span asp-validation-for="Seguimiento.FechaTurnoActuaria" class="text-danger"></span>
-                                    </div>
-
-                                    <div class="col-md-3">
-                                        <label class="form-label fw-bold">Fecha de Vencimiento:</label>
-                                        <div class="input-group">
-                                            <span class="input-group-text" id="iconoFechaVencimiento" style="cursor:pointer;">
-                                                <i class="bi bi-calendar-date"></i>
-                                            </span>
-                                            <input asp-for="Seguimiento.FechaVencimiento"
-                                                   type="date"
-                                                   class="form-control sin-icono" />
-                                        </div>
-                                        <span asp-validation-for="Seguimiento.FechaVencimiento" class="text-danger"></span>
-                                    </div>
-
-                                    <div class="col-md-3">
-                                        <label class="form-label fw-bold">* Fecha Devolución:</label>
-                                        <div class="input-group">
-                                            <span class="input-group-text" id="iconoFechaDevolucion" style="cursor:pointer;">
-                                                <i class="bi bi-calendar-date"></i>
-                                            </span>
-                                            <input asp-for="Seguimiento.FechaDevolucion"
-                                                   type="date"
-                                                   class="form-control sin-icono" />
-                                        </div>
-                                        <span asp-validation-for="Seguimiento.FechaDevolucion" class="text-danger"></span>
-                                    </div>
-
-                                </div>
-
-                                <div class="row mb-3">
-                                    <div class="col-md-12">
-                                        <label class="form-label fw-bold">Observaciones:</label>
-                                        <textarea asp-for="Seguimiento.Observaciones"
-                                                  class="form-control text-uppercase"
-                                                  rows="3"></textarea>
-                                        <span asp-validation-for="Seguimiento.Observaciones" class="text-danger"></span>
-                                    </div>
-                                </div>
-
-                                <div class="d-flex justify-content-end gap-2">
-                                    <a asp-controller="SeguimientoExhortos"
-                                           asp-action="SeguimientoExhortos"
-                                           class="btn btn-secondary">
-                                        Regresar
-                                    </a>
-
-                                    <button type="submit" class="btn btn-tua">
-                                        Guardar
-                                    </button>
-                                </div>
-
-                            </form>
                         }
                         else
                         {

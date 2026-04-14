@@ -134,7 +134,12 @@ namespace AplicacionExhortos.Controllers
 
             SeguimientoModel seguimiento = model.Seguimiento;
 
-            // 🔥 AGREGADO (clave para la validación)
+            if (!string.IsNullOrWhiteSpace(seguimiento.Observaciones))
+            {
+                seguimiento.Observaciones =
+                    seguimiento.Observaciones.ToUpper().Trim();
+            }
+
             seguimiento.FechaActualizacion = DateTime.Today;
 
             TryValidateModel(seguimiento, nameof(model.Seguimiento));
