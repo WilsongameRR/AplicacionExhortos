@@ -338,7 +338,6 @@ C:\Users\rperezr_ss\Documents\AplicacionExhortos\obj\Debug\net10.0\scopedcss\Vie
 C:\Users\rperezr_ss\Documents\AplicacionExhortos\obj\Debug\net10.0\scopedcss\Views\Shared\_LayoutLogin.cshtml.rz.scp.css
 C:\Users\rperezr_ss\Documents\AplicacionExhortos\obj\Debug\net10.0\scopedcss\bundle\AplicacionExhortos.styles.css
 C:\Users\rperezr_ss\Documents\AplicacionExhortos\obj\Debug\net10.0\scopedcss\projectbundle\AplicacionExhortos.bundle.scp.css
-C:\Users\rperezr_ss\Documents\AplicacionExhortos\obj\Debug\net10.0\compressed\9x3ny45tnh-{0}-i09h7i4y3m-i09h7i4y3m.gz
 C:\Users\rperezr_ss\Documents\AplicacionExhortos\obj\Debug\net10.0\compressed\a9zh7qhsjc-{0}-61n19gt1b8-61n19gt1b8.gz
 C:\Users\rperezr_ss\Documents\AplicacionExhortos\obj\Debug\net10.0\compressed\osx70hx6vj-{0}-jnfexbelvr-jnfexbelvr.gz
 C:\Users\rperezr_ss\Documents\AplicacionExhortos\obj\Debug\net10.0\compressed\809fwmbpd8-{0}-89k72fa4wm-89k72fa4wm.gz
@@ -423,3 +422,4 @@ C:\Users\rperezr_ss\Documents\AplicacionExhortos\obj\Debug\net10.0\ref\Aplicacio
 C:\Users\rperezr_ss\Documents\AplicacionExhortos\obj\Debug\net10.0\compressed\h2i7isrqgi-{0}-siofjva0oo-siofjva0oo.gz
 C:\Users\rperezr_ss\Documents\AplicacionExhortos\obj\Debug\net10.0\compressed\pawjttkd1q-{0}-bqtjaeuwpf-bqtjaeuwpf.gz
 C:\Users\rperezr_ss\Documents\AplicacionExhortos\obj\Debug\net10.0\compressed\1ananuw7c1-{0}-dvol19u9r5-dvol19u9r5.gz
+C:\Users\rperezr_ss\Documents\AplicacionExhortos\obj\Debug\net10.0\compressed\9x3ny45tnh-{0}-00l5j4smfz-00l5j4smfz.gz

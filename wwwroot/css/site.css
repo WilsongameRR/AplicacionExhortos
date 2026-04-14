@@ -175,3 +175,66 @@ table thead.thead-tua th {
     font-size: 15px;
     margin-top: 10px;
 }
+
+
+.seguimiento-editable .form-control:focus,
+.seguimiento-editable .form-select:focus,
+.seguimiento-editable textarea:focus {
+    border-color: #97A87A !important;
+    box-shadow: 0 0 0 0.15rem rgba(151, 168, 122, 0.25) !important;
+}
+
+.seguimiento-editable .input-group-text {
+    transition: all .2s ease;
+}
+
+    .seguimiento-editable .input-group-text:hover {
+        background-color: #DDE7CF !important;
+    }
+
+.seguimiento-editable-container {
+    background-color: #F4F8EF !important;
+    border: 1px solid #97A87A !important;
+}
+
+.seguimiento-titulo {
+    color: #6F8258 !important;
+}
+
+.seguimiento-badge {
+    background-color: #DDE7CF !important;
+    color: #5C6E47 !important;
+    font-size: 0.9rem !important;
+}
+
+.seguimiento-alert {
+    background-color: #EAF2DE !important;
+    border: 1px solid #97A87A !important;
+    color: #5C6E47 !important;
+}
+
+.seguimiento-calendar {
+    cursor: pointer;
+    background-color: #EAF2DE !important;
+    border: 1px solid #97A87A !important;
+}
+
+.seguimiento-input {
+    background-color: #FFFFFF !important;
+    border: 1px solid #97A87A !important;
+}
+
+.seguimiento-editable .form-control:focus,
+.seguimiento-editable .form-select:focus,
+.seguimiento-editable textarea:focus {
+    border-color: #97A87A !important;
+    box-shadow: 0 0 0 0.15rem rgba(151, 168, 122, 0.25) !important;
+}
+
+.seguimiento-editable .input-group-text {
+    transition: all .2s ease;
+}
+
+    .seguimiento-editable .input-group-text:hover {
+        background-color: #DDE7CF !important;
+    }
