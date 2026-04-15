@@ -8,5 +8,6 @@
 
         public string TipoDocumentoDesc { get; set; } = string.Empty;
         public string DocumentoAlfresco { get; set; } = string.Empty;
+        public string? Seccion { get; set; }
     }
 }

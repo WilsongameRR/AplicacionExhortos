@@ -182,20 +182,22 @@ namespace AplicacionExhortos.Data.Repositories
                     lista.Add(new DocumentoAdjuntoModel
                     {
                         ExhortoId = reader["ExhortoId"] != DBNull.Value
-                            ? Convert.ToInt32(reader["ExhortoId"])
-                            : 0,
+         ? Convert.ToInt32(reader["ExhortoId"])
+         : 0,
 
                         DocumentoId = reader["DocumentoId"] != DBNull.Value
-                            ? Convert.ToInt32(reader["DocumentoId"])
-                            : 0,
+         ? Convert.ToInt32(reader["DocumentoId"])
+         : 0,
 
                         TipoDocumentoId = reader["TipoDoctoId"] != DBNull.Value
-                            ? Convert.ToInt32(reader["TipoDoctoId"])
-                            : 0,
+         ? Convert.ToInt32(reader["TipoDoctoId"])
+         : 0,
 
                         TipoDocumentoDesc = reader["TipoDoctoDesc"]?.ToString() ?? string.Empty,
 
-                        DocumentoAlfresco = reader["DocumentoAlfresco"]?.ToString() ?? string.Empty
+                        DocumentoAlfresco = reader["DocumentoAlfresco"]?.ToString() ?? string.Empty,
+
+                        Seccion = reader["Seccion"]?.ToString() ?? string.Empty
                     });
                 }
             }
