@@ -168,6 +168,7 @@ namespace AplicacionExhortos.Controllers
                 foreach (DocumentoModel documento in model.Documentos)
                 {
                     documento.NoExhorto = model.NoExhorto;
+                    documento.Seccion = "E";
 
                     if (documento.TipoDocumentoId <= 0)
                     {
@@ -277,6 +278,7 @@ namespace AplicacionExhortos.Controllers
                 foreach (DocumentoModel documento in model.Documentos)
                 {
                     documento.NoExhorto = model.NoExhorto;
+                    documento.Seccion = "E";
 
                     if (documento.TipoDocumentoId <= 0)
                     {
@@ -328,6 +330,7 @@ namespace AplicacionExhortos.Controllers
                 });
             }
         }
+
         private void ValidarFechaAcuerdo(DateTime? fechaAcuerdo)
         {
             DateTime fechaActual = DateTime.Today;

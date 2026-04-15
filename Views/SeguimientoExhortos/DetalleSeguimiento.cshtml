@@ -138,6 +138,11 @@
                                 </div>
                             </div>
 
+                            <!-- HIDDEN PARA MODAL DOCUMENTOS -->
+                            <input type="hidden"
+                                   id="noExhortoModal"
+                                   value="@Model.Exhorto.NoExhortoEnviado" />
+
                             <div class="mt-4">
                                 <div class="d-flex justify-content-between align-items-center mb-2 flex-wrap gap-2">
                                     <label class="form-label fw-bold mb-0">Documentos adjuntados:</label>
@@ -146,7 +151,8 @@
                                             id="btnAgregarDocumento"
                                             class="btn btn-link text-decoration-none p-0"
                                             title="Agregar documento">
-                                        <i class="bi bi-file-earmark-plus-fill text-primary" style="font-size:28px;"></i>
+                                        <i class="bi bi-file-earmark-plus-fill text-primary"
+                                           style="font-size:28px;"></i>
                                     </button>
                                 </div>
 
@@ -167,7 +173,9 @@
                                                         <tr>
                                                             <td>@doc.TipoDocumentoDesc</td>
                                                             <td class="text-center">
-                                                                <a href="@doc.DocumentoAlfresco" target="_blank" title="Ver documento">
+                                                                <a href="@doc.DocumentoAlfresco"
+                                                                       target="_blank"
+                                                                       title="Ver documento">
                                                                     <img src="/Images/Icons/file-earmark-text.svg"
                                                                          alt="Documento"
                                                                          style="width:20px; height:20px;" />
@@ -501,7 +509,7 @@
             }
         }
 
-        function inicializarModalDocumentos() {
+               function inicializarModalDocumentos() {
             const tipoDocumento = document.getElementById("tipoDocumentoModal");
             const documentoAlfresco = document.getElementById("documentoAlfrescoModal");
             const btnAgregar = document.getElementById("btnAgregarDocumentoModal");
@@ -514,7 +522,7 @@
             const errorTipoDocumento = document.getElementById("errorTipoDocumentoModal");
             const errorDocumentoAlfresco = document.getElementById("errorDocumentoAlfrescoModal");
 
-            if (!tipoDocumento || !documentoAlfresco || !btnAgregar || !btnGuardar || !tabla || !contenedor || !form) {
+            if (!btnAgregar || !btnGuardar) {
                 return;
             }
 
@@ -561,7 +569,7 @@
 
                 if (documentos.length === 0) {
                     tabla.innerHTML = `
-                        <tr id="filaSinDocumentosModal">
+                        <tr>
                             <td colspan="3" class="text-center text-muted">
                                 No hay documentos agregados.
                             </td>
@@ -576,14 +584,14 @@
                         <tr>
                             <td>${escapeHtml(d.desc)}</td>
                             <td class="text-center">
-                                <a href="${escapeHtml(d.url)}" target="_blank" title="Ver documento">
+                                <a href="${escapeHtml(d.url)}" target="_blank">
                                     <i class="bi bi-file-earmark-text text-primary fs-5"></i>
                                 </a>
                             </td>
                             <td class="text-center">
                                 <button type="button"
                                         class="btn btn-danger btn-sm"
-                                        data-index="${i}">
+                                        onclick="eliminarDocumentoModal(${i})">
                                     Eliminar
                                 </button>
                             </td>
@@ -595,29 +603,21 @@
                         <input type="hidden" name="Documentos[${i}].NoExhorto" value="${escapeHtml(noExhorto)}" />
                         <input type="hidden" name="Documentos[${i}].TipoDocumentoId" value="${escapeHtml(d.id)}" />
                         <input type="hidden" name="Documentos[${i}].Documento" value="${escapeHtml(d.url)}" />
+                        <input type="hidden" name="Documentos[${i}].Seccion" value="${escapeHtml(d.seccion)}" />
                     `;
-                });
-
-                tabla.querySelectorAll(".btn-danger").forEach(btn => {
-                    btn.addEventListener("click", function () {
-                        const index = parseInt(this.getAttribute("data-index"));
-                        documentos.splice(index, 1);
-                        render();
-                    });
                 });
 
                 mensajeDocumentos.classList.add("d-none");
             };
 
-            btnAgregar.addEventListener("click", function () {
-                if (!validarCaptura()) {
-                    return;
-                }
+            btnAgregar.onclick = () => {
+                if (!validarCaptura()) return;
 
                 documentos.push({
                     id: tipoDocumento.value,
                     desc: tipoDocumento.options[tipoDocumento.selectedIndex].text.trim(),
-                    url: documentoAlfresco.value.trim()
+                    url: documentoAlfresco.value.trim(),
+                    seccion: "E"
                 });
 
                 render();
@@ -625,9 +625,9 @@
                 tipoDocumento.value = "";
                 documentoAlfresco.value = "";
                 limpiarErrores();
-            });
+            };
 
-            btnGuardar.addEventListener("click", async function () {
+            btnGuardar.onclick = async () => {
                 if (documentos.length === 0) {
                     mensajeDocumentos.classList.remove("d-none");
                     return;
@@ -662,7 +662,12 @@
                 catch (error) {
                     alert("Ocurrió un error al guardar los documentos.");
                 }
-            });
+            };
+
+            window.eliminarDocumentoModal = (i) => {
+                documentos.splice(i, 1);
+                render();
+            };
 
             render();
         }
