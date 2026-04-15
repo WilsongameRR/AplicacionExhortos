@@ -128,6 +128,7 @@ namespace AplicacionExhortos.Data.Repositories
                 cmd.Parameters.AddWithValue("pExhortoEnviado", model.NoExhorto ?? string.Empty);
                 cmd.Parameters.AddWithValue("pTipoDoctoId", model.TipoDocumentoId);
                 cmd.Parameters.AddWithValue("pDocumento", model.Documento ?? string.Empty);
+                cmd.Parameters.AddWithValue("pSeccion", model.Seccion ?? "E");
 
                 var pErrorNum = new MySqlParameter("p_error_num", MySqlDbType.Int32)
                 {
@@ -147,7 +148,9 @@ namespace AplicacionExhortos.Data.Repositories
                     ? Convert.ToInt32(cmd.Parameters["p_error_num"].Value)
                     : 99;
 
-                respuesta.Mensaje = cmd.Parameters["p_mensaje"].Value?.ToString() ?? string.Empty;
+                respuesta.Mensaje = cmd.Parameters.Contains("p_mensaje")
+                    ? cmd.Parameters["p_mensaje"].Value?.ToString() ?? string.Empty
+                    : string.Empty;
             }
             catch (Exception ex)
             {
