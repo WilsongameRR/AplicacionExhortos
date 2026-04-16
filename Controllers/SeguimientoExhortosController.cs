@@ -196,7 +196,8 @@ namespace AplicacionExhortos.Controllers
                 ?? new ConsultaExhortos();
 
             model.Diligencias = _diligenciasRepository.ObtenerDiligencias(exhortoId);
-            model.DocumentosAdjuntos = _documentosRepository.ObtenerDocumentosAdjuntos(exhortoId);
+            model.DocumentosAdjuntos =
+    _documentosRepository.ObtenerDocumentosAdjuntos(model.Exhorto.ExhortoId);
 
             if (DateTime.TryParse(model.Exhorto.FechaRecibido, out DateTime fechaRecepcion))
             {

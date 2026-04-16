@@ -166,9 +166,15 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                @if (Model.DocumentosAdjuntos != null && Model.DocumentosAdjuntos.Any())
+                                                @{
+                                                    var documentosExhorto = Model?.DocumentosAdjuntos?
+                                                        .Where(d => string.Equals((d.Seccion ?? "").Trim(), "E", StringComparison.OrdinalIgnoreCase))
+                                                        .ToList();
+                                                }
+
+                                                @if (documentosExhorto != null && documentosExhorto.Any())
                                                 {
-                                                    @foreach (var doc in Model.DocumentosAdjuntos)
+                                                    @foreach (var doc in documentosExhorto)
                                                     {
                                                         <tr>
                                                             <td>@doc.TipoDocumentoDesc</td>
@@ -613,12 +619,12 @@
             btnAgregar.onclick = () => {
                 if (!validarCaptura()) return;
 
-                documentos.push({
-                    id: tipoDocumento.value,
-                    desc: tipoDocumento.options[tipoDocumento.selectedIndex].text.trim(),
-                    url: documentoAlfresco.value.trim(),
-                    seccion: "E"
-                });
+                        documentos.push({
+            id: tipoDocumento.value,
+            desc: tipoDocumento.options[tipoDocumento.selectedIndex].text.trim(),
+            url: documentoAlfresco.value.trim(),
+            seccion: "S"
+        });
 
                 render();
 
@@ -645,19 +651,14 @@
 
                     const resultado = await response.json();
 
-                    if (!resultado.ok) {
-                        alert(resultado.mensaje);
-                        return;
-                    }
+                            if (!resultado.ok) {
+            alert(resultado.mensaje);
+            return;
+        }
 
-                    alert(resultado.mensaje);
+        alert(resultado.mensaje);
 
-                    const modalElement = document.getElementById("modalDocumentos");
-                    const modalInstance = bootstrap.Modal.getInstance(modalElement);
-
-                    if (modalInstance) {
-                        modalInstance.hide();
-                    }
+        window.location.reload();
                 }
                 catch (error) {
                     alert("Ocurrió un error al guardar los documentos.");

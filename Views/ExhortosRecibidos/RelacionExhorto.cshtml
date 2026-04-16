@@ -156,9 +156,15 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                @if (Model.DocumentosAdjuntos != null && Model.DocumentosAdjuntos.Any())
+                                                @{
+                                                    var documentosExhorto = Model?.DocumentosAdjuntos?
+                                                        .Where(d => string.Equals((d.Seccion ?? "").Trim(), "E", StringComparison.OrdinalIgnoreCase))
+                                                        .ToList();
+                                                }
+
+                                                @if (documentosExhorto != null && documentosExhorto.Any())
                                                 {
-                                                    @foreach (var doc in Model.DocumentosAdjuntos)
+                                                    @foreach (var doc in documentosExhorto)
                                                     {
                                                         <tr>
                                                             <td>@doc.TipoDocumentoDesc</td>

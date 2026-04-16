@@ -168,7 +168,9 @@ namespace AplicacionExhortos.Controllers
                 foreach (DocumentoModel documento in model.Documentos)
                 {
                     documento.NoExhorto = model.NoExhorto;
-                    documento.Seccion = "E";
+                    documento.Seccion = string.IsNullOrWhiteSpace(documento.Seccion)
+                        ? "E"
+                        : documento.Seccion.Trim().ToUpper();
 
                     if (documento.TipoDocumentoId <= 0)
                     {
@@ -278,7 +280,9 @@ namespace AplicacionExhortos.Controllers
                 foreach (DocumentoModel documento in model.Documentos)
                 {
                     documento.NoExhorto = model.NoExhorto;
-                    documento.Seccion = "E";
+                    documento.Seccion = string.IsNullOrWhiteSpace(documento.Seccion)
+                        ? "E"
+                        : documento.Seccion.Trim().ToUpper();
 
                     if (documento.TipoDocumentoId <= 0)
                     {
