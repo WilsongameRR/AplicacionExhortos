@@ -144,16 +144,8 @@
                                    value="@Model.Exhorto.NoExhortoEnviado" />
 
                             <div class="mt-4">
-                                <div class="d-flex justify-content-between align-items-center mb-2 flex-wrap gap-2">
+                                <div class="mb-2">
                                     <label class="form-label fw-bold mb-0">Documentos adjuntados:</label>
-
-                                    <button type="button"
-                                            id="btnAgregarDocumento"
-                                            class="btn btn-link text-decoration-none p-0"
-                                            title="Agregar documento">
-                                        <i class="bi bi-file-earmark-plus-fill text-primary"
-                                           style="font-size:28px;"></i>
-                                    </button>
                                 </div>
 
                                 <div class="border rounded-3 p-3 bg-light">
@@ -313,13 +305,74 @@
                                     }
                                 </div>
 
+                                <!-- DOCUMENTOS DE SEGUIMIENTO -->
+                                <div class="mt-4 mb-4">
+                                    <div class="d-flex justify-content-between align-items-center mb-2 flex-wrap gap-2">
+                                        <label class="form-label fw-bold mb-0">Documentos de seguimiento:</label>
+
+                                        <button type="button"
+                                                id="btnAgregarDocumento"
+                                                class="btn btn-link text-decoration-none p-0"
+                                                title="Agregar documento de seguimiento">
+                                            <i class="bi bi-file-earmark-plus-fill text-primary"
+                                               style="font-size:28px;"></i>
+                                        </button>
+                                    </div>
+
+                                    <div class="border rounded-3 p-3 bg-light">
+                                        <div class="table-responsive">
+                                            <table class="table table-sm table-bordered table-hover mb-0 align-middle">
+                                                <thead class="table-secondary">
+                                                    <tr>
+                                                        <th>Tipo Documento</th>
+                                                        <th class="text-center" style="width:120px;">Link</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @{
+                                                        var documentosSeguimiento = Model?.DocumentosAdjuntos?
+                                                            .Where(d => string.Equals((d.Seccion ?? "").Trim(), "S", StringComparison.OrdinalIgnoreCase))
+                                                            .ToList();
+                                                    }
+
+                                                    @if (documentosSeguimiento != null && documentosSeguimiento.Any())
+                                                    {
+                                                        @foreach (var doc in documentosSeguimiento)
+                                                        {
+                                                            <tr>
+                                                                <td>@doc.TipoDocumentoDesc</td>
+                                                                <td class="text-center">
+                                                                    <a href="@doc.DocumentoAlfresco"
+                                                                           target="_blank"
+                                                                           title="Ver documento">
+                                                                        <img src="/Images/Icons/file-earmark-text.svg"
+                                                                             alt="Documento"
+                                                                             style="width:20px; height:20px;" />
+                                                                    </a>
+                                                                </td>
+                                                            </tr>
+                                                        }
+                                                    }
+                                                    else
+                                                    {
+                                                        <tr>
+                                                            <td colspan="2" class="text-center text-muted">
+                                                                No hay documentos de seguimiento adjuntos.
+                                                            </td>
+                                                        </tr>
+                                                    }
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- CAPTURA DE SEGUIMIENTO -->
                                 <div class="seguimiento-editable seguimiento-editable-container border rounded-4 p-4 shadow-sm">
                                     <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
                                         <h5 class="mb-0 fw-bold seguimiento-titulo">
                                             Captura de seguimiento
                                         </h5>
-
-                                       
                                     </div>
 
                                     <div class="alert py-2 px-3 mb-4 seguimiento-alert">
