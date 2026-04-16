@@ -148,46 +148,52 @@
                             </div>
 
                             <div class="mt-4">
-    <label class="form-label fw-bold">Documentos adjuntados:</label>
-    <div class="border rounded-3 p-3 bg-light">
-        <div class="table-responsive">
-            <table class="table table-sm table-bordered table-hover mb-0 align-middle">
-                <thead class="table-secondary">
-                    <tr>
-                        <th>Tipo Documento</th>
-                        <th class="text-center" style="width:120px;">Link</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @if (Model.DocumentosAdjuntos != null && Model.DocumentosAdjuntos.Any())
-                    {
-                        @foreach (var doc in Model.DocumentosAdjuntos)
-                        {
-                            <tr>
-                                <td>@doc.TipoDocumentoDesc</td>
-                                <td class="text-center">
-                                    <a href="@doc.DocumentoAlfresco" target="_blank" title="Ver documento">
-                                        <img src="/Images/Icons/file-earmark-text.svg"
-                                             alt="Documento"
-                                             style="width:20px; height:20px;" />
-                                    </a>
-                                </td>
-                            </tr>
-                        }
-                    }
-                    else
-                    {
-                        <tr>
-                            <td colspan="2" class="text-center text-muted">
-                                No hay documentos adjuntos.
-                            </td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
-        </div>
-    </div>
-</div>
+                                <label class="form-label fw-bold">Documentos adjuntados:</label>
+                                <div class="border rounded-3 p-3 bg-light">
+                                    <div class="table-responsive">
+                                        <table class="table table-sm table-bordered table-hover mb-0 align-middle">
+                                            <thead class="table-secondary">
+                                                <tr>
+                                                    <th>Tipo Documento</th>
+                                                    <th class="text-center" style="width:120px;">Link</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @{
+                                                    var documentosExhorto = Model?.DocumentosAdjuntos?
+                                                        .Where(d => string.Equals((d.Seccion ?? "").Trim(), "E", StringComparison.OrdinalIgnoreCase))
+                                                        .ToList();
+                                                }
+
+                                                @if (documentosExhorto != null && documentosExhorto.Any())
+                                                {
+                                                    @foreach (var doc in documentosExhorto)
+                                                    {
+                                                        <tr>
+                                                            <td>@doc.TipoDocumentoDesc</td>
+                                                            <td class="text-center">
+                                                                <a href="@doc.DocumentoAlfresco" target="_blank" title="Ver documento">
+                                                                    <img src="/Images/Icons/file-earmark-text.svg"
+                                                                         alt="Documento"
+                                                                         style="width:20px; height:20px;" />
+                                                                </a>
+                                                            </td>
+                                                        </tr>
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    <tr>
+                                                        <td colspan="2" class="text-center text-muted">
+                                                            No hay documentos adjuntos.
+                                                        </td>
+                                                    </tr>
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
 
                         <!-- DILIGENCIAS -->

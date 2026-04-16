@@ -49,6 +49,10 @@ namespace AplicacionExhortos.Data.Repositories
 
                     DocumentoAlfresco = reader["DocumentoAlfresco"] != DBNull.Value
                         ? reader["DocumentoAlfresco"].ToString()!
+                        : string.Empty,
+
+                    Seccion = reader["Seccion"] != DBNull.Value
+                        ? reader["Seccion"].ToString()!
                         : string.Empty
                 };
 

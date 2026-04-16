@@ -51,7 +51,8 @@ namespace AplicacionExhortos.Controllers
                 return RedirectToAction("Login", "Login");
             }
 
-            ConsultaExhortos? exhorto = _consultaExhortoRepository.ObtenerDetalleExhortoRecibido(id);
+            ConsultaExhortos? exhorto =
+                _consultaExhortoRepository.ObtenerDetalleExhortoRecibido(id);
 
             if (exhorto == null)
             {
@@ -59,8 +60,11 @@ namespace AplicacionExhortos.Controllers
                 return RedirectToAction(nameof(ExhortosConsulta));
             }
 
-            List<DiligenciaModel> diligencias = _diligenciasRepository.ObtenerDiligencias(id);
-            List<DocumentoAdjuntoModel> documentosAdjuntos = _documentosRepository.ObtenerDocumentosAdjuntos(id);
+            List<DiligenciaModel> diligencias =
+                _diligenciasRepository.ObtenerDiligencias(id);
+
+            List<DocumentoAdjuntoModel> documentosAdjuntos =
+                _documentosRepository.ObtenerDocumentosAdjuntos(exhorto.ExhortoId);
 
             DetalleExhortoModel model = new()
             {
@@ -92,7 +96,8 @@ namespace AplicacionExhortos.Controllers
             }
 
             List<DiligenciaModel> diligencias = _diligenciasRepository.ObtenerDiligencias(id);
-            List<DocumentoAdjuntoModel> documentosAdjuntos = _documentosRepository.ObtenerDocumentosAdjuntos(id);
+            List<DocumentoAdjuntoModel> documentosAdjuntos =
+                _documentosRepository.ObtenerDocumentosAdjuntos(exhorto.ExhortoId);
 
             ReiterarExhortoModel model = new()
             {
