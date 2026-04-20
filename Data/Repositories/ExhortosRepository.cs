@@ -161,52 +161,32 @@ namespace AplicacionExhortos.Data.Repositories
             return respuesta;
         }
 
-        public List<DocumentoAdjuntoModel> ObtenerDocumentosAdjuntos(int exhortoId)
+        public List<DocumentoAdjuntoModel> ObtenerDocumentosAdjuntosPorNoExhorto(string noExhorto)
         {
-            List<DocumentoAdjuntoModel> lista = new();
-
-            using var conn = _db.GetConnection();
-            conn.Open();
-
-            try
-            {
-                using var cmd = new MySqlCommand("sp_consulta_documentos", conn);
-                cmd.CommandType = CommandType.StoredProcedure;
-
-                cmd.Parameters.AddWithValue("pExhortoId", exhortoId);
-
-                using var reader = cmd.ExecuteReader();
-
-                while (reader.Read())
-                {
-                    lista.Add(new DocumentoAdjuntoModel
-                    {
-                        ExhortoId = reader["ExhortoId"] != DBNull.Value
-         ? Convert.ToInt32(reader["ExhortoId"])
-         : 0,
-
-                        DocumentoId = reader["DocumentoId"] != DBNull.Value
-         ? Convert.ToInt32(reader["DocumentoId"])
-         : 0,
-
-                        TipoDocumentoId = reader["TipoDoctoId"] != DBNull.Value
-         ? Convert.ToInt32(reader["TipoDoctoId"])
-         : 0,
-
-                        TipoDocumentoDesc = reader["TipoDoctoDesc"]?.ToString() ?? string.Empty,
-
-                        DocumentoAlfresco = reader["DocumentoAlfresco"]?.ToString() ?? string.Empty,
-
-                        Seccion = reader["Seccion"]?.ToString() ?? string.Empty
-                    });
-                }
-            }
-            catch
+            if (string.IsNullOrWhiteSpace(noExhorto))
             {
                 return new List<DocumentoAdjuntoModel>();
             }
 
-            return lista;
+            using var conn = _db.GetConnection();
+            conn.Open();
+
+            int exhortoId = ObtenerExhortoIdPorNumero(conn, noExhorto);
+
+            if (exhortoId <= 0)
+            {
+                return new List<DocumentoAdjuntoModel>();
+            }
+
+            return ObtenerDocumentosAdjuntos(conn, exhortoId);
+        }
+
+        public List<DocumentoAdjuntoModel> ObtenerDocumentosAdjuntos(int exhortoId)
+        {
+            using var conn = _db.GetConnection();
+            conn.Open();
+
+            return ObtenerDocumentosAdjuntos(conn, exhortoId);
         }
 
         public List<ConsultaExhortos> ObtenerExhortosPendientes(string usuarioId)
@@ -238,6 +218,67 @@ namespace AplicacionExhortos.Data.Repositories
             }
 
             return lista;
+        }
+
+        private List<DocumentoAdjuntoModel> ObtenerDocumentosAdjuntos(MySqlConnection conn, int exhortoId)
+        {
+            List<DocumentoAdjuntoModel> lista = new();
+
+            try
+            {
+                using var cmd = new MySqlCommand("sp_consulta_documentos", conn);
+                cmd.CommandType = CommandType.StoredProcedure;
+
+                cmd.Parameters.AddWithValue("pExhortoId", exhortoId);
+
+                using var reader = cmd.ExecuteReader();
+
+                while (reader.Read())
+                {
+                    lista.Add(new DocumentoAdjuntoModel
+                    {
+                        ExhortoId = reader["ExhortoId"] != DBNull.Value
+                            ? Convert.ToInt32(reader["ExhortoId"])
+                            : 0,
+
+                        DocumentoId = reader["DocumentoId"] != DBNull.Value
+                            ? Convert.ToInt32(reader["DocumentoId"])
+                            : 0,
+
+                        TipoDocumentoId = reader["TipoDoctoId"] != DBNull.Value
+                            ? Convert.ToInt32(reader["TipoDoctoId"])
+                            : 0,
+
+                        TipoDocumentoDesc = reader["TipoDoctoDesc"]?.ToString() ?? string.Empty,
+                        DocumentoAlfresco = reader["DocumentoAlfresco"]?.ToString() ?? string.Empty,
+                        Seccion = reader["Seccion"]?.ToString() ?? string.Empty
+                    });
+                }
+            }
+            catch
+            {
+                return new List<DocumentoAdjuntoModel>();
+            }
+
+            return lista;
+        }
+
+        private int ObtenerExhortoIdPorNumero(MySqlConnection conn, string noExhorto)
+        {
+            using var cmd = new MySqlCommand(
+                @"SELECT ExhortoId
+                  FROM exhortos.exhorto
+                  WHERE TRIM(NoExhortoEnviado) = TRIM(@NoExhorto)
+                  LIMIT 1",
+                conn);
+
+            cmd.Parameters.AddWithValue("@NoExhorto", noExhorto.Trim());
+
+            object? resultado = cmd.ExecuteScalar();
+
+            return resultado != null && resultado != DBNull.Value
+                ? Convert.ToInt32(resultado)
+                : 0;
         }
     }
 }

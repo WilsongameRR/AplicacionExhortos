@@ -7,5 +7,7 @@ namespace AplicacionExhortos.Models.Exhortos
         public string NoExhorto { get; set; } = string.Empty;
 
         public List<DocumentoModel> Documentos { get; set; } = new();
+
+        public List<DocumentoAdjuntoModel> DocumentosGuardados { get; set; } = new();
     }
 }

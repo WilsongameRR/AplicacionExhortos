@@ -5,6 +5,7 @@
     ViewData["Title"] = "Alta de Documentos";
 
     string noExhorto = Model?.NoExhorto ?? string.Empty;
+    var documentosGuardados = Model?.DocumentosGuardados ?? new List<AplicacionExhortos.Models.Exhortos.DocumentoAdjuntoModel>();
 }
 
 <div class="container-fluid fondo-exhortos min-vh-100 pb-5" style="padding-top:80px;">
@@ -60,6 +61,47 @@
                             </div>
                         </div>
 
+                        <div class="mb-4">
+                            <h5 class="fw-bold mb-3">Documentos guardados</h5>
+
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-striped align-middle">
+                                    <thead class="thead-tua">
+                                        <tr>
+                                            <th style="width:70%;">Tipo de documento</th>
+                                            <th class="text-center" style="width:30%;">Link</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @if (documentosGuardados.Any())
+                                        {
+                                            foreach (var documento in documentosGuardados)
+                                            {
+                                                <tr>
+                                                    <td>@documento.TipoDocumentoDesc</td>
+                                                    <td class="text-center">
+                                                        <a href="@documento.DocumentoAlfresco" target="_blank" title="Ver documento guardado">
+                                                            <img src="/Images/Icons/file-earmark-text.svg"
+                                                                 alt="Documento guardado"
+                                                                 style="width:18px; height:18px;" />
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <tr>
+                                                <td colspan="2" class="text-center text-muted">
+                                                    No hay documentos guardados para este exhorto.
+                                                </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
                         <div class="row align-items-end mb-4">
                             <div class="col-md-4">
                                 <label for="tipoDocumento" class="form-label fw-bold">
@@ -105,6 +147,7 @@
                         </div>
 
                         <div class="table-responsive mb-2">
+                            <h5 class="fw-bold mb-3">Documentos por guardar</h5>
                             <table class="table table-bordered table-striped align-middle" id="tablaDocumentos">
                                 <thead class="thead-tua">
                                     <tr>

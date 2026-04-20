@@ -110,7 +110,8 @@ namespace AplicacionExhortos.Controllers
 
                 AltaDocumentosViewModel model = new AltaDocumentosViewModel
                 {
-                    NoExhorto = noExhorto
+                    NoExhorto = noExhorto,
+                    DocumentosGuardados = _exhortosRepo.ObtenerDocumentosAdjuntosPorNoExhorto(noExhorto)
                 };
 
                 ViewBag.TiposDocumento = _exhortosRepo.ObtenerTiposDocumento();
@@ -123,7 +124,10 @@ namespace AplicacionExhortos.Controllers
 
                 AltaDocumentosViewModel model = new AltaDocumentosViewModel
                 {
-                    NoExhorto = noExhorto ?? string.Empty
+                    NoExhorto = noExhorto ?? string.Empty,
+                    DocumentosGuardados = string.IsNullOrWhiteSpace(noExhorto)
+                        ? new List<DocumentoAdjuntoModel>()
+                        : _exhortosRepo.ObtenerDocumentosAdjuntosPorNoExhorto(noExhorto)
                 };
 
                 ViewBag.TiposDocumento = _exhortosRepo.ObtenerTiposDocumento();
@@ -237,7 +241,8 @@ namespace AplicacionExhortos.Controllers
 
                 AltaDocumentosViewModel model = new()
                 {
-                    NoExhorto = noExhorto
+                    NoExhorto = noExhorto,
+                    DocumentosGuardados = _exhortosRepo.ObtenerDocumentosAdjuntosPorNoExhorto(noExhorto)
                 };
 
                 ViewBag.TiposDocumento = _exhortosRepo.ObtenerTiposDocumento();
