@@ -28,8 +28,16 @@
         .Skip((currentPage - 1) * pageSize)
         .Take(pageSize)
         .ToList() ?? new List<AplicacionExhortos.Models.DiligenciaModel>();
+    var exhorto = Model?.Exhorto;
+    var documentosAdjuntos = Model?.DocumentosAdjuntos ?? new List<AplicacionExhortos.Models.Exhortos.DocumentoAdjuntoModel>();
+    var documentosExhorto = documentosAdjuntos
+        .Where(d => string.Equals((d.Seccion ?? "").Trim(), "E", StringComparison.OrdinalIgnoreCase))
+        .ToList();
+    var documentosSeguimiento = documentosAdjuntos
+        .Where(d => string.Equals((d.Seccion ?? "").Trim(), "S", StringComparison.OrdinalIgnoreCase))
+        .ToList();
 
-    string estatusExhorto = (Model?.Exhorto?.Estatus ?? "").Trim().ToUpper();
+    string estatusExhorto = (exhorto?.Estatus ?? "").Trim().ToUpper();
 
     string claseColorEstatus = estatusExhorto switch
     {
@@ -51,7 +59,7 @@
                 <h2 class="fw-bold">EXHORTO RECIBIDO</h2>
             </div>
 
-            @if (Model?.Exhorto == null)
+            @if (exhorto == null)
             {
                 <div class="alert alert-warning text-center">
                     No se encontró información del exhorto.
@@ -72,45 +80,45 @@
                             <div class="row g-3 mb-3">
                                 <div class="col-md-6 col-lg-3">
                                     <label class="form-label fw-bold">No. Exhorto Exhortante:</label>
-                                    <div class="form-control bg-light">@Model.Exhorto.NoExhortoEnviado</div>
+                                    <div class="form-control bg-light">@exhorto.NoExhortoEnviado</div>
                                 </div>
 
                                 <div class="col-md-6 col-lg-3">
                                     <label class="form-label fw-bold">TUA Exhortante:</label>
-                                    <div class="form-control bg-light">@Model.Exhorto.TuaOrigen</div>
+                                    <div class="form-control bg-light">@exhorto.TuaOrigen</div>
                                 </div>
 
                                 <div class="col-md-6 col-lg-3">
                                     <label class="form-label fw-bold">Expediente:</label>
-                                    <div class="form-control bg-light">@Model.Exhorto.NoExpediente</div>
+                                    <div class="form-control bg-light">@exhorto.NoExpediente</div>
                                 </div>
 
                                 <div class="col-md-6 col-lg-3">
                                     <label class="form-label fw-bold">Oficio:</label>
-                                    <div class="form-control bg-light">@Model.Exhorto.NoOficio</div>
+                                    <div class="form-control bg-light">@exhorto.NoOficio</div>
                                 </div>
                             </div>
 
                             <div class="row g-3 mb-3">
                                 <div class="col-md-6 col-lg-3">
                                     <label class="form-label fw-bold">Estado:</label>
-                                    <div class="form-control bg-light">@Model.Exhorto.Estado</div>
+                                    <div class="form-control bg-light">@exhorto.Estado</div>
                                 </div>
 
                                 <div class="col-md-6 col-lg-3">
                                     <label class="form-label fw-bold">Municipio:</label>
-                                    <div class="form-control bg-light">@Model.Exhorto.Municipio</div>
+                                    <div class="form-control bg-light">@exhorto.Municipio</div>
                                 </div>
 
                                 <div class="col-md-6 col-lg-3">
                                     <label class="form-label fw-bold">Poblado:</label>
-                                    <div class="form-control bg-light">@Model.Exhorto.Poblado</div>
+                                    <div class="form-control bg-light">@exhorto.Poblado</div>
                                 </div>
 
                                 <div class="col-md-6 col-lg-3">
                                     <label class="form-label fw-bold">Estatus del Exhorto:</label>
                                     <div class="form-control bg-light fw-bold @claseColorEstatus">
-                                        @Model.Exhorto.Estatus
+                                        @exhorto.Estatus
                                     </div>
                                 </div>
                             </div>
@@ -119,8 +127,8 @@
                                 <div class="col-md-4">
                                     <label class="form-label fw-bold">Fecha de Acuerdo:</label>
                                     <div class="form-control bg-light">
-                                        @(Model.Exhorto.FechaAcuerdo != null
-                                            ? Convert.ToDateTime(Model.Exhorto.FechaAcuerdo).ToString("dd/MM/yyyy")
+                                        @(exhorto.FechaAcuerdo != null
+                                            ? Convert.ToDateTime(exhorto.FechaAcuerdo).ToString("dd/MM/yyyy")
                                             : "")
                                     </div>
                                 </div>
@@ -128,8 +136,8 @@
                                 <div class="col-md-4">
                                     <label class="form-label fw-bold">Fecha de Audiencia:</label>
                                     <div class="form-control bg-light">
-                                        @(Model.Exhorto.FechaAudiencia != null
-                                            ? Convert.ToDateTime(Model.Exhorto.FechaAudiencia).ToString("dd/MM/yyyy")
+                                        @(exhorto.FechaAudiencia != null
+                                            ? Convert.ToDateTime(exhorto.FechaAudiencia).ToString("dd/MM/yyyy")
                                             : "")
                                     </div>
                                 </div>
@@ -137,8 +145,8 @@
                                 <div class="col-md-4">
                                     <label class="form-label fw-bold">Fecha de Envío:</label>
                                     <div class="form-control bg-light">
-                                        @(Model.Exhorto.FechaEnvio != null
-                                            ? Convert.ToDateTime(Model.Exhorto.FechaEnvio).ToString("dd/MM/yyyy")
+                                        @(exhorto.FechaEnvio != null
+                                            ? Convert.ToDateTime(exhorto.FechaEnvio).ToString("dd/MM/yyyy")
                                             : "")
                                     </div>
                                 </div>
@@ -156,13 +164,7 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                @{
-                                                    var documentosExhorto = Model?.DocumentosAdjuntos?
-                                                        .Where(d => string.Equals((d.Seccion ?? "").Trim(), "E", StringComparison.OrdinalIgnoreCase))
-                                                        .ToList();
-                                                }
-
-                                                @if (documentosExhorto != null && documentosExhorto.Any())
+                                                @if (documentosExhorto.Any())
                                                 {
                                                     @foreach (var doc in documentosExhorto)
                                                     {
@@ -247,7 +249,7 @@
                                             <a class="page-link"
                                                    asp-controller="ExhortosRecibidos"
                                                    asp-action="RelacionExhorto"
-                                                   asp-route-exhortoId="@Model.Exhorto.ExhortoId"
+                                                   asp-route-exhortoId="@exhorto.ExhortoId"
                                                    asp-route-page="@(currentPage - 1)">
                                                 Anterior
                                             </a>
@@ -259,7 +261,7 @@
                                                 <a class="page-link"
                                                        asp-controller="ExhortosRecibidos"
                                                        asp-action="RelacionExhorto"
-                                                       asp-route-exhortoId="@Model.Exhorto.ExhortoId"
+                                                       asp-route-exhortoId="@exhorto.ExhortoId"
                                                        asp-route-page="@i">
                                                     @i
                                                 </a>
@@ -270,7 +272,7 @@
                                             <a class="page-link"
                                                    asp-controller="ExhortosRecibidos"
                                                    asp-action="RelacionExhorto"
-                                                   asp-route-exhortoId="@Model.Exhorto.ExhortoId"
+                                                   asp-route-exhortoId="@exhorto.ExhortoId"
                                                    asp-route-page="@(currentPage + 1)">
                                                 Siguiente
                                             </a>
@@ -291,37 +293,37 @@
                                 <div class="col-md-6 col-lg-3">
                                     <label class="form-label fw-bold">No. Exhorto Recibido:</label>
                                     <div class="form-control bg-light">
-                                        @Model.Exhorto.NoExhortoRecibido
+                                        @exhorto.NoExhortoRecibido
                                     </div>
                                 </div>
 
                                 <div class="col-md-6 col-lg-3">
                                     <label class="form-label fw-bold">TUA Exhortado:</label>
                                     <div class="form-control bg-light">
-                                        @Model.Exhorto.TuaDestino
+                                        @exhorto.TuaDestino
                                     </div>
                                 </div>
 
-                                @if (!string.IsNullOrWhiteSpace(Model.Exhorto.FechaNuevoAcuerdo))
+                                @if (!string.IsNullOrWhiteSpace(exhorto.FechaNuevoAcuerdo))
                                 {
                                     <div class="col-md-6 col-lg-3">
                                         <label class="form-label fw-bold">Fecha Nuevo Acuerdo:</label>
                                         <div class="form-control bg-light">
-                                            @(DateTime.TryParse(Model.Exhorto.FechaNuevoAcuerdo, out var f1)
+                                            @(DateTime.TryParse(exhorto.FechaNuevoAcuerdo, out var f1)
                                                 ? f1.ToString("dd/MM/yyyy")
-                                                : Model.Exhorto.FechaNuevoAcuerdo)
+                                                : exhorto.FechaNuevoAcuerdo)
                                         </div>
                                     </div>
                                 }
 
-                                @if (!string.IsNullOrWhiteSpace(Model.Exhorto.FechaNuevaAudiencia))
+                                @if (!string.IsNullOrWhiteSpace(exhorto.FechaNuevaAudiencia))
                                 {
                                     <div class="col-md-6 col-lg-3">
                                         <label class="form-label fw-bold">Fecha Nueva Audiencia:</label>
                                         <div class="form-control bg-light">
-                                            @(DateTime.TryParse(Model.Exhorto.FechaNuevaAudiencia, out var f2)
+                                            @(DateTime.TryParse(exhorto.FechaNuevaAudiencia, out var f2)
                                                 ? f2.ToString("dd/MM/yyyy")
-                                                : Model.Exhorto.FechaNuevaAudiencia)
+                                                : exhorto.FechaNuevaAudiencia)
                                         </div>
                                     </div>
                                 }
@@ -331,8 +333,8 @@
                                 <div class="col-md-6 col-lg-3">
                                     <label class="form-label fw-bold">Fecha de Recepción:</label>
                                     <div class="form-control bg-light">
-                                        @(Model.Exhorto.FechaRecibido != null &&
-                                          DateTime.TryParse(Model.Exhorto.FechaRecibido, out var f3)
+                                        @(exhorto.FechaRecibido != null &&
+                                          DateTime.TryParse(exhorto.FechaRecibido, out var f3)
                                             ? f3.ToString("dd/MM/yyyy")
                                             : "")
                                     </div>
@@ -341,15 +343,15 @@
                                 <div class="col-md-6 col-lg-3">
                                     <label class="form-label fw-bold">No. Folio:</label>
                                     <div class="form-control bg-light">
-                                        @Model.Exhorto.Folio
+                                        @exhorto.Folio
                                     </div>
                                 </div>
 
                                 <div class="col-md-6 col-lg-3">
                                     <label class="form-label fw-bold">Fecha Acuerdo TUA Exhortado:</label>
                                     <div class="form-control bg-light">
-                                        @(Model.Exhorto.FechaAcuerdoExhortado != null &&
-                                          DateTime.TryParse(Model.Exhorto.FechaAcuerdoExhortado, out var f4)
+                                        @(exhorto.FechaAcuerdoExhortado != null &&
+                                          DateTime.TryParse(exhorto.FechaAcuerdoExhortado, out var f4)
                                             ? f4.ToString("dd/MM/yyyy")
                                             : "")
                                     </div>
@@ -358,8 +360,8 @@
                                 <div class="col-md-6 col-lg-3">
                                     <label class="form-label fw-bold">Fecha Turno Actuaría:</label>
                                     <div class="form-control bg-light">
-                                        @(Model.Exhorto.FechaTurnoActuaria != null &&
-                                          DateTime.TryParse(Model.Exhorto.FechaTurnoActuaria, out var f5)
+                                        @(exhorto.FechaTurnoActuaria != null &&
+                                          DateTime.TryParse(exhorto.FechaTurnoActuaria, out var f5)
                                             ? f5.ToString("dd/MM/yyyy")
                                             : "")
                                     </div>
@@ -370,8 +372,8 @@
                                 <div class="col-md-6 col-lg-3">
                                     <label class="form-label fw-bold">Fecha de Vencimiento:</label>
                                     <div class="form-control bg-light">
-                                        @(Model.Exhorto.FechaVencimiento != null &&
-                                          DateTime.TryParse(Model.Exhorto.FechaVencimiento, out var fv)
+                                        @(exhorto.FechaVencimiento != null &&
+                                          DateTime.TryParse(exhorto.FechaVencimiento, out var fv)
                                             ? fv.ToString("dd/MM/yyyy")
                                             : "")
                                     </div>
@@ -380,8 +382,8 @@
                                 <div class="col-md-6 col-lg-3">
                                     <label class="form-label fw-bold">Fecha Devolución:</label>
                                     <div class="form-control bg-light">
-                                        @(Model.Exhorto.FechaDevolucion != null &&
-                                          DateTime.TryParse(Model.Exhorto.FechaDevolucion, out var f6)
+                                        @(exhorto.FechaDevolucion != null &&
+                                          DateTime.TryParse(exhorto.FechaDevolucion, out var f6)
                                             ? f6.ToString("dd/MM/yyyy")
                                             : "")
                                     </div>
@@ -390,7 +392,7 @@
                                 <div class="col-md-12 col-lg-6">
                                     <label class="form-label fw-bold">Observaciones:</label>
                                     <div class="form-control bg-light" style="min-height: 90px;">
-                                        @Model.Exhorto.Observaciones
+                                        @exhorto.Observaciones
                                     </div>
                                 </div>
                             </div>
@@ -409,13 +411,7 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                @{
-                                                    var documentosSeguimiento = Model?.DocumentosAdjuntos?
-                                                        .Where(d => string.Equals((d.Seccion ?? "").Trim(), "S", StringComparison.OrdinalIgnoreCase))
-                                                        .ToList();
-                                                }
-
-                                                @if (documentosSeguimiento != null && documentosSeguimiento.Any())
+                                                @if (documentosSeguimiento.Any())
                                                 {
                                                     @foreach (var doc in documentosSeguimiento)
                                                     {

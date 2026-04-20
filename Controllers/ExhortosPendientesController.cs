@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace AplicacionExhortos.Controllers
 {
-    public class ExhortosPendientesController : Controller
+    public class ExhortosPendientesController : SessionControllerBase
     {
         private readonly ExhortosRepository _repository;
 
@@ -16,12 +16,9 @@ namespace AplicacionExhortos.Controllers
         [HttpGet]
         public IActionResult ExhortosPendientes()
         {
-            string usuarioId = HttpContext.Session.GetString("UsuarioId") ?? string.Empty;
-
-            if (string.IsNullOrWhiteSpace(usuarioId))
+            if (!TryObtenerUsuarioIdSesion(out string usuarioId))
             {
-                TempData["Error"] = "La sesión expiró. Inicie sesión nuevamente.";
-                return RedirectToAction("Login", "Login");
+                return RedirigirALoginPorSesionExpirada();
             }
 
             List<ConsultaExhortos> lista = _repository.ObtenerExhortosPendientes(usuarioId);

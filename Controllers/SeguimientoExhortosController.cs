@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace AplicacionExhortos.Controllers
 {
-    public class SeguimientoExhortosController : Controller
+    public class SeguimientoExhortosController : SessionControllerBase
     {
         private readonly ConsultaExhortoRepository _consultaExhortoRepository;
         private readonly DiligenciasRepository _diligenciasRepository;
@@ -23,16 +23,13 @@ namespace AplicacionExhortos.Controllers
         [HttpGet]
         public IActionResult SeguimientoExhortos()
         {
-            int? tuaIdSession = HttpContext.Session.GetInt32("TuaId");
-
-            if (!tuaIdSession.HasValue || tuaIdSession.Value <= 0)
+            if (!TryObtenerTuaIdSesion(out int tuaIdSession))
             {
-                TempData["Error"] = "La sesión expiró o no contiene el TUA del usuario.";
-                return RedirectToAction("Login", "Login");
+                return RedirigirALoginPorSesionExpirada("La sesión expiró o no contiene el TUA del usuario.");
             }
 
             List<ConsultaExhortos> lista =
-                _consultaExhortoRepository.ConsultaSeguimientoExhortos(tuaIdSession.Value);
+                _consultaExhortoRepository.ConsultaSeguimientoExhortos(tuaIdSession);
 
             return View(lista);
         }
@@ -46,12 +43,9 @@ namespace AplicacionExhortos.Controllers
                 return RedirectToAction(nameof(SeguimientoExhortos));
             }
 
-            string? usuario = HttpContext.Session.GetString("UsuarioId");
-
-            if (string.IsNullOrWhiteSpace(usuario))
+            if (!TryObtenerUsuarioIdSesion(out string usuario))
             {
-                TempData["Error"] = "La sesión expiró. Inicie sesión nuevamente.";
-                return RedirectToAction("Login", "Login");
+                return RedirigirALoginPorSesionExpirada();
             }
 
             ConsultaExhortos? exhorto =
@@ -164,8 +158,6 @@ namespace AplicacionExhortos.Controllers
                 }
             }
 
-            string? usuarioId = HttpContext.Session.GetString("UsuarioId");
-
             bool actualizado = _consultaExhortoRepository.ActualizarSeguimientoExhorto(
                 seguimiento.ExhortoId,
                 seguimiento.Estatus,
@@ -176,7 +168,7 @@ namespace AplicacionExhortos.Controllers
                 seguimiento.FechaVencimiento,
                 seguimiento.FechaDevolucion,
                 seguimiento.Observaciones,
-                usuarioId
+                UsuarioIdSesion
             );
 
             if (!actualizado)

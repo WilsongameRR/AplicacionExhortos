@@ -4,22 +4,19 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace AplicacionExhortos.Controllers
 {
-    public class ExhortosRecibidosController : Controller
+    public class ExhortosRecibidosController : SessionControllerBase
     {
         private readonly ConsultaExhortoRepository _consultaExhortoRepository;
         private readonly DiligenciasRepository _diligenciasRepository;
-        private readonly ExhortosRepository _exhortosRepository;
         private readonly DocumentosRepository _documentosRepository;
 
         public ExhortosRecibidosController(
             ConsultaExhortoRepository consultaExhortoRepository,
             DiligenciasRepository diligenciasRepository,
-            ExhortosRepository exhortosRepository,
             DocumentosRepository documentosRepository)
         {
             _consultaExhortoRepository = consultaExhortoRepository;
             _diligenciasRepository = diligenciasRepository;
-            _exhortosRepository = exhortosRepository;
             _documentosRepository = documentosRepository;
         }
 
@@ -27,23 +24,19 @@ namespace AplicacionExhortos.Controllers
         [HttpGet]
         public IActionResult ExhortosRecibidos()
         {
-            string? usuarioId = HttpContext.Session.GetString("UsuarioId");
-            int? tuaIdSession = HttpContext.Session.GetInt32("TuaId");
-
-            if (string.IsNullOrWhiteSpace(usuarioId))
+            if (!TryObtenerUsuarioIdSesion(out _))
             {
-                TempData["Error"] = "La sesión expiró. Inicie sesión nuevamente.";
-                return RedirectToAction("Login", "Login");
+                return RedirigirALoginPorSesionExpirada();
             }
 
-            if (!tuaIdSession.HasValue || tuaIdSession.Value <= 0)
+            if (!TryObtenerTuaIdSesion(out int tuaIdSession))
             {
                 TempData["Error"] = "No se encontró el TUA del usuario en sesión.";
                 return View(new List<ConsultaExhortos>());
             }
 
             List<ConsultaExhortos> listaExhortos =
-                _consultaExhortoRepository.ConsultaExhortosRecibidos(tuaIdSession.Value);
+                _consultaExhortoRepository.ConsultaExhortosRecibidos(tuaIdSession);
 
             return View(listaExhortos);
         }
@@ -51,25 +44,20 @@ namespace AplicacionExhortos.Controllers
         [HttpGet]
         public IActionResult DarTramite(int id)
         {
-            int? tuaIdSession = HttpContext.Session.GetInt32("TuaId");
-            string? usuarioId = HttpContext.Session.GetString("UsuarioId");
-
             if (id <= 0)
             {
                 TempData["Error"] = "El identificador del exhorto no es válido.";
                 return RedirectToAction(nameof(ExhortosRecibidos));
             }
 
-            if (!tuaIdSession.HasValue || tuaIdSession.Value <= 0)
+            if (!TryObtenerTuaIdSesion(out _))
             {
-                TempData["Error"] = "La sesión expiró o no contiene el TUA del usuario.";
-                return RedirectToAction("Login", "Login");
+                return RedirigirALoginPorSesionExpirada("La sesión expiró o no contiene el TUA del usuario.");
             }
 
-            if (string.IsNullOrWhiteSpace(usuarioId))
+            if (!TryObtenerUsuarioIdSesion(out string usuarioId))
             {
-                TempData["Error"] = "La sesión expiró. Inicie sesión nuevamente.";
-                return RedirectToAction("Login", "Login");
+                return RedirigirALoginPorSesionExpirada();
             }
 
             ConsultaExhortos? exhorto =
@@ -113,18 +101,15 @@ namespace AplicacionExhortos.Controllers
         [HttpGet]
         public IActionResult DetalleExhorto(int id)
         {
-            int? tuaIdSession = HttpContext.Session.GetInt32("TuaId");
-
             if (id <= 0)
             {
                 TempData["Error"] = "El identificador del exhorto no es válido.";
                 return RedirectToAction(nameof(ExhortosRecibidos));
             }
 
-            if (!tuaIdSession.HasValue || tuaIdSession.Value <= 0)
+            if (!TryObtenerTuaIdSesion(out _))
             {
-                TempData["Error"] = "La sesión expiró o no contiene el TUA del usuario.";
-                return RedirectToAction("Login", "Login");
+                return RedirigirALoginPorSesionExpirada("La sesión expiró o no contiene el TUA del usuario.");
             }
 
             ConsultaExhortos? exhorto =
@@ -150,18 +135,15 @@ namespace AplicacionExhortos.Controllers
         [HttpGet]
         public IActionResult RelacionExhorto(int exhortoId)
         {
-            int? tuaIdSession = HttpContext.Session.GetInt32("TuaId");
-
             if (exhortoId <= 0)
             {
                 TempData["Error"] = "El identificador del exhorto no es válido.";
                 return RedirectToAction(nameof(ExhortosRecibidos));
             }
 
-            if (!tuaIdSession.HasValue || tuaIdSession.Value <= 0)
+            if (!TryObtenerTuaIdSesion(out _))
             {
-                TempData["Error"] = "La sesión expiró o no contiene el TUA del usuario.";
-                return RedirectToAction("Login", "Login");
+                return RedirigirALoginPorSesionExpirada("La sesión expiró o no contiene el TUA del usuario.");
             }
 
             ConsultaExhortos? exhorto =

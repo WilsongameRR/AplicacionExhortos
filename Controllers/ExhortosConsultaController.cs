@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace AplicacionExhortos.Controllers
 {
-    public class ExhortosConsultaController : Controller
+    public class ExhortosConsultaController : SessionControllerBase
     {
         private readonly ConsultaExhortoRepository _consultaExhortoRepository;
         private readonly DiligenciasRepository _diligenciasRepository;
@@ -24,12 +24,9 @@ namespace AplicacionExhortos.Controllers
         [HttpGet]
         public IActionResult ExhortosConsulta()
         {
-            string? usuarioId = ObtenerUsuarioIdSesion();
-
-            if (string.IsNullOrWhiteSpace(usuarioId))
+            if (!TryObtenerUsuarioIdSesion(out string usuarioId))
             {
-                TempData["Error"] = "La sesión expiró. Inicie sesión nuevamente.";
-                return RedirectToAction("Login", "Login");
+                return RedirigirALoginPorSesionExpirada();
             }
 
             List<ConsultaExhortos> listaExhortos = _consultaExhortoRepository.ConsultaExhorto(usuarioId);
@@ -43,12 +40,9 @@ namespace AplicacionExhortos.Controllers
         [HttpGet]
         public IActionResult DetalleExhorto(int id)
         {
-            string? usuarioId = ObtenerUsuarioIdSesion();
-
-            if (string.IsNullOrWhiteSpace(usuarioId))
+            if (!TryObtenerUsuarioIdSesion(out _))
             {
-                TempData["Error"] = "La sesión expiró. Inicie sesión nuevamente.";
-                return RedirectToAction("Login", "Login");
+                return RedirigirALoginPorSesionExpirada();
             }
 
             ConsultaExhortos? exhorto =
@@ -79,12 +73,9 @@ namespace AplicacionExhortos.Controllers
         [HttpGet]
         public IActionResult ReiterarExhorto(int id)
         {
-            string? usuarioId = ObtenerUsuarioIdSesion();
-
-            if (string.IsNullOrWhiteSpace(usuarioId))
+            if (!TryObtenerUsuarioIdSesion(out string usuarioId))
             {
-                TempData["Error"] = "La sesión expiró. Inicie sesión nuevamente.";
-                return RedirectToAction("Login", "Login");
+                return RedirigirALoginPorSesionExpirada();
             }
 
             ConsultaExhortos? exhorto = _consultaExhortoRepository.ObtenerDetalleExhortoRecibido(id);
@@ -123,12 +114,9 @@ namespace AplicacionExhortos.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult ReiterarExhorto(ReiterarExhortoModel model)
         {
-            string? usuarioId = ObtenerUsuarioIdSesion();
-
-            if (string.IsNullOrWhiteSpace(usuarioId))
+            if (!TryObtenerUsuarioIdSesion(out string usuarioId))
             {
-                TempData["Error"] = "La sesión expiró. Inicie sesión nuevamente.";
-                return RedirectToAction("Login", "Login");
+                return RedirigirALoginPorSesionExpirada();
             }
 
             if (!ModelState.IsValid)
@@ -190,12 +178,9 @@ namespace AplicacionExhortos.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult MarcarAtendido(int id)
         {
-            string? usuarioId = ObtenerUsuarioIdSesion();
-
-            if (string.IsNullOrWhiteSpace(usuarioId))
+            if (!TryObtenerUsuarioIdSesion(out string usuarioId))
             {
-                TempData["Error"] = "La sesión expiró. Inicie sesión nuevamente.";
-                return RedirectToAction("Login", "Login");
+                return RedirigirALoginPorSesionExpirada();
             }
 
             bool actualizado = _consultaExhortoRepository.MarcarExhortoAtendido(id, usuarioId);
@@ -213,21 +198,13 @@ namespace AplicacionExhortos.Controllers
         [HttpGet]
         public IActionResult ExhortoSeguimiento()
         {
-            string? usuarioId = ObtenerUsuarioIdSesion();
-
-            if (string.IsNullOrWhiteSpace(usuarioId))
+            if (!TryObtenerUsuarioIdSesion(out string usuarioId))
             {
-                TempData["Error"] = "La sesión expiró. Inicie sesión nuevamente.";
-                return RedirectToAction("Login", "Login");
+                return RedirigirALoginPorSesionExpirada();
             }
 
             ViewBag.UsuarioIdSesion = usuarioId;
             return View();
-        }
-
-        private string? ObtenerUsuarioIdSesion()
-        {
-            return HttpContext.Session.GetString("UsuarioId");
         }
     }
 }

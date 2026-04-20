@@ -13,7 +13,10 @@ namespace AplicacionExhortos.Data
 
         public MySqlConnection GetConnection()
         {
-            string connectionString = _configuration.GetConnectionString("MySqlConnection");
+            string connectionString = _configuration.GetConnectionString("MySqlConnection")
+                ?? throw new InvalidOperationException(
+                    "No se encontró la cadena de conexión 'MySqlConnection'.");
+
             return new MySqlConnection(connectionString);
         }
     }

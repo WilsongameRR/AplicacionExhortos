@@ -1,4 +1,4 @@
-﻿using AplicacionExhortos.Models.Exhortos;
+using AplicacionExhortos.Models.Exhortos;
 using MySql.Data.MySqlClient;
 using System.Data;
 
@@ -6,24 +6,48 @@ namespace AplicacionExhortos.Data.Repositories
 {
     public class DocumentosRepository
     {
-        private readonly string _connectionString;
+        private readonly BDConnection _db;
 
-        public DocumentosRepository(IConfiguration configuration)
+        public DocumentosRepository(BDConnection db)
         {
-            _connectionString = configuration.GetConnectionString("MySqlConnection")!;
+            _db = db;
+        }
+
+        public List<DocumentoAdjuntoModel> ObtenerDocumentosAdjuntosPorNoExhorto(string noExhorto)
+        {
+            if (string.IsNullOrWhiteSpace(noExhorto))
+            {
+                return new List<DocumentoAdjuntoModel>();
+            }
+
+            using var conexion = _db.GetConnection();
+            conexion.Open();
+
+            int exhortoId = ObtenerExhortoIdPorNumero(conexion, noExhorto);
+
+            if (exhortoId <= 0)
+            {
+                return new List<DocumentoAdjuntoModel>();
+            }
+
+            return ObtenerDocumentosAdjuntos(conexion, exhortoId);
         }
 
         public List<DocumentoAdjuntoModel> ObtenerDocumentosAdjuntos(int exhortoId)
         {
+            using var conexion = _db.GetConnection();
+            conexion.Open();
+
+            return ObtenerDocumentosAdjuntos(conexion, exhortoId);
+        }
+
+        private List<DocumentoAdjuntoModel> ObtenerDocumentosAdjuntos(MySqlConnection conexion, int exhortoId)
+        {
             List<DocumentoAdjuntoModel> lista = new();
 
-            using MySqlConnection conexion = new(_connectionString);
             using MySqlCommand comando = new("sp_consulta_documentos", conexion);
-
             comando.CommandType = CommandType.StoredProcedure;
             comando.Parameters.AddWithValue("pExhortoId", exhortoId);
-
-            conexion.Open();
 
             using MySqlDataReader reader = comando.ExecuteReader();
 
@@ -60,6 +84,24 @@ namespace AplicacionExhortos.Data.Repositories
             }
 
             return lista;
+        }
+
+        private int ObtenerExhortoIdPorNumero(MySqlConnection conexion, string noExhorto)
+        {
+            using MySqlCommand comando = new(
+                @"SELECT ExhortoId
+                  FROM exhortos.exhorto
+                  WHERE TRIM(NoExhortoEnviado) = TRIM(@NoExhorto)
+                  LIMIT 1",
+                conexion);
+
+            comando.Parameters.AddWithValue("@NoExhorto", noExhorto.Trim());
+
+            object? resultado = comando.ExecuteScalar();
+
+            return resultado != null && resultado != DBNull.Value
+                ? Convert.ToInt32(resultado)
+                : 0;
         }
     }
 }

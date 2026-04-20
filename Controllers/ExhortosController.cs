@@ -5,20 +5,27 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace AplicacionExhortos.Controllers
 {
-    public class ExhortosController : Controller
+    public class ExhortosController : SessionControllerBase
     {
+        private const string VistaAltaExhortos = "~/Views/AltaDeExhortos/AltaDeExhortos.cshtml";
+        private const string VistaAltaDocumentos = "~/Views/AltaDeExhortos/AltaDocumentos.cshtml";
+        private const string VistaAltaDocumentosModal = "~/Views/Exhortos/_AltaDocumentosModal.cshtml";
+
         private readonly TuaRepository _tuaRepo;
         private readonly TipoDiligenciaRepository _tipoRepo;
         private readonly ExhortosRepository _exhortosRepo;
+        private readonly DocumentosRepository _documentosRepo;
 
         public ExhortosController(
             TuaRepository tuaRepo,
             TipoDiligenciaRepository tipoRepo,
-            ExhortosRepository exhortosRepo)
+            ExhortosRepository exhortosRepo,
+            DocumentosRepository documentosRepo)
         {
             _tuaRepo = tuaRepo;
             _tipoRepo = tipoRepo;
             _exhortosRepo = exhortosRepo;
+            _documentosRepo = documentosRepo;
         }
 
         [HttpGet]
@@ -28,18 +35,17 @@ namespace AplicacionExhortos.Controllers
             {
                 if (string.IsNullOrEmpty(HttpContext.Session.GetString("UsuarioId")))
                 {
-                    TempData["Error"] = "La sesión expiró. Inicie sesión nuevamente.";
-                    return RedirectToAction("Login", "Login");
+                    return RedirigirALoginPorSesionExpirada();
                 }
 
                 CargarCatalogos();
-                return View("~/Views/AltaDeExhortos/AltaDeExhortos.cshtml");
+                return View(VistaAltaExhortos);
             }
             catch (Exception ex)
             {
                 TempData["Error"] = "Error al cargar los catálogos: " + ex.Message;
                 CargarCatalogos();
-                return View("~/Views/AltaDeExhortos/AltaDeExhortos.cshtml");
+                return View(VistaAltaExhortos);
             }
         }
 
@@ -49,13 +55,10 @@ namespace AplicacionExhortos.Controllers
         {
             try
             {
-                int? tuaOrigen = HttpContext.Session.GetInt32("TuaId");
-                string? usuarioOrigen = HttpContext.Session.GetString("UsuarioId");
-
-                if (tuaOrigen == null || string.IsNullOrWhiteSpace(usuarioOrigen))
+                if (!TryObtenerTuaIdSesion(out int tuaOrigen) ||
+                    !TryObtenerUsuarioIdSesion(out string usuarioOrigen))
                 {
-                    TempData["Error"] = "La sesión expiró. Inicie sesión nuevamente.";
-                    return RedirectToAction("Login", "Login");
+                    return RedirigirALoginPorSesionExpirada();
                 }
 
                 ValidarFechaAcuerdo(model.FechaGeneral);
@@ -64,16 +67,16 @@ namespace AplicacionExhortos.Controllers
                 if (!ModelState.IsValid)
                 {
                     CargarCatalogos();
-                    return View("~/Views/AltaDeExhortos/AltaDeExhortos.cshtml", model);
+                    return View(VistaAltaExhortos, model);
                 }
 
-                ResponseBd respuesta = _exhortosRepo.GuardarExhorto(model, tuaOrigen.Value, usuarioOrigen);
+                ResponseBd respuesta = _exhortosRepo.GuardarExhorto(model, tuaOrigen, usuarioOrigen);
 
                 if (respuesta.NoError != 0)
                 {
                     TempData["Error"] = respuesta.Mensaje ?? "No fue posible guardar el exhorto.";
                     CargarCatalogos();
-                    return View("~/Views/AltaDeExhortos/AltaDeExhortos.cshtml", model);
+                    return View(VistaAltaExhortos, model);
                 }
 
                 TempData["MensajeExito"] = "El exhorto se guardó correctamente.";
@@ -87,7 +90,7 @@ namespace AplicacionExhortos.Controllers
             {
                 TempData["Error"] = "Error al guardar: " + ex.Message;
                 CargarCatalogos();
-                return View("~/Views/AltaDeExhortos/AltaDeExhortos.cshtml", model);
+                return View(VistaAltaExhortos, model);
             }
         }
 
@@ -98,8 +101,7 @@ namespace AplicacionExhortos.Controllers
             {
                 if (string.IsNullOrEmpty(HttpContext.Session.GetString("UsuarioId")))
                 {
-                    TempData["Error"] = "La sesión expiró. Inicie sesión nuevamente.";
-                    return RedirectToAction("Login", "Login");
+                    return RedirigirALoginPorSesionExpirada();
                 }
 
                 if (string.IsNullOrWhiteSpace(noExhorto))
@@ -108,31 +110,14 @@ namespace AplicacionExhortos.Controllers
                     return RedirectToAction("AltaDeExhortos");
                 }
 
-                AltaDocumentosViewModel model = new AltaDocumentosViewModel
-                {
-                    NoExhorto = noExhorto,
-                    DocumentosGuardados = _exhortosRepo.ObtenerDocumentosAdjuntosPorNoExhorto(noExhorto)
-                };
-
-                ViewBag.TiposDocumento = _exhortosRepo.ObtenerTiposDocumento();
-
-                return View("~/Views/AltaDeExhortos/AltaDocumentos.cshtml", model);
+                CargarTiposDocumento();
+                return View(VistaAltaDocumentos, CrearModeloAltaDocumentos(noExhorto));
             }
             catch (Exception ex)
             {
                 TempData["Error"] = "Error al cargar la pantalla de documentos: " + ex.Message;
-
-                AltaDocumentosViewModel model = new AltaDocumentosViewModel
-                {
-                    NoExhorto = noExhorto ?? string.Empty,
-                    DocumentosGuardados = string.IsNullOrWhiteSpace(noExhorto)
-                        ? new List<DocumentoAdjuntoModel>()
-                        : _exhortosRepo.ObtenerDocumentosAdjuntosPorNoExhorto(noExhorto)
-                };
-
-                ViewBag.TiposDocumento = _exhortosRepo.ObtenerTiposDocumento();
-
-                return View("~/Views/AltaDeExhortos/AltaDocumentos.cshtml", model);
+                CargarTiposDocumento();
+                return View(VistaAltaDocumentos, CrearModeloAltaDocumentos(noExhorto));
             }
         }
 
@@ -147,7 +132,7 @@ namespace AplicacionExhortos.Controllers
                     return Json(new
                     {
                         ok = false,
-                        mensaje = "La sesión expiró. Inicie sesión nuevamente."
+                        mensaje = MensajeSesionExpirada
                     });
                 }
 
@@ -231,7 +216,7 @@ namespace AplicacionExhortos.Controllers
             {
                 if (string.IsNullOrEmpty(HttpContext.Session.GetString("UsuarioId")))
                 {
-                    return BadRequest("La sesión expiró. Inicie sesión nuevamente.");
+                    return BadRequest(MensajeSesionExpirada);
                 }
 
                 if (string.IsNullOrWhiteSpace(noExhorto))
@@ -239,15 +224,8 @@ namespace AplicacionExhortos.Controllers
                     return BadRequest("No se recibió el número de exhorto.");
                 }
 
-                AltaDocumentosViewModel model = new()
-                {
-                    NoExhorto = noExhorto,
-                    DocumentosGuardados = _exhortosRepo.ObtenerDocumentosAdjuntosPorNoExhorto(noExhorto)
-                };
-
-                ViewBag.TiposDocumento = _exhortosRepo.ObtenerTiposDocumento();
-
-                return PartialView("~/Views/Exhortos/_AltaDocumentosModal.cshtml", model);
+                CargarTiposDocumento();
+                return PartialView(VistaAltaDocumentosModal, CrearModeloAltaDocumentos(noExhorto));
             }
             catch (Exception ex)
             {
@@ -263,8 +241,7 @@ namespace AplicacionExhortos.Controllers
             {
                 if (string.IsNullOrEmpty(HttpContext.Session.GetString("UsuarioId")))
                 {
-                    TempData["Error"] = "La sesión expiró. Inicie sesión nuevamente.";
-                    return RedirectToAction("Login", "Login");
+                    return RedirigirALoginPorSesionExpirada();
                 }
 
                 if (model == null || string.IsNullOrWhiteSpace(model.NoExhorto))
@@ -387,6 +364,22 @@ namespace AplicacionExhortos.Controllers
         {
             ViewBag.TUAs = _tuaRepo.ObtenerTUAs();
             ViewBag.TiposDiligencia = _tipoRepo.ObtenerTiposDiligencia();
+        }
+
+        private void CargarTiposDocumento()
+        {
+            ViewBag.TiposDocumento = _exhortosRepo.ObtenerTiposDocumento();
+        }
+
+        private AltaDocumentosViewModel CrearModeloAltaDocumentos(string? noExhorto)
+        {
+            string numeroExhorto = noExhorto ?? string.Empty;
+
+            return new AltaDocumentosViewModel
+            {
+                NoExhorto = numeroExhorto,
+                DocumentosGuardados = _documentosRepo.ObtenerDocumentosAdjuntosPorNoExhorto(numeroExhorto)
+            };
         }
     }
 }

@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\rperezr_ss\\Documents\\AplicacionExhortos\\AplicacionExhortos.csproj": {}
+    "C:\\Users\\rperezr_ss\\.codex\\worktrees\\2b38\\AplicacionExhortos\\AplicacionExhortos.csproj": {}
   },
   "projects": {
-    "C:\\Users\\rperezr_ss\\Documents\\AplicacionExhortos\\AplicacionExhortos.csproj": {
+    "C:\\Users\\rperezr_ss\\.codex\\worktrees\\2b38\\AplicacionExhortos\\AplicacionExhortos.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\rperezr_ss\\Documents\\AplicacionExhortos\\AplicacionExhortos.csproj",
+        "projectUniqueName": "C:\\Users\\rperezr_ss\\.codex\\worktrees\\2b38\\AplicacionExhortos\\AplicacionExhortos.csproj",
         "projectName": "AplicacionExhortos",
-        "projectPath": "C:\\Users\\rperezr_ss\\Documents\\AplicacionExhortos\\AplicacionExhortos.csproj",
+        "projectPath": "C:\\Users\\rperezr_ss\\.codex\\worktrees\\2b38\\AplicacionExhortos\\AplicacionExhortos.csproj",
         "packagesPath": "C:\\Users\\rperezr_ss\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\rperezr_ss\\Documents\\AplicacionExhortos\\obj\\",
+        "outputPath": "C:\\Users\\rperezr_ss\\.codex\\worktrees\\2b38\\AplicacionExhortos\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
