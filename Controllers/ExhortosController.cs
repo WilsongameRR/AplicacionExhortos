@@ -50,7 +50,6 @@ namespace AplicacionExhortos.Controllers
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public IActionResult Guardar(AltaExhortoModel model)
         {
             try
@@ -122,7 +121,6 @@ namespace AplicacionExhortos.Controllers
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public IActionResult GuardarDocumentosModal(AltaDocumentosViewModel model)
         {
             try
@@ -234,7 +232,6 @@ namespace AplicacionExhortos.Controllers
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public IActionResult GuardarDocumentos(AltaDocumentosViewModel model)
         {
             try

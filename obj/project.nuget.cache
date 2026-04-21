@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "Xe76cwbzoeg=",
+  "dgSpecHash": "/TqJflyxrxA=",
   "success": true,
-  "projectFilePath": "C:\\Users\\rperezr_ss\\.codex\\worktrees\\2b38\\AplicacionExhortos\\AplicacionExhortos.csproj",
+  "projectFilePath": "C:\\Users\\rperezr_ss\\Documents\\AplicacionExhortos\\AplicacionExhortos.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\rperezr_ss\\.nuget\\packages\\bcrypt.net-next\\4.1.0\\bcrypt.net-next.4.1.0.nupkg.sha512",
     "C:\\Users\\rperezr_ss\\.nuget\\packages\\bouncycastle.cryptography\\2.6.2\\bouncycastle.cryptography.2.6.2.nupkg.sha512",

@@ -11,97 +11,97 @@ build_property.EnforceExtendedAnalyzerRules =
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = AplicacionExhortos
 build_property.RootNamespace = AplicacionExhortos
-build_property.ProjectDir = C:\Users\rperezr_ss\.codex\worktrees\2b38\AplicacionExhortos\
+build_property.ProjectDir = C:\Users\rperezr_ss\Documents\AplicacionExhortos\
 build_property.EnableComHosting = 
 build_property.EnableGeneratedComInterfaceComImportInterop = 
 build_property.RazorLangVersion = 9.0
 build_property.SupportLocalizedComponentNames = 
 build_property.GenerateRazorMetadataSourceChecksumAttributes = 
-build_property.MSBuildProjectDirectory = C:\Users\rperezr_ss\.codex\worktrees\2b38\AplicacionExhortos
+build_property.MSBuildProjectDirectory = C:\Users\rperezr_ss\Documents\AplicacionExhortos
 build_property._RazorSourceGeneratorDebug = 
 build_property.EffectiveAnalysisLevelStyle = 10.0
 build_property.EnableCodeStyleSeverity = 
 
-[C:/Users/rperezr_ss/.codex/worktrees/2b38/AplicacionExhortos/Views/AltaDeExhortos/AltaDeExhortos.cshtml]
+[C:/Users/rperezr_ss/Documents/AplicacionExhortos/Views/AltaDeExhortos/AltaDeExhortos.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWx0YURlRXhob3J0b3NcQWx0YURlRXhob3J0b3MuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/rperezr_ss/.codex/worktrees/2b38/AplicacionExhortos/Views/AltaDeExhortos/AltaDocumentos.cshtml]
+[C:/Users/rperezr_ss/Documents/AplicacionExhortos/Views/AltaDeExhortos/AltaDocumentos.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWx0YURlRXhob3J0b3NcQWx0YURvY3VtZW50b3MuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/rperezr_ss/.codex/worktrees/2b38/AplicacionExhortos/Views/Diligencias/AltaDiligencia.cshtml]
+[C:/Users/rperezr_ss/Documents/AplicacionExhortos/Views/Diligencias/AltaDiligencia.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRGlsaWdlbmNpYXNcQWx0YURpbGlnZW5jaWEuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/rperezr_ss/.codex/worktrees/2b38/AplicacionExhortos/Views/Diligencias/SeguimientoDiligencia.cshtml]
+[C:/Users/rperezr_ss/Documents/AplicacionExhortos/Views/Diligencias/SeguimientoDiligencia.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRGlsaWdlbmNpYXNcU2VndWltaWVudG9EaWxpZ2VuY2lhLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/rperezr_ss/.codex/worktrees/2b38/AplicacionExhortos/Views/ExhortosConsulta/DetalleExhorto.cshtml]
+[C:/Users/rperezr_ss/Documents/AplicacionExhortos/Views/ExhortosConsulta/DetalleExhorto.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRXhob3J0b3NDb25zdWx0YVxEZXRhbGxlRXhob3J0by5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/rperezr_ss/.codex/worktrees/2b38/AplicacionExhortos/Views/ExhortosConsulta/ExhortosConsulta.cshtml]
+[C:/Users/rperezr_ss/Documents/AplicacionExhortos/Views/ExhortosConsulta/ExhortosConsulta.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRXhob3J0b3NDb25zdWx0YVxFeGhvcnRvc0NvbnN1bHRhLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/rperezr_ss/.codex/worktrees/2b38/AplicacionExhortos/Views/ExhortosConsulta/Privacy.cshtml]
+[C:/Users/rperezr_ss/Documents/AplicacionExhortos/Views/ExhortosConsulta/Privacy.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRXhob3J0b3NDb25zdWx0YVxQcml2YWN5LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/rperezr_ss/.codex/worktrees/2b38/AplicacionExhortos/Views/ExhortosConsulta/ReiterarExhorto.cshtml]
+[C:/Users/rperezr_ss/Documents/AplicacionExhortos/Views/ExhortosConsulta/ReiterarExhorto.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRXhob3J0b3NDb25zdWx0YVxSZWl0ZXJhckV4aG9ydG8uY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/rperezr_ss/.codex/worktrees/2b38/AplicacionExhortos/Views/ExhortosPendientes/ExhortosPendientes.cshtml]
+[C:/Users/rperezr_ss/Documents/AplicacionExhortos/Views/ExhortosPendientes/ExhortosPendientes.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRXhob3J0b3NQZW5kaWVudGVzXEV4aG9ydG9zUGVuZGllbnRlcy5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/rperezr_ss/.codex/worktrees/2b38/AplicacionExhortos/Views/ExhortosRecibidos/ExhortosRecibidos.cshtml]
+[C:/Users/rperezr_ss/Documents/AplicacionExhortos/Views/ExhortosRecibidos/ExhortosRecibidos.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRXhob3J0b3NSZWNpYmlkb3NcRXhob3J0b3NSZWNpYmlkb3MuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/rperezr_ss/.codex/worktrees/2b38/AplicacionExhortos/Views/ExhortosRecibidos/RelacionExhorto.cshtml]
+[C:/Users/rperezr_ss/Documents/AplicacionExhortos/Views/ExhortosRecibidos/RelacionExhorto.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRXhob3J0b3NSZWNpYmlkb3NcUmVsYWNpb25FeGhvcnRvLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/rperezr_ss/.codex/worktrees/2b38/AplicacionExhortos/Views/Exhortos/_AltaDocumentosModal.cshtml]
+[C:/Users/rperezr_ss/Documents/AplicacionExhortos/Views/Exhortos/_AltaDocumentosModal.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRXhob3J0b3NcX0FsdGFEb2N1bWVudG9zTW9kYWwuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/rperezr_ss/.codex/worktrees/2b38/AplicacionExhortos/Views/Login/Login.cshtml]
+[C:/Users/rperezr_ss/Documents/AplicacionExhortos/Views/Login/Login.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTG9naW5cTG9naW4uY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/rperezr_ss/.codex/worktrees/2b38/AplicacionExhortos/Views/SeguimientoExhortos/DetalleSeguimiento.cshtml]
+[C:/Users/rperezr_ss/Documents/AplicacionExhortos/Views/SeguimientoExhortos/DetalleSeguimiento.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2VndWltaWVudG9FeGhvcnRvc1xEZXRhbGxlU2VndWltaWVudG8uY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/rperezr_ss/.codex/worktrees/2b38/AplicacionExhortos/Views/SeguimientoExhortos/SeguimientoExhortos.cshtml]
+[C:/Users/rperezr_ss/Documents/AplicacionExhortos/Views/SeguimientoExhortos/SeguimientoExhortos.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2VndWltaWVudG9FeGhvcnRvc1xTZWd1aW1pZW50b0V4aG9ydG9zLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/rperezr_ss/.codex/worktrees/2b38/AplicacionExhortos/Views/Shared/Error.cshtml]
+[C:/Users/rperezr_ss/Documents/AplicacionExhortos/Views/Shared/Error.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXEVycm9yLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/rperezr_ss/.codex/worktrees/2b38/AplicacionExhortos/Views/Shared/_ValidationScriptsPartial.cshtml]
+[C:/Users/rperezr_ss/Documents/AplicacionExhortos/Views/Shared/_ValidationScriptsPartial.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9WYWxpZGF0aW9uU2NyaXB0c1BhcnRpYWwuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/rperezr_ss/.codex/worktrees/2b38/AplicacionExhortos/Views/_ViewImports.cshtml]
+[C:/Users/rperezr_ss/Documents/AplicacionExhortos/Views/_ViewImports.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdJbXBvcnRzLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/rperezr_ss/.codex/worktrees/2b38/AplicacionExhortos/Views/_ViewStart.cshtml]
+[C:/Users/rperezr_ss/Documents/AplicacionExhortos/Views/_ViewStart.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdTdGFydC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/rperezr_ss/.codex/worktrees/2b38/AplicacionExhortos/Views/Shared/_Layout.cshtml]
+[C:/Users/rperezr_ss/Documents/AplicacionExhortos/Views/Shared/_Layout.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9MYXlvdXQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = b-bqzpikkie2
 
-[C:/Users/rperezr_ss/.codex/worktrees/2b38/AplicacionExhortos/Views/Shared/_LayoutLogin.cshtml]
+[C:/Users/rperezr_ss/Documents/AplicacionExhortos/Views/Shared/_LayoutLogin.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9MYXlvdXRMb2dpbi5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = b-j3nnhxmd12

@@ -20,7 +20,6 @@ namespace AplicacionExhortos.Controllers
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public IActionResult Login(LoginModel model)
         {
             const string mensajeError = "Usuario o contraseña incorrectos.";

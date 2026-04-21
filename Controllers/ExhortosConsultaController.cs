@@ -111,7 +111,6 @@ namespace AplicacionExhortos.Controllers
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public IActionResult ReiterarExhorto(ReiterarExhortoModel model)
         {
             if (!TryObtenerUsuarioIdSesion(out string usuarioId))
@@ -175,7 +174,6 @@ namespace AplicacionExhortos.Controllers
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public IActionResult MarcarAtendido(int id)
         {
             if (!TryObtenerUsuarioIdSesion(out string usuarioId))

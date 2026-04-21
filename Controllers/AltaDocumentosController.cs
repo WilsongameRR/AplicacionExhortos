@@ -7,7 +7,7 @@ namespace AplicacionExhortos.Controllers
         [HttpGet]
         public IActionResult AltaDocumentos()
         {
-            return View(); // Busca en Views/AltaDeExhortos/AltaDocumentos.cshtml
+            return View(); 
         }
     }
 }

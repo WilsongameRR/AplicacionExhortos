@@ -117,7 +117,6 @@ namespace AplicacionExhortos.Controllers
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public IActionResult GuardarSeguimiento(DetalleExhortoModel model)
         {
             if (model == null || model.Seguimiento == null)

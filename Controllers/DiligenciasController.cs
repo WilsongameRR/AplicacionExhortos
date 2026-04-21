@@ -31,7 +31,6 @@ namespace AplicacionExhortos.Controllers
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public IActionResult GuardarDiligencias(AltaDiligenciasModel model)
         {
             if (string.IsNullOrWhiteSpace(model.NoExhorto))
@@ -100,7 +99,6 @@ namespace AplicacionExhortos.Controllers
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public IActionResult GuardarSeguimientoDiligencia(DiligenciaModel model)
         {
             if (model.ExhortoId <= 0 || model.DiligenciaId <= 0 || model.DiligenciaNoEnvio <= 0)
